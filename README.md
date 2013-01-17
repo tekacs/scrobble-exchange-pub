@@ -2,6 +2,10 @@
 
 ## Group Project Charlie
 
+Resources:
+* [EtherPad](https://scrobble-exchange.titanpad.com/) (for notes, documentation, etc.)
+* [GitHub](http://github.com/tekacs/scrobble-exchange) (in case you're looking at the checked out repository)
+
 Team Members:
 
 * Amar Sood (Lead Dev)
@@ -11,7 +15,3 @@ Team Members:
 * Karolis Dziedzelis
 * Joe Bateson (Lead Frontend)
 (reverse surname order)
-
-Resources:
-* [EtherPad](https://scrobble-exchange.titanpad.com/) (for notes, documentation, etc.)
-* [GitHub](http://github.com/tekacs/scrobble-exchange) (in case you're looking at the checked out repository)
