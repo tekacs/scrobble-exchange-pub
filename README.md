@@ -1,4 +1,17 @@
-scrobble-exchange
-=================
+# Scrobble Exchange: A massively multiplayer game
 
-Scrobble Exchange
+## Group Project Charlie
+
+Team Members:
+
+* Amar Sood (Lead Dev)
+* Neil Satra
+* Victor Mikhno
+* Guoqiang Liang
+* Karolis Dziedzelis
+* Joe Bateson (Lead Frontend)
+(reverse surname order)
+
+Resources:
+* [EtherPad](https://scrobble-exchange.titanpad.com/) (for notes, documentation, etc.)
+* [GitHub](http://github.com/tekacs/scrobble-exchange) (in case you're looking at the checked out repository)
