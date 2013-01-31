@@ -34,5 +34,5 @@ Team Members:
 
 (reverse surname order, clearly :P)
 
-<a id="1">If you really must use multiple branches in one tree, please remember that the correct command to grab a branch without merging changes is `git fetch origin <branch>`.</a>
-[1]: #1
+<a id="footnote1">1.</a> If you really must use multiple branches in one tree, please remember that the correct command to grab a branch without merging changes is `git fetch origin <branch>`.
+[1]: #footnote1
