@@ -4,7 +4,7 @@ This is the branch containing the Scrobble Exchange analytics backend.
 
 Structure:
 
-- vendor/ :: for imported libraries
+- vendor/ :: for imported libraries (modify sys.path as appropriate)
 - lib/ :: application logic
 - analytics.py :: server launch/... code ('entry point')
 
