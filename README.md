@@ -41,6 +41,6 @@ Current assigned:
 * Karolis Dziedzelis
 * Amar Sood
 
-<a id="amar">AS: Posited by Amar on a technical basis - poke me if you have objections/problems.</a>
+<a id="amar">AS:</a> Posited by Amar on a technical basis - poke me if you have objections/problems.
 
 [AS]: #amar "Posited by Amar on a technical basis - poke me if you have objections/problems."
