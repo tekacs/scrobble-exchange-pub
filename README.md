@@ -33,4 +33,6 @@ Current assigned:
 * Victor Mikhno
 * Amar Sood
 
-[AS]: # "Posited by Amar on a technical basis - poke me if you have objections."
+<a id="amar">AS: Posited by Amar on a technical basis - poke me if you have objections/problems.</a>
+
+[AS]: #amar "Posited by Amar on a technical basis - poke me if you have objections/problems."
