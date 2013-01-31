@@ -14,6 +14,14 @@ The simplest solution is to just use branches.sh and work with the branches in d
 Files:
 * branches.sh :: This checks out all of the branches for you and sets them up such that you can push and pull changes to the right place with just a 'git push/pull' (i.e. without 'origin <...>')
 
+Branches:
+* [master](https://github.com/tekacs/scrobble-exchange)
+* [doc](https://github.com/tekacs/scrobble-exchange/tree/doc)
+* [web](https://github.com/tekacs/scrobble-exchange/tree/web)
+* [api](https://github.com/tekacs/scrobble-exchange/tree/api)
+* [analytics](https://github.com/tekacs/scrobble-exchange/tree/analytics)
+* [datm](https://github.com/tekacs/scrobble-exchange/tree/datm)
+
 Resources:
 * [Google Docs](https://docs.google.com/folder/d/0Bzc0w3Y7EvMeblByNnZ1Y1RieHc/edit) (for notes, documentation, etc.)
 * [Facebook](https://www.facebook.com/groups/scrobble-exchange) (for conversation)
@@ -23,16 +31,18 @@ Resources:
 Useful Links:
 * Might I heartily recommend [Github for Mac](http://mac.github.com) and [GitHub for Windows](http://windows.github.com) to those unfamiliar with Git?
 
-Team Members:
+Team Members:[2][]
 
-* Amar Sood (Lead Dev)
+* Amar Sood (Lead Dev, Lead DATM)
 * Neil Satra
-* Victor Mikhno
+* Victor Mikhno (Lead API)
 * Guoqiang Liang
-* Karolis Dziedzelis
+* Karolis Dziedzelis (Lead Analytics)
 * Joe Bateson (Lead Frontend)
 
 (reverse surname order, clearly :P)
 
 <a id="footnote1">1.</a> If you really must use multiple branches in one tree, please remember that the correct command to grab a branch without merging changes is `git fetch origin <branch>`.
+<a id="footnote2">2.</a> (hint: read 'Lead' as 'person to blame/ask about said tree' or 'person responsible for making sure it actually happens')
 [1]: #footnote1
+[2]: #footnote2
