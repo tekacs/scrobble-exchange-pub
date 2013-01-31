@@ -2,6 +2,10 @@
 
 ## Group Project Charlie
 
+There is currently supposed to be nothing in this branch but for the README.
+
+Please don't commit files in here!
+
 Resources:
 * [Google Docs](https://docs.google.com/folder/d/0Bzc0w3Y7EvMeblByNnZ1Y1RieHc/edit) (for notes, documentation, etc.)
 * [Facebook](https://www.facebook.com/groups/scrobble-exchange) (for conversation)
