@@ -1,0 +1,25 @@
+structure.txt [1]
+=============
+
+Just to give some sort of indication how the application is structured, here are all possible flows:
+
+-> == network; /\ == library use
+
+user JS /\ (JS LFM client?) -> last.fm API ... and back
+
+user -> web /\ API client -> API /\ DATM /\ pyLast -> last.fm API -> database ... and back
+user -> web /\ API client -> API /\ DATM -> backend database ... and back
+
+(clearly this is going to have *incredibly* low latency! :P)
+(for reference's sake, the contingency plan should this be impossibly slow is to link [2] the web app directly against DATM)
+
+user /\ API client -> API /\ DATM -> backend database ... and back
+
+analytics /\ DATM -> backend database
+analytics /\ DATM -> last.fm API ... and back
+
+Updates:
+    - Amar, 31/01/12
+
+[1]: This is _not_ supposed to be a markdown file, even if I liberally make use of markdown-like syntax. :P
+[2]: Yes, I realise that Python doesn't link against libraries per-se - the idea is to bundle it in for direct access to the DB rather than through the API.
