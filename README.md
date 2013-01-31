@@ -3,8 +3,13 @@
 ## Group Project Charlie
 
 Resources:
-* [EtherPad](https://scrobble-exchange.titanpad.com/) (for notes, documentation, etc.)
+* [Google Docs](https://docs.google.com/folder/d/0Bzc0w3Y7EvMeblByNnZ1Y1RieHc/edit) (for notes, documentation, etc.)
+* [Facebook](https://www.facebook.com/groups/scrobble-exchange) (for conversation)
 * [GitHub](http://github.com/tekacs/scrobble-exchange) (in case you're looking at the checked out repository)
+* [IRC](irc://last.fm:6667/last.gp)
+
+Useful Links:
+* Might I heartily recommend [Github for Mac](http://mac.github.com) and [GitHub for Windows](http://windows.github.com) to those unfamiliar with Git?
 
 Team Members:
 
@@ -14,4 +19,5 @@ Team Members:
 * Guoqiang Liang
 * Karolis Dziedzelis
 * Joe Bateson (Lead Frontend)
-(reverse surname order)
+
+(reverse surname order, clearly :P)
