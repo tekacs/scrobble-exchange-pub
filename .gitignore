@@ -1,2 +1,71 @@
-.DS_Store
+### Other
 venv
+
+### Mac OSX
+### https://github.com/github/gitignore/blob/master/Global/OSX.gitignore
+
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+### Python
+### https://github.com/github/gitignore/blob/master/Python.gitignore
+
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+### Django
+### https://github.com/github/gitignore/blob/master/Django.gitignore
+
+*.log
+*.pot
+*.pyc
+local_settings.py
+
+### Compass
+### https://github.com/github/gitignore/blob/master/Compass.gitignore
+
+.sass-cache
