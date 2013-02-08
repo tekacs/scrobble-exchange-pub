@@ -14,4 +14,11 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^$', 'frontend.views.home', name='home'),
+    url(r'^artists/', 'frontend.views.artists', name='artists'),
+    url(r'^charts/', 'frontend.views.charts', name='charts'),
+
+    # TODO: need to fix for artists with spaces in names
+    url(r'^artist/(\w+)/$', 'frontend.views.artist_single', name ='artist_single'),
 )

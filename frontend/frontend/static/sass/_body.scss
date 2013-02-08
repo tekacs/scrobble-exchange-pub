@@ -1,0 +1,56 @@
+body {
+    background: $bgColour;
+    font-family: $bodyFontFamily;
+
+    .body-content {
+        background: $contentBgColour;
+        border: 1px solid rgb(204, 204, 204);
+        padding: 1px 19px 18px;
+        margin-top: 8px;
+    }
+
+    .main {
+        
+    }
+
+    div.portfolio-img {
+        $portfolio-img-height: 190px;
+        background-size: cover;
+        background-position: center;
+        background-color: #eee;
+        border-radius: 2px;
+        position: relative;
+        width: $portfolio-img-height;
+        height: $portfolio-img-height;
+        overflow: hidden;
+        float: left;
+        
+        margin: 0 24px 15px 0px;
+        
+        div.text-over-image {
+            position: absolute;
+            span {
+                color: #fff;
+                padding: 3px 6px;
+                display: inline-block;
+            }
+            bottom: 0;
+            left: 0;
+            span {                  
+                &.primary {                     
+                    background-color: #333; 
+                }
+                &.secondary{
+                    bottom: 0;
+                    left: 0;
+                    background-color: #71b7e6;
+                }                   
+
+            }       
+        }   
+    }
+
+    img.badge-img {
+        margin: 0 5px 5px 0;
+    }
+}

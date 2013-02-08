@@ -1,0 +1,67 @@
+header {
+    
+    display: block;
+    background: $mainBarRed;
+    background-image: $headerSpriteUrl;
+    font-weight: bold;
+    color: #fff;
+    height: 70px;
+
+    .header-container {
+        
+        .logo {
+            background-image: $headerSpriteUrl;
+            //background-image: url('http://dummyimage.com/110x35/e11303/fff&text=Charlie');
+            z-index: 1;
+            display: block;
+            width: 110px;
+            height: 44px;
+            background-position: 0 -160px;
+            background-repeat: no-repeat;
+            text-indent: -9999px;
+
+            margin: 1px 17px 0 -10px;
+            float: left;
+
+            &:hover {
+                background-position: -110px -160px;
+            }
+        }
+
+        nav {
+            float: left;
+            top: 1px;
+            left: 129px;
+            z-index: 1;
+            zoom: 1;
+            ul { 
+                li {
+                    float: left;                
+                    display: block;                 
+                    a {
+                        color: #FFF;
+                        text-shadow: rgb(135, 8, 2) 0px 1px 0px;
+                        display: block;
+                        padding: 15px 9px 7px 9px;
+                        &:hover {
+                            background-image: $headerSpriteUrl;
+                            background-position: 0 -259px;
+                            background-repeat: repeat-x;                            
+                        }
+                    }
+                }
+            }   
+        }
+
+        div.header-promo {
+            clear: left;
+            top: 45px;
+            left: 15px;
+            font-size: 11px;
+            line-height: 23px;
+            color: #ddd;
+            font-weight: bold;
+        }
+    }
+    
+}
