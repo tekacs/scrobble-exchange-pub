@@ -38,4 +38,3 @@ var Artist = {
         graph.render();
     }
 };
-

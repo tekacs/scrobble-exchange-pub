@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block title %}{{name}}{% endblock title %}
 
 {% block main %}
@@ -24,6 +26,7 @@
 {% endblock sidebar %}
 
 {% block body_additional %}
+    <script type="text/javascript" src="{% static "js/artist.js" %}"></script>
 	<script type="text/javascript">
 		Artist.name = '{{name}}';
 		Artist.drawGraph();
