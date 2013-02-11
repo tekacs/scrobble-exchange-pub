@@ -1,75 +1,28 @@
 {% extends "base.html" %}
 
+{% load extras %}
+
 {% block title %}Home{% endblock %}
 
     {% block main %}
         <h4>Portfolio</h4>
-        <a href="/artist/Coldplay">
-            <div class="portfolio-img" style="background-image: url('http:\/\/userserve-ak.last.fm\/serve\/252\/59214147.png');">
-                <!--<img class="portfolio-img" src="http://dummyimage.com/180x180/eee/000">
-                -->
-                <div class="text-over-image bottom">
-                    <span class="primary">Name of artist</span>
-                    <br>
-                    <span class="secondary">$52,124</span>
+
+        {% for artist in user_data.curstocks %}
+            <a href="/artist/{{ artist_data.artist.name|urlencode }}">
+                <div class="portfolio-img" style="background-image: url('{{ artist_data.artist.images|get_image:'mega' }}');">
+                    <div class="text-over-image bottom">
+                        <span class="primary">{{ artist_data.artist.name }}</span>
+                        <br>
+                        <span class="secondary">${{ artist_data.artist.current_price }}</span>
+                    </div>
                 </div>
-            </div>
-        </a>
-        <a href="/artist/Coldplay">
-            <div class="portfolio-img" style="background-image: url('http:\/\/userserve-ak.last.fm\/serve\/252\/75646980.png');">
-                <!--<img class="portfolio-img" src="http://dummyimage.com/180x180/eee/000">
-                --><div class="text-over-image">
-                    <span class="primary">Name of artist</span>
-                    <br>
-                    <span class="secondary">$52,124</span>
-                </div>
-            </div>
-        </a>
-        <a href="/artist/Coldplay">
-            <div class="portfolio-img" style="background-image: url('http:\/\/userserve-ak.last.fm\/serve\/252\/45388159.png');">
-                <!--<img class="portfolio-img" src="http://dummyimage.com/180x180/eee/000">
-                --><div class="text-over-image">
-                    <span class="primary">Name of artist</span>
-                    <br>
-                    <span class="secondary">$52,124</span>
-                </div>
-            </div>
-        </a>
-        <a href="/artist/Coldplay">
-            <div class="portfolio-img" style="background-image: url('http:\/\/userserve-ak.last.fm\/serve\/252\/82785611.png');">
-                <!--<img class="portfolio-img" src="http://dummyimage.com/180x180/eee/000">
-                --><div class="text-over-image">
-                    <span class="primary">Name of artist</span>
-                    <br>
-                    <span class="secondary">$52,124</span>
-                </div>
-            </div>
-        </a>
-        <a href="/artist/Coldplay">
-            <div class="portfolio-img" style="background-image: url('http:\/\/userserve-ak.last.fm\/serve\/252\/13452679.jpg');">
-                <!--<img class="portfolio-img" src="http://dummyimage.com/180x180/eee/000">
-                --><div class="text-over-image">
-                    <span class="primary">Name of artist</span>
-                    <br>
-                    <span class="secondary">$52,124</span>
-                </div>
-            </div>
-        </a>
-        <a href="/artist/Coldplay">
-            <div class="portfolio-img" style="background-image: url('http:\/\/userserve-ak.last.fm\/serve\/252\/486303.jpg');">
-                <!--<img class="portfolio-img" src="http://dummyimage.com/180x180/eee/000">
-                --><div class="text-over-image">
-                    <span class="primary">Name of artist</span>
-                    <br>
-                    <span class="secondary">$52,124</span>
-                </div>
-            </div>
-        </a>
+            </a>    
+        {% endfor %}
     {% endblock main %}
 
     {% block sidebar %}
-        <h2>$1,274,421</h2>
-        <p>(+ $234,298 in your portfolio)</p>
+        <h2>${{user_data.user.money}}</h2>
+        <p>(+ ${{portfolio_worth}} in your portfolio)</p>
 
         <hr>
 
