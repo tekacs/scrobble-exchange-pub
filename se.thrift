@@ -1,10 +1,8 @@
 ## Scrobble-Exchange Thrift Definitions
 
 ## Interface definitions
-# JS is possibly not needed
 
 namespace py scrobbleexchange
-namespace js scrobbleexchange
 
 ## API version
 # Format: Major/Minor/Patch
@@ -20,13 +18,13 @@ const string VERSION = "0.0.0"
 
 # Artist
 
-/** Basic artist info. I'm not too sure on having the musicbrainz id 
-    here, nor the url. */
+/** Basic artist info. Imageurl is a mapping to the image url from its 
+respective size */
 struct Artist {
     1: required string name
-    2: optional string mbiz
+    2: optional string mbid
     3: optional string url
-    4: optional string imageurl
+    4: optional map<string,string> imageurl
 }
 
 /** Value of an artist at a single point in time
@@ -46,19 +44,19 @@ struct ArtistHistory {
 
 /** Contains all the data about the artist we have in our db
     For a new artist, stockvalue = curmarketvalue, and ArtistHistory would just 
-    have an empty list. curforsale would be proportional to the total number of 
-    users. */ 
-struct ArtistData {
+    have an empty list. curforsale is the current amount available to be 
+    bought */ 
+struct ArtistSE {
     1: required Artist artist
     2: required i32 stockvalue
     3: required i32 curmarketprice
     4: required i32 curforsale
-    5: required ArtistHistory history
+    5: optional ArtistHistory history
 }
 
 /** Essentially encapsulates the data from last.fm's artist.getInfo. It's 
     entirely possible that this won't be needed. */
-struct ArtistInfo {
+struct ArtistLFM {
     1: required Artist artist
     2: required bool streamable
     3: required i32 listeners
@@ -93,7 +91,7 @@ struct UserAuth {
 }
 
 /** Basic user info. This is all that is needed for most pages where the user 
-isn't the primary content. */
+    isn't the primary content. */
 struct User {
     1: required string name
     2: required UserAuth auth
@@ -124,9 +122,6 @@ exception AuthException {
 
 exception SearchException {
     1: required string why
-}
-
-exception TimeException {
 }
 
 exception TransactionException {
@@ -162,12 +157,12 @@ searchexp),
         Assumes that if artist isn't in the DB, then it gets pulled in 
         on-demand and so will always return some data.
         Artist string can be either the name, or the musicbrainz ID */
-    ArtistData getArtistData (1: required string artist) throws 
+    ArtistSE getArtistSE (1: required string artist) throws 
 (1: SearchException searchexp),
     
     /** Returns the contextual artist info from last.fm for the artist
         Artist string can be either the name or the musicbrainz ID */
-    ArtistInfo getArtistInfo (1: required string artist) throws (1: 
+    ArtistLFM getArtistLFM (1: required string artist) throws (1: 
 SearchException searchexp),
     
     /** returns a list of possible artists from a partial string. Ordered by 
@@ -180,7 +175,10 @@ SearchException searchexp),
         top lists to a certain tag. */
     list<Artist> getTopArtists (1: required i32 n, 2: string tag),
     
-        # User
+    /** Returns a list of the n most traded artists by decreasing value. */
+    list<Artist> getTradedArtists (1: required i32 n), 
+    
+    # User
    
     /** Returns extended user data. User string must be the username of the 
         user whose data you wish to return */
@@ -204,15 +202,15 @@ uexp),
         exception if the expected artist value has changed since the request.
         Throws user exception if the user already owns the stock */
     i32 buyArtist (1: required Artist artist, 2: required User user, 3: 
-required i32 value) throws (1: TransactionException transexp, 2: TimeException 
-timeexp, 3: UserException userexp),
+required i32 value) throws (1: TransactionException transexp, 2: UserException 
+userexp),
     
     /** Sells artist for user, and returns the new value of that artist. Throws 
         a time exception if the expected sell value has changed since the 
         request was made. User exception is thrown if the user isn't allowed to 
         sell or doesn't own that artist */
     i32 sellArtist (1: required Artist artist, 2: required User user, 3: 
-required i32 value) throws (1: TransactionException transexp, 2: TimeException 
-timeexp, 3: UserException userexp)
+required i32 value) throws (1: TransactionException transexp, 2: UserException 
+userexp)
    
 }
