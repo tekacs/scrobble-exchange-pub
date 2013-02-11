@@ -1,4 +1,8 @@
 from django.conf.urls import patterns, include, url
+# from django.conf import settings
+# import django_url_framework
+
+# django_url_framework.site.autodiscover(settings.INSTALLED_APPS)
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -21,4 +25,6 @@ urlpatterns = patterns('',
 
     # TODO: need to fix for artists with spaces in names
     url(r'^artist/(\w+)/$', 'frontend.views.artist_single', name ='artist_single'),
+
+    # (r'^', include(django_url_framework.site.urls) ),
 )
