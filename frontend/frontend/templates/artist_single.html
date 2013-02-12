@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}{{name}}{% endblock title %}
+{% block title %}{{artist.name}}{% endblock title %}
 
 {% block main %}
 	<h4>{{name}}</h4>
@@ -21,14 +21,19 @@
 {% block sidebar %}
 	<h5>Current market price:</h5>
 	<h2>$25,051</h2>
-	<a class="button" href="#">Buy now</a>
+	<a class="button" id="buy-button" href="#">Buy</a>
+    <a class="button" id="sell-button" href="#">Sell</a>
 	<hr>
 {% endblock sidebar %}
 
-{% block body_additional %}
+{% block body_additional_html %}
+    {% include "buy_sell_modal.html" %}
+{% endblock body_additional_html %}
+
+{% block body_additional_js %}
     <script type="text/javascript" src="{% static "js/artist.js" %}"></script>
 	<script type="text/javascript">
 		Artist.name = '{{name}}';
 		Artist.drawGraph();
 	</script>
-{% endblock body_additional %}
+{% endblock body_additional_js %}
