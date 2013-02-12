@@ -3,25 +3,25 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
 ## Import thrift stuff
-import sys
-sys.path.append('../../../api/gen-py') #I'm not too sure of this
+#import sys
+#sys.path.append('../../../api/gen-py') # Variable depending on install
 
-import se_api
-import se_api.ttypes
+#from se_api import ScrobbleExchange
+#import se_api.ttypes
 
-from thrift import Thrift
-from thrift.transport import TSocket
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol
+#from thrift import Thrift
+#from thrift.transport import TSocket
+#from thrift.transport import TTransport
+#from thrift.protocol import TBinaryProtocol
 ## End of thrift
 
 try:
     ## Connect to the API server
-    transport = TSocket.TSocket('localhost', 9090)
-    transport = TTransport.TBufferedTransport(transport)
-    protocol = TBinaryProtocol.TBinaryProtocol(transport)
-    client = se_api.ScrobbleExchange.Client(protocol)
-    transport.open()
+    #transport = TSocket.TSocket('localhost', 9090)
+    #transport = TTransport.TBufferedTransport(transport)
+    #protocol = TBinaryProtocol.TBinaryProtocol(transport)
+    #client = ScrobbleExchange.Client(protocol)
+    #transport.open()
     ## End
     
     # Now you can access all the thrift stuff
@@ -80,7 +80,7 @@ try:
         pass
     
     # Close
-    transport.close()
+    # transport.close()
     
 except Thrift.TException, tx:
     print '%s' % (tx.message)
