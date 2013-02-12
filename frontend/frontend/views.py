@@ -72,10 +72,19 @@ def home(request):
                     # in real data, get all available image urls
                 }
             }
+        },
+        {
+            'artist': {
+                'name': 'A random band with a missing image and a long name! (and punctuation)',
+                'current_price': 100,
+                'images': {   
+                    # in real data, get all available image urls
+                }
+            }
         }
     ]
     user_data.user = {'money': 140512}
-    portfolio_worth = 2500 + 2200 + 2300
+    portfolio_worth = 2500 + 2200 + 2300 + 100
     return render_to_response('index.html',{
             'user_data': user_data, 
             'portfolio_worth': portfolio_worth

@@ -9,7 +9,7 @@ def get_image(images, size_name):
     large = ('large', 'medium', 'small')
     medium = ('medium', 'small')
     small = ('small',)
-    generic = 'http://some-url/generic.png'
+    generic = 'http://cdn.lst.fm/flatness/imageheader/default_artist_256.png'
    
     sizes = locals()[size_name]
     for s in sizes:
