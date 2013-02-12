@@ -25,7 +25,6 @@ class Artist(object):
   Attributes:
    - name
    - mbid
-   - url
    - imageurl
   """
 
@@ -33,14 +32,12 @@ class Artist(object):
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.STRING, 'mbid', None, None, ), # 2
-    (3, TType.STRING, 'url', None, None, ), # 3
-    (4, TType.MAP, 'imageurl', (TType.STRING,None,TType.STRING,None), None, ), # 4
+    (3, TType.MAP, 'imageurl', (TType.STRING,None,TType.STRING,None), None, ), # 3
   )
 
-  def __init__(self, name=None, mbid=None, url=None, imageurl=None,):
+  def __init__(self, name=None, mbid=None, imageurl=None,):
     self.name = name
     self.mbid = mbid
-    self.url = url
     self.imageurl = imageurl
 
   def read(self, iprot):
@@ -63,11 +60,6 @@ class Artist(object):
         else:
           iprot.skip(ftype)
       elif fid == 3:
-        if ftype == TType.STRING:
-          self.url = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 4:
         if ftype == TType.MAP:
           self.imageurl = {}
           (_ktype1, _vtype2, _size0 ) = iprot.readMapBegin() 
@@ -96,12 +88,8 @@ class Artist(object):
       oprot.writeFieldBegin('mbid', TType.STRING, 2)
       oprot.writeString(self.mbid)
       oprot.writeFieldEnd()
-    if self.url is not None:
-      oprot.writeFieldBegin('url', TType.STRING, 3)
-      oprot.writeString(self.url)
-      oprot.writeFieldEnd()
     if self.imageurl is not None:
-      oprot.writeFieldBegin('imageurl', TType.MAP, 4)
+      oprot.writeFieldBegin('imageurl', TType.MAP, 3)
       oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.imageurl))
       for kiter7,viter8 in self.imageurl.items():
         oprot.writeString(kiter7)
@@ -132,22 +120,22 @@ class ArtistHistory(object):
   """
   Keeps a list of artist values in time
   Ordered list by date from oldest to newest
-  Format is <date,value>, both integers
+  Format is <date,price>, both integers
   Timeonmarket might help in drawing the graphs (Unsure?)
 
   Attributes:
-   - histvalues
+   - histvalue
    - timeonmarket
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.LIST, 'histvalues', (TType.MAP,(TType.I32,None,TType.I32,None)), None, ), # 1
+    (1, TType.LIST, 'histvalue', (TType.MAP,(TType.I32,None,TType.I32,None)), None, ), # 1
     (2, TType.I32, 'timeonmarket', None, None, ), # 2
   )
 
-  def __init__(self, histvalues=None, timeonmarket=None,):
-    self.histvalues = histvalues
+  def __init__(self, histvalue=None, timeonmarket=None,):
+    self.histvalue = histvalue
     self.timeonmarket = timeonmarket
 
   def read(self, iprot):
@@ -161,7 +149,7 @@ class ArtistHistory(object):
         break
       if fid == 1:
         if ftype == TType.LIST:
-          self.histvalues = []
+          self.histvalue = []
           (_etype12, _size9) = iprot.readListBegin()
           for _i13 in xrange(_size9):
             _elem14 = {}
@@ -171,7 +159,7 @@ class ArtistHistory(object):
               _val21 = iprot.readI32();
               _elem14[_key20] = _val21
             iprot.readMapEnd()
-            self.histvalues.append(_elem14)
+            self.histvalue.append(_elem14)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -190,10 +178,10 @@ class ArtistHistory(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('ArtistHistory')
-    if self.histvalues is not None:
-      oprot.writeFieldBegin('histvalues', TType.LIST, 1)
-      oprot.writeListBegin(TType.MAP, len(self.histvalues))
-      for iter22 in self.histvalues:
+    if self.histvalue is not None:
+      oprot.writeFieldBegin('histvalue', TType.LIST, 1)
+      oprot.writeListBegin(TType.MAP, len(self.histvalue))
+      for iter22 in self.histvalue:
         oprot.writeMapBegin(TType.I32, TType.I32, len(iter22))
         for kiter23,viter24 in iter22.items():
           oprot.writeI32(kiter23)
@@ -209,8 +197,8 @@ class ArtistHistory(object):
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.histvalues is None:
-      raise TProtocol.TProtocolException(message='Required field histvalues is unset!')
+    if self.histvalue is None:
+      raise TProtocol.TProtocolException(message='Required field histvalue is unset!')
     return
 
 
@@ -228,33 +216,27 @@ class ArtistHistory(object):
 class ArtistSE(object):
   """
   Contains all the data about the artist we have in our db
-  For a new artist, stockvalue = curmarketvalue, and ArtistHistory would just
-  have an empty list. curforsale is the current amount available to be
+  For a new artist, stockvalue is base value, and ArtistHistory would just
+  have an empty list. num_remaining is the current amount available to be
   bought
 
   Attributes:
    - artist
-   - stockvalue
-   - curmarketprice
-   - curforsale
-   - history
+   - price
+   - num_remaining
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRUCT, 'artist', (Artist, Artist.thrift_spec), None, ), # 1
-    (2, TType.I32, 'stockvalue', None, None, ), # 2
-    (3, TType.I32, 'curmarketprice', None, None, ), # 3
-    (4, TType.I32, 'curforsale', None, None, ), # 4
-    (5, TType.STRUCT, 'history', (ArtistHistory, ArtistHistory.thrift_spec), None, ), # 5
+    (2, TType.I32, 'price', None, None, ), # 2
+    (3, TType.I32, 'num_remaining', None, None, ), # 3
   )
 
-  def __init__(self, artist=None, stockvalue=None, curmarketprice=None, curforsale=None, history=None,):
+  def __init__(self, artist=None, price=None, num_remaining=None,):
     self.artist = artist
-    self.stockvalue = stockvalue
-    self.curmarketprice = curmarketprice
-    self.curforsale = curforsale
-    self.history = history
+    self.price = price
+    self.num_remaining = num_remaining
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -273,23 +255,12 @@ class ArtistSE(object):
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.I32:
-          self.stockvalue = iprot.readI32();
+          self.price = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.I32:
-          self.curmarketprice = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      elif fid == 4:
-        if ftype == TType.I32:
-          self.curforsale = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      elif fid == 5:
-        if ftype == TType.STRUCT:
-          self.history = ArtistHistory()
-          self.history.read(iprot)
+          self.num_remaining = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -306,21 +277,13 @@ class ArtistSE(object):
       oprot.writeFieldBegin('artist', TType.STRUCT, 1)
       self.artist.write(oprot)
       oprot.writeFieldEnd()
-    if self.stockvalue is not None:
-      oprot.writeFieldBegin('stockvalue', TType.I32, 2)
-      oprot.writeI32(self.stockvalue)
+    if self.price is not None:
+      oprot.writeFieldBegin('price', TType.I32, 2)
+      oprot.writeI32(self.price)
       oprot.writeFieldEnd()
-    if self.curmarketprice is not None:
-      oprot.writeFieldBegin('curmarketprice', TType.I32, 3)
-      oprot.writeI32(self.curmarketprice)
-      oprot.writeFieldEnd()
-    if self.curforsale is not None:
-      oprot.writeFieldBegin('curforsale', TType.I32, 4)
-      oprot.writeI32(self.curforsale)
-      oprot.writeFieldEnd()
-    if self.history is not None:
-      oprot.writeFieldBegin('history', TType.STRUCT, 5)
-      self.history.write(oprot)
+    if self.num_remaining is not None:
+      oprot.writeFieldBegin('num_remaining', TType.I32, 3)
+      oprot.writeI32(self.num_remaining)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -328,12 +291,10 @@ class ArtistSE(object):
   def validate(self):
     if self.artist is None:
       raise TProtocol.TProtocolException(message='Required field artist is unset!')
-    if self.stockvalue is None:
-      raise TProtocol.TProtocolException(message='Required field stockvalue is unset!')
-    if self.curmarketprice is None:
-      raise TProtocol.TProtocolException(message='Required field curmarketprice is unset!')
-    if self.curforsale is None:
-      raise TProtocol.TProtocolException(message='Required field curforsale is unset!')
+    if self.price is None:
+      raise TProtocol.TProtocolException(message='Required field price is unset!')
+    if self.num_remaining is None:
+      raise TProtocol.TProtocolException(message='Required field num_remaining is unset!')
     return
 
 
@@ -475,6 +436,8 @@ class ArtistLFM(object):
       raise TProtocol.TProtocolException(message='Required field listeners is unset!')
     if self.plays is None:
       raise TProtocol.TProtocolException(message='Required field plays is unset!')
+    if self.similar is None:
+      raise TProtocol.TProtocolException(message='Required field similar is unset!')
     if self.bio is None:
       raise TProtocol.TProtocolException(message='Required field bio is unset!')
     return
@@ -755,32 +718,32 @@ class User(object):
 
 class UserData(object):
   """
-  Encapsulates all the user data. For a new user, curtrades and curstocks
-  will be empty lists. Since we're unsure of how leaderboards will work, that
+  Encapsulates all the user data. For a new user, trades and stocks will be
+  empty lists. Since we're unsure of how leaderboards will work, that
   part of the user data is currently probably in an odd format
 
   Attributes:
    - user
-   - curtrades
-   - curstocks
-   - curtrophies
+   - trades
+   - stocks
+   - trophies
    - leaderboardpos
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 1
-    (2, TType.LIST, 'curtrades', (TType.STRUCT,(Trade, Trade.thrift_spec)), None, ), # 2
-    (3, TType.LIST, 'curstocks', (TType.STRUCT,(ArtistSE, ArtistSE.thrift_spec)), None, ), # 3
-    (4, TType.LIST, 'curtrophies', (TType.STRUCT,(Trophy, Trophy.thrift_spec)), None, ), # 4
+    (2, TType.LIST, 'trades', (TType.STRUCT,(Trade, Trade.thrift_spec)), None, ), # 2
+    (3, TType.LIST, 'stocks', (TType.STRUCT,(ArtistSE, ArtistSE.thrift_spec)), None, ), # 3
+    (4, TType.LIST, 'trophies', (TType.STRUCT,(Trophy, Trophy.thrift_spec)), None, ), # 4
     (5, TType.I32, 'leaderboardpos', None, None, ), # 5
   )
 
-  def __init__(self, user=None, curtrades=None, curstocks=None, curtrophies=None, leaderboardpos=None,):
+  def __init__(self, user=None, trades=None, stocks=None, trophies=None, leaderboardpos=None,):
     self.user = user
-    self.curtrades = curtrades
-    self.curstocks = curstocks
-    self.curtrophies = curtrophies
+    self.trades = trades
+    self.stocks = stocks
+    self.trophies = trophies
     self.leaderboardpos = leaderboardpos
 
   def read(self, iprot):
@@ -800,34 +763,34 @@ class UserData(object):
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.LIST:
-          self.curtrades = []
+          self.trades = []
           (_etype35, _size32) = iprot.readListBegin()
           for _i36 in xrange(_size32):
             _elem37 = Trade()
             _elem37.read(iprot)
-            self.curtrades.append(_elem37)
+            self.trades.append(_elem37)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.LIST:
-          self.curstocks = []
+          self.stocks = []
           (_etype41, _size38) = iprot.readListBegin()
           for _i42 in xrange(_size38):
             _elem43 = ArtistSE()
             _elem43.read(iprot)
-            self.curstocks.append(_elem43)
+            self.stocks.append(_elem43)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
-          self.curtrophies = []
+          self.trophies = []
           (_etype47, _size44) = iprot.readListBegin()
           for _i48 in xrange(_size44):
             _elem49 = Trophy()
             _elem49.read(iprot)
-            self.curtrophies.append(_elem49)
+            self.trophies.append(_elem49)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -850,24 +813,24 @@ class UserData(object):
       oprot.writeFieldBegin('user', TType.STRUCT, 1)
       self.user.write(oprot)
       oprot.writeFieldEnd()
-    if self.curtrades is not None:
-      oprot.writeFieldBegin('curtrades', TType.LIST, 2)
-      oprot.writeListBegin(TType.STRUCT, len(self.curtrades))
-      for iter50 in self.curtrades:
+    if self.trades is not None:
+      oprot.writeFieldBegin('trades', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.trades))
+      for iter50 in self.trades:
         iter50.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
-    if self.curstocks is not None:
-      oprot.writeFieldBegin('curstocks', TType.LIST, 3)
-      oprot.writeListBegin(TType.STRUCT, len(self.curstocks))
-      for iter51 in self.curstocks:
+    if self.stocks is not None:
+      oprot.writeFieldBegin('stocks', TType.LIST, 3)
+      oprot.writeListBegin(TType.STRUCT, len(self.stocks))
+      for iter51 in self.stocks:
         iter51.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
-    if self.curtrophies is not None:
-      oprot.writeFieldBegin('curtrophies', TType.LIST, 4)
-      oprot.writeListBegin(TType.STRUCT, len(self.curtrophies))
-      for iter52 in self.curtrophies:
+    if self.trophies is not None:
+      oprot.writeFieldBegin('trophies', TType.LIST, 4)
+      oprot.writeListBegin(TType.STRUCT, len(self.trophies))
+      for iter52 in self.trophies:
         iter52.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
@@ -881,12 +844,12 @@ class UserData(object):
   def validate(self):
     if self.user is None:
       raise TProtocol.TProtocolException(message='Required field user is unset!')
-    if self.curtrades is None:
-      raise TProtocol.TProtocolException(message='Required field curtrades is unset!')
-    if self.curstocks is None:
-      raise TProtocol.TProtocolException(message='Required field curstocks is unset!')
-    if self.curtrophies is None:
-      raise TProtocol.TProtocolException(message='Required field curtrophies is unset!')
+    if self.trades is None:
+      raise TProtocol.TProtocolException(message='Required field trades is unset!')
+    if self.stocks is None:
+      raise TProtocol.TProtocolException(message='Required field stocks is unset!')
+    if self.trophies is None:
+      raise TProtocol.TProtocolException(message='Required field trophies is unset!')
     return
 
 
@@ -907,18 +870,18 @@ class UserInfo(object):
 
   Attributes:
    - user
-   - rectrades
+   - recent_trades
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 1
-    (2, TType.LIST, 'rectrades', (TType.STRUCT,(Trade, Trade.thrift_spec)), None, ), # 2
+    (2, TType.LIST, 'recent_trades', (TType.STRUCT,(Trade, Trade.thrift_spec)), None, ), # 2
   )
 
-  def __init__(self, user=None, rectrades=None,):
+  def __init__(self, user=None, recent_trades=None,):
     self.user = user
-    self.rectrades = rectrades
+    self.recent_trades = recent_trades
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -937,12 +900,12 @@ class UserInfo(object):
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.LIST:
-          self.rectrades = []
+          self.recent_trades = []
           (_etype56, _size53) = iprot.readListBegin()
           for _i57 in xrange(_size53):
             _elem58 = Trade()
             _elem58.read(iprot)
-            self.rectrades.append(_elem58)
+            self.recent_trades.append(_elem58)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -960,10 +923,10 @@ class UserInfo(object):
       oprot.writeFieldBegin('user', TType.STRUCT, 1)
       self.user.write(oprot)
       oprot.writeFieldEnd()
-    if self.rectrades is not None:
-      oprot.writeFieldBegin('rectrades', TType.LIST, 2)
-      oprot.writeListBegin(TType.STRUCT, len(self.rectrades))
-      for iter59 in self.rectrades:
+    if self.recent_trades is not None:
+      oprot.writeFieldBegin('recent_trades', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.recent_trades))
+      for iter59 in self.recent_trades:
         iter59.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
@@ -989,7 +952,7 @@ class UserInfo(object):
 
 class Transaction(object):
   """
-  Encapsulates the guarantee for purchase that is provided to the user.
+  Encapsulates the guarantee for purchase/sale that is provided to the user.
 
   Attributes:
    - elephant
@@ -1127,16 +1090,16 @@ class AccountException(TException):
 class AuthException(TException):
   """
   Attributes:
-   - why
+   - message
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'why', None, None, ), # 1
+    (1, TType.STRING, 'message', None, None, ), # 1
   )
 
-  def __init__(self, why=None,):
-    self.why = why
+  def __init__(self, message=None,):
+    self.message = message
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1149,7 +1112,7 @@ class AuthException(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.why = iprot.readString();
+          self.message = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -1162,16 +1125,16 @@ class AuthException(TException):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('AuthException')
-    if self.why is not None:
-      oprot.writeFieldBegin('why', TType.STRING, 1)
-      oprot.writeString(self.why)
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.why is None:
-      raise TProtocol.TProtocolException(message='Required field why is unset!')
+    if self.message is None:
+      raise TProtocol.TProtocolException(message='Required field message is unset!')
     return
 
 
@@ -1192,16 +1155,16 @@ class AuthException(TException):
 class SearchException(TException):
   """
   Attributes:
-   - why
+   - message
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'why', None, None, ), # 1
+    (1, TType.STRING, 'message', None, None, ), # 1
   )
 
-  def __init__(self, why=None,):
-    self.why = why
+  def __init__(self, message=None,):
+    self.message = message
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1214,7 +1177,7 @@ class SearchException(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.why = iprot.readString();
+          self.message = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -1227,16 +1190,16 @@ class SearchException(TException):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('SearchException')
-    if self.why is not None:
-      oprot.writeFieldBegin('why', TType.STRING, 1)
-      oprot.writeString(self.why)
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.why is None:
-      raise TProtocol.TProtocolException(message='Required field why is unset!')
+    if self.message is None:
+      raise TProtocol.TProtocolException(message='Required field message is unset!')
     return
 
 
@@ -1257,16 +1220,16 @@ class SearchException(TException):
 class TransactionException(TException):
   """
   Attributes:
-   - why
+   - message
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'why', None, None, ), # 1
+    (1, TType.STRING, 'message', None, None, ), # 1
   )
 
-  def __init__(self, why=None,):
-    self.why = why
+  def __init__(self, message=None,):
+    self.message = message
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1279,7 +1242,7 @@ class TransactionException(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.why = iprot.readString();
+          self.message = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -1292,16 +1255,16 @@ class TransactionException(TException):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('TransactionException')
-    if self.why is not None:
-      oprot.writeFieldBegin('why', TType.STRING, 1)
-      oprot.writeString(self.why)
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.why is None:
-      raise TProtocol.TProtocolException(message='Required field why is unset!')
+    if self.message is None:
+      raise TProtocol.TProtocolException(message='Required field message is unset!')
     return
 
 
@@ -1322,16 +1285,16 @@ class TransactionException(TException):
 class UserException(TException):
   """
   Attributes:
-   - why
+   - message
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'why', None, None, ), # 1
+    (1, TType.STRING, 'message', None, None, ), # 1
   )
 
-  def __init__(self, why=None,):
-    self.why = why
+  def __init__(self, message=None,):
+    self.message = message
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1344,7 +1307,7 @@ class UserException(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.why = iprot.readString();
+          self.message = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -1357,16 +1320,16 @@ class UserException(TException):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('UserException')
-    if self.why is not None:
-      oprot.writeFieldBegin('why', TType.STRING, 1)
-      oprot.writeString(self.why)
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.why is None:
-      raise TProtocol.TProtocolException(message='Required field why is unset!')
+    if self.message is None:
+      raise TProtocol.TProtocolException(message='Required field message is unset!')
     return
 
 

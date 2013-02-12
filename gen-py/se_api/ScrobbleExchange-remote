@@ -25,6 +25,8 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print 'Functions:'
   print '  string login(string token)'
   print '  Artist getArtist(Artist artist)'
+  print '  Artist getLightArtist(Artist artist)'
+  print '  ArtistHistory getArtistHistory(Artist artist)'
   print '  ArtistSE getArtistSE(Artist artist)'
   print '  ArtistLFM getArtistLFM(Artist artist)'
   print '   searchArtist(string text)'
@@ -99,6 +101,18 @@ elif cmd == 'getArtist':
     print 'getArtist requires 1 args'
     sys.exit(1)
   pp.pprint(client.getArtist(eval(args[0]),))
+
+elif cmd == 'getLightArtist':
+  if len(args) != 1:
+    print 'getLightArtist requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getLightArtist(eval(args[0]),))
+
+elif cmd == 'getArtistHistory':
+  if len(args) != 1:
+    print 'getArtistHistory requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getArtistHistory(eval(args[0]),))
 
 elif cmd == 'getArtistSE':
   if len(args) != 1:

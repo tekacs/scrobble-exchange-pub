@@ -28,7 +28,7 @@ struct Artist {
 
 /** Keeps a list of artist values in time
     Ordered list by date from oldest to newest
-    Format is <date,value>, both integers
+    Format is <date,price>, both integers
     Timeonmarket might help in drawing the graphs (Unsure?) */
 struct ArtistHistory {
     1: required list<map<i32,i32>> histvalue
@@ -36,15 +36,13 @@ struct ArtistHistory {
 }
 
 /** Contains all the data about the artist we have in our db
-    For a new artist, stockvalue = curmarketvalue, and ArtistHistory would just 
-    have an empty list. curforsale is the current amount available to be 
+    For a new artist, stockvalue is base value, and ArtistHistory would just 
+    have an empty list. num_remaining is the current amount available to be 
     bought */ 
 struct ArtistSE {
     1: required Artist artist
-    2: required i32 stockvalue
-    3: required i32 curmarketprice
-    4: required i32 curforsale
-    5: optional ArtistHistory history
+    2: required i32 price
+    3: required i32 num_remaining
 }
 
 /** Essentially encapsulates the data from last.fm's artist.getInfo. It's 
@@ -54,7 +52,7 @@ struct ArtistLFM {
     2: required bool streamable
     3: required i32 listeners
     4: required i32 plays
-    5: optional list<Artist> similar
+    5: required list<Artist> similar
     6: required string bio
 }
 
@@ -83,8 +81,8 @@ struct User {
     2: required i32 money
 }
 
-/** Encapsulates all the user data. For a new user, curtrades and curstocks 
-    will be empty lists. Since we're unsure of how leaderboards will work, that 
+/** Encapsulates all the user data. For a new user, trades and stocks will be 
+    empty lists. Since we're unsure of how leaderboards will work, that 
     part of the user data is currently probably in an odd format */
 struct UserData {
     1: required User user
@@ -118,19 +116,19 @@ exception AccountException {
 }
 
 exception AuthException {
-    1: required string why
+    1: required string message
 }
 
 exception SearchException {
-    1: required string why
+    1: required string message
 }
 
 exception TransactionException {
-    1: required string why
+    1: required string message
 }
 
 exception UserException {
-    1: required string why
+    1: required string message
 }
 
 ## Service definition
@@ -148,13 +146,17 @@ AccountException accexp),
     # Data retrieval
     # Artists
     
-    /** Returns basic artist info. Artist string can be either the name, or the 
-        musicbrainz ID */
-    Artist getArtist (1: required string artist) throws (1: SearchException 
+    /** Returns basic artist info. If either the artist or the mbid is unknown, 
+        then the empty string '' should be sent */
+    Artist getArtist (1: required Artist artist) throws (1: SearchException 
 searchexp),
     
     /** Returns only MusicBrainz ID and name */
-    Artist getLightArtist (1: required string artist) throws (1: 
+    Artist getLightArtist (1: required Artist artist) throws (1: 
+SearchException searchexp),
+    
+    /** Returns a list of tuples of the price of the artist over time */
+    ArtistHistory getArtistHistory (1: required Artist artist) throws (1: 
 SearchException searchexp),
     
     /** Returns the data from our db for the artist. 
