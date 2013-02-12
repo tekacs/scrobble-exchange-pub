@@ -89,21 +89,22 @@ struct User {
     part of the user data is currently probably in an odd format */
 struct UserData {
     1: required User user
-    2: required list<Trade> curtrades
-    3: required list<ArtistSE> curstocks
-    4: required list<Trophy> curtrophies
+    2: required list<Trade> trades
+    3: required list<ArtistSE> stocks
+    4: required list<Trophy> trophies
     5: optional i32 leaderboardpos
 }
 
 /** Encapsulates all the user info for profile pages */
 struct UserInfo {
     1: required User user
-    2: optional list<Trade> rectrades
+    2: optional list<Trade> recent_trades
 }
 
 # Transaction
 
-/** Encapsulates the guarantee for purchase that is provided to the user. */
+/** Encapsulates the guarantee for purchase/sale that is provided to the user. 
+*/
 struct Transaction {
     1: required string elephant
     2: required i32 value
