@@ -223,10 +223,8 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    if result.authexp is not None:
-      raise result.authexp
-    if result.accexp is not None:
-      raise result.accexp
+    if result.lexp is not None:
+      raise result.lexp
     raise TApplicationException(TApplicationException.MISSING_RESULT, "login failed: unknown result");
 
   def getArtist(self, artist):
@@ -806,10 +804,8 @@ class Processor(Iface, TProcessor):
     result = login_result()
     try:
       result.success = self._handler.login(args.token)
-    except AuthException as authexp:
-      result.authexp = authexp
-    except AccountException as accexp:
-      result.accexp = accexp
+    except LoginException as lexp:
+      result.lexp = lexp
     oprot.writeMessageBegin("login", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -1092,20 +1088,17 @@ class login_result(object):
   """
   Attributes:
    - success
-   - authexp
-   - accexp
+   - lexp
   """
 
   thrift_spec = (
     (0, TType.STRING, 'success', None, None, ), # 0
-    (1, TType.STRUCT, 'authexp', (AuthException, AuthException.thrift_spec), None, ), # 1
-    (2, TType.STRUCT, 'accexp', (AccountException, AccountException.thrift_spec), None, ), # 2
+    (1, TType.STRUCT, 'lexp', (LoginException, LoginException.thrift_spec), None, ), # 1
   )
 
-  def __init__(self, success=None, authexp=None, accexp=None,):
+  def __init__(self, success=None, lexp=None,):
     self.success = success
-    self.authexp = authexp
-    self.accexp = accexp
+    self.lexp = lexp
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1123,14 +1116,8 @@ class login_result(object):
           iprot.skip(ftype)
       elif fid == 1:
         if ftype == TType.STRUCT:
-          self.authexp = AuthException()
-          self.authexp.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.accexp = AccountException()
-          self.accexp.read(iprot)
+          self.lexp = LoginException()
+          self.lexp.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -1147,13 +1134,9 @@ class login_result(object):
       oprot.writeFieldBegin('success', TType.STRING, 0)
       oprot.writeString(self.success)
       oprot.writeFieldEnd()
-    if self.authexp is not None:
-      oprot.writeFieldBegin('authexp', TType.STRUCT, 1)
-      self.authexp.write(oprot)
-      oprot.writeFieldEnd()
-    if self.accexp is not None:
-      oprot.writeFieldBegin('accexp', TType.STRUCT, 2)
-      self.accexp.write(oprot)
+    if self.lexp is not None:
+      oprot.writeFieldBegin('lexp', TType.STRUCT, 1)
+      self.lexp.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
