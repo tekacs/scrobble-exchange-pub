@@ -35,15 +35,18 @@ try:
         # user_data = __portfolio(request.session['user'])
         # user_data.worth = sum(se_api.getArtistData(x).stockvalue
         #                         for x in user_data.curstocks)
-        # user_data = []
-        # user_data.stocks = ['Coldplay', 'Maroon 5']
-        # user_data.worth = 51000
-        # return render_to_response('index.html',{'user_data': user_data})
-        return render_to_response('index.html',{})
+        user_data = models.UserData()
+        user_data.stocks = ['Coldplay', 'Maroon 5']
+        user_data.worth = 51000
+        return render_to_response('index.html',{'user_data': user_data})
 
     def artists(request):
         # artists = se_api.lastfm.chart.get_top_artists()
-        artistlist = ['Iron Maiden', 'Foo Fighters']
+        artist1 = models.Artist()
+        artist1.name = 'Iron Maiden'
+        artist2 = models.Artist()
+        artist2.name = 'Foo Fighters'
+        artistlist = [artist1, artist2]
         return render_to_response('artists.html', {'artistlist': artistlist})
 
     def leaderboards(request):
