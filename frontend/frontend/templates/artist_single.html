@@ -33,7 +33,7 @@
 {% block body_additional_js %}
     <script type="text/javascript" src="{% static "js/artist.js" %}"></script>
 	<script type="text/javascript">
-		Artist.name = '{{name}}';
+		Artist.name = '{{artist.name}}';
 		Artist.drawGraph();
 	</script>
 {% endblock body_additional_js %}

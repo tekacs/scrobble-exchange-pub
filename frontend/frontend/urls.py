@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^sell/', 'frontend.views.sell', name='sell'),
     
     # TODO: need to fix for artists with spaces in names
-    url(r'^artist/(\w+)/$', 'frontend.views.artist_single', name ='artist_single'),
+    url(r'^artist/([\w%\s]+)/$', 'frontend.views.artist_single', name ='artist_single'),
 
     # (r'^', include(django_url_framework.site.urls) ),
 )
