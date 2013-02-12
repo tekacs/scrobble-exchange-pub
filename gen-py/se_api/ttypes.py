@@ -674,83 +674,6 @@ class Trophy(object):
   def __ne__(self, other):
     return not (self == other)
 
-class UserAuth(object):
-  """
-  (I think this is how the last.fm API works. Not sure if we care about
-  whether they're a subscriber or not though)
-
-  Attributes:
-   - key
-   - subscriber
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'key', None, None, ), # 1
-    (2, TType.BOOL, 'subscriber', None, None, ), # 2
-  )
-
-  def __init__(self, key=None, subscriber=None,):
-    self.key = key
-    self.subscriber = subscriber
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.key = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.BOOL:
-          self.subscriber = iprot.readBool();
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('UserAuth')
-    if self.key is not None:
-      oprot.writeFieldBegin('key', TType.STRING, 1)
-      oprot.writeString(self.key)
-      oprot.writeFieldEnd()
-    if self.subscriber is not None:
-      oprot.writeFieldBegin('subscriber', TType.BOOL, 2)
-      oprot.writeBool(self.subscriber)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    if self.key is None:
-      raise TProtocol.TProtocolException(message='Required field key is unset!')
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
 class User(object):
   """
   Basic user info. This is all that is needed for most pages where the user
@@ -758,20 +681,17 @@ class User(object):
 
   Attributes:
    - name
-   - auth
    - money
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRUCT, 'auth', (UserAuth, UserAuth.thrift_spec), None, ), # 2
-    (3, TType.I32, 'money', None, None, ), # 3
+    (2, TType.I32, 'money', None, None, ), # 2
   )
 
-  def __init__(self, name=None, auth=None, money=None,):
+  def __init__(self, name=None, money=None,):
     self.name = name
-    self.auth = auth
     self.money = money
 
   def read(self, iprot):
@@ -789,12 +709,6 @@ class User(object):
         else:
           iprot.skip(ftype)
       elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.auth = UserAuth()
-          self.auth.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 3:
         if ftype == TType.I32:
           self.money = iprot.readI32();
         else:
@@ -813,12 +727,8 @@ class User(object):
       oprot.writeFieldBegin('name', TType.STRING, 1)
       oprot.writeString(self.name)
       oprot.writeFieldEnd()
-    if self.auth is not None:
-      oprot.writeFieldBegin('auth', TType.STRUCT, 2)
-      self.auth.write(oprot)
-      oprot.writeFieldEnd()
     if self.money is not None:
-      oprot.writeFieldBegin('money', TType.I32, 3)
+      oprot.writeFieldBegin('money', TType.I32, 2)
       oprot.writeI32(self.money)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -827,8 +737,6 @@ class User(object):
   def validate(self):
     if self.name is None:
       raise TProtocol.TProtocolException(message='Required field name is unset!')
-    if self.auth is None:
-      raise TProtocol.TProtocolException(message='Required field auth is unset!')
     if self.money is None:
       raise TProtocol.TProtocolException(message='Required field money is unset!')
     return
@@ -993,25 +901,111 @@ class UserData(object):
   def __ne__(self, other):
     return not (self == other)
 
+class UserInfo(object):
+  """
+  Encapsulates all the user info for profile pages
+
+  Attributes:
+   - user
+   - rectrades
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 1
+    (2, TType.LIST, 'rectrades', (TType.STRUCT,(Trade, Trade.thrift_spec)), None, ), # 2
+  )
+
+  def __init__(self, user=None, rectrades=None,):
+    self.user = user
+    self.rectrades = rectrades
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.user = User()
+          self.user.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.rectrades = []
+          (_etype56, _size53) = iprot.readListBegin()
+          for _i57 in xrange(_size53):
+            _elem58 = Trade()
+            _elem58.read(iprot)
+            self.rectrades.append(_elem58)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('UserInfo')
+    if self.user is not None:
+      oprot.writeFieldBegin('user', TType.STRUCT, 1)
+      self.user.write(oprot)
+      oprot.writeFieldEnd()
+    if self.rectrades is not None:
+      oprot.writeFieldBegin('rectrades', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.rectrades))
+      for iter59 in self.rectrades:
+        iter59.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.user is None:
+      raise TProtocol.TProtocolException(message='Required field user is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class Transaction(object):
   """
   Encapsulates the guarantee for purchase that is provided to the user.
 
   Attributes:
-   - token
+   - elephant
    - value
    - time
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'token', None, None, ), # 1
+    (1, TType.STRING, 'elephant', None, None, ), # 1
     (2, TType.I32, 'value', None, None, ), # 2
     (3, TType.I32, 'time', None, None, ), # 3
   )
 
-  def __init__(self, token=None, value=None, time=None,):
-    self.token = token
+  def __init__(self, elephant=None, value=None, time=None,):
+    self.elephant = elephant
     self.value = value
     self.time = time
 
@@ -1026,7 +1020,7 @@ class Transaction(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.token = iprot.readString();
+          self.elephant = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -1049,9 +1043,9 @@ class Transaction(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('Transaction')
-    if self.token is not None:
-      oprot.writeFieldBegin('token', TType.STRING, 1)
-      oprot.writeString(self.token)
+    if self.elephant is not None:
+      oprot.writeFieldBegin('elephant', TType.STRING, 1)
+      oprot.writeString(self.elephant)
       oprot.writeFieldEnd()
     if self.value is not None:
       oprot.writeFieldBegin('value', TType.I32, 2)
@@ -1065,8 +1059,8 @@ class Transaction(object):
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.token is None:
-      raise TProtocol.TProtocolException(message='Required field token is unset!')
+    if self.elephant is None:
+      raise TProtocol.TProtocolException(message='Required field elephant is unset!')
     if self.value is None:
       raise TProtocol.TProtocolException(message='Required field value is unset!')
     if self.time is None:

@@ -20,10 +20,9 @@ except:
 class Iface(object):
   def login(self, token):
     """
-    If successful, returns a User object with their name and session token.
-    If not, returns an AuthException. AccountException is returned if
-    account data is incorrect or doesn't exist, and should be handled
-    appropriately
+    If successful, returns the user token. If not, returns an
+    AuthException. AccountException is returned if account data is
+    incorrect or doesn't exist, and should be handled appropriately
 
     Parameters:
      - token
@@ -95,8 +94,17 @@ class Iface(object):
 
   def getUserData(self, user):
     """
-    Returns extended user data. User string must be the username of the
-    user whose data you wish to return
+    Returns extended user data for the current user
+
+    Parameters:
+     - user
+    """
+    pass
+
+  def getUserInfo(self, user):
+    """
+    Returns extended user data for the user in the string. Mostly, used for
+    profile pages
 
     Parameters:
      - user
@@ -167,10 +175,9 @@ class Client(Iface):
 
   def login(self, token):
     """
-    If successful, returns a User object with their name and session token.
-    If not, returns an AuthException. AccountException is returned if
-    account data is incorrect or doesn't exist, and should be handled
-    appropriately
+    If successful, returns the user token. If not, returns an
+    AuthException. AccountException is returned if account data is
+    incorrect or doesn't exist, and should be handled appropriately
 
     Parameters:
      - token
@@ -416,8 +423,7 @@ class Client(Iface):
 
   def getUserData(self, user):
     """
-    Returns extended user data. User string must be the username of the
-    user whose data you wish to return
+    Returns extended user data for the current user
 
     Parameters:
      - user
@@ -448,6 +454,41 @@ class Client(Iface):
     if result.uexp is not None:
       raise result.uexp
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserData failed: unknown result");
+
+  def getUserInfo(self, user):
+    """
+    Returns extended user data for the user in the string. Mostly, used for
+    profile pages
+
+    Parameters:
+     - user
+    """
+    self.send_getUserInfo(user)
+    return self.recv_getUserInfo()
+
+  def send_getUserInfo(self, user):
+    self._oprot.writeMessageBegin('getUserInfo', TMessageType.CALL, self._seqid)
+    args = getUserInfo_args()
+    args.user = user
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getUserInfo(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getUserInfo_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.uexp is not None:
+      raise result.uexp
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserInfo failed: unknown result");
 
   def getTopUsers(self, n, league):
     """
@@ -648,6 +689,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getTopArtists"] = Processor.process_getTopArtists
     self._processMap["getTradedArtists"] = Processor.process_getTradedArtists
     self._processMap["getUserData"] = Processor.process_getUserData
+    self._processMap["getUserInfo"] = Processor.process_getUserInfo
     self._processMap["getTopUsers"] = Processor.process_getTopUsers
     self._processMap["getNearUsers"] = Processor.process_getNearUsers
     self._processMap["getTransaction"] = Processor.process_getTransaction
@@ -773,6 +815,20 @@ class Processor(Iface, TProcessor):
     except UserException as uexp:
       result.uexp = uexp
     oprot.writeMessageBegin("getUserData", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getUserInfo(self, seqid, iprot, oprot):
+    args = getUserInfo_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getUserInfo_result()
+    try:
+      result.success = self._handler.getUserInfo(args.user)
+    except UserException as uexp:
+      result.uexp = uexp
+    oprot.writeMessageBegin("getUserInfo", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -925,7 +981,7 @@ class login_result(object):
   """
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (User, User.thrift_spec), None, ), # 0
+    (0, TType.STRING, 'success', None, None, ), # 0
     (1, TType.STRUCT, 'authexp', (AuthException, AuthException.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 'accexp', (AccountException, AccountException.thrift_spec), None, ), # 2
   )
@@ -945,9 +1001,8 @@ class login_result(object):
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = User()
-          self.success.read(iprot)
+        if ftype == TType.STRING:
+          self.success = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 1:
@@ -973,8 +1028,8 @@ class login_result(object):
       return
     oprot.writeStructBegin('login_result')
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
+      oprot.writeFieldBegin('success', TType.STRING, 0)
+      oprot.writeString(self.success)
       oprot.writeFieldEnd()
     if self.authexp is not None:
       oprot.writeFieldBegin('authexp', TType.STRUCT, 1)
@@ -1500,11 +1555,11 @@ class searchArtist_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype56, _size53) = iprot.readListBegin()
-          for _i57 in xrange(_size53):
-            _elem58 = Artist()
-            _elem58.read(iprot)
-            self.success.append(_elem58)
+          (_etype63, _size60) = iprot.readListBegin()
+          for _i64 in xrange(_size60):
+            _elem65 = Artist()
+            _elem65.read(iprot)
+            self.success.append(_elem65)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1527,8 +1582,8 @@ class searchArtist_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter59 in self.success:
-        iter59.write(oprot)
+      for iter66 in self.success:
+        iter66.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.searchexp is not None:
@@ -1652,11 +1707,11 @@ class getTopArtists_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype63, _size60) = iprot.readListBegin()
-          for _i64 in xrange(_size60):
-            _elem65 = Artist()
-            _elem65.read(iprot)
-            self.success.append(_elem65)
+          (_etype70, _size67) = iprot.readListBegin()
+          for _i71 in xrange(_size67):
+            _elem72 = Artist()
+            _elem72.read(iprot)
+            self.success.append(_elem72)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1673,8 +1728,8 @@ class getTopArtists_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter66 in self.success:
-        iter66.write(oprot)
+      for iter73 in self.success:
+        iter73.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -1782,11 +1837,11 @@ class getTradedArtists_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype70, _size67) = iprot.readListBegin()
-          for _i71 in xrange(_size67):
-            _elem72 = Artist()
-            _elem72.read(iprot)
-            self.success.append(_elem72)
+          (_etype77, _size74) = iprot.readListBegin()
+          for _i78 in xrange(_size74):
+            _elem79 = Artist()
+            _elem79.read(iprot)
+            self.success.append(_elem79)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1803,8 +1858,8 @@ class getTradedArtists_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter73 in self.success:
-        iter73.write(oprot)
+      for iter80 in self.success:
+        iter80.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -1833,7 +1888,7 @@ class getUserData_args(object):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'user', None, None, ), # 1
+    (1, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 1
   )
 
   def __init__(self, user=None,):
@@ -1849,8 +1904,9 @@ class getUserData_args(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.STRING:
-          self.user = iprot.readString();
+        if ftype == TType.STRUCT:
+          self.user = User()
+          self.user.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -1864,8 +1920,8 @@ class getUserData_args(object):
       return
     oprot.writeStructBegin('getUserData_args')
     if self.user is not None:
-      oprot.writeFieldBegin('user', TType.STRING, 1)
-      oprot.writeString(self.user)
+      oprot.writeFieldBegin('user', TType.STRUCT, 1)
+      self.user.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1934,6 +1990,141 @@ class getUserData_result(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('getUserData_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.uexp is not None:
+      oprot.writeFieldBegin('uexp', TType.STRUCT, 1)
+      self.uexp.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getUserInfo_args(object):
+  """
+  Attributes:
+   - user
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'user', None, None, ), # 1
+  )
+
+  def __init__(self, user=None,):
+    self.user = user
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.user = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getUserInfo_args')
+    if self.user is not None:
+      oprot.writeFieldBegin('user', TType.STRING, 1)
+      oprot.writeString(self.user)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.user is None:
+      raise TProtocol.TProtocolException(message='Required field user is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getUserInfo_result(object):
+  """
+  Attributes:
+   - success
+   - uexp
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (UserInfo, UserInfo.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'uexp', (UserException, UserException.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, uexp=None,):
+    self.success = success
+    self.uexp = uexp
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = UserInfo()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.uexp = UserException()
+          self.uexp.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getUserInfo_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
@@ -2064,11 +2255,11 @@ class getTopUsers_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype77, _size74) = iprot.readListBegin()
-          for _i78 in xrange(_size74):
-            _elem79 = User()
-            _elem79.read(iprot)
-            self.success.append(_elem79)
+          (_etype84, _size81) = iprot.readListBegin()
+          for _i85 in xrange(_size81):
+            _elem86 = User()
+            _elem86.read(iprot)
+            self.success.append(_elem86)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2091,8 +2282,8 @@ class getTopUsers_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter80 in self.success:
-        iter80.write(oprot)
+      for iter87 in self.success:
+        iter87.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.uexp is not None:
@@ -2207,11 +2398,11 @@ class getNearUsers_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype84, _size81) = iprot.readListBegin()
-          for _i85 in xrange(_size81):
-            _elem86 = User()
-            _elem86.read(iprot)
-            self.success.append(_elem86)
+          (_etype91, _size88) = iprot.readListBegin()
+          for _i92 in xrange(_size88):
+            _elem93 = User()
+            _elem93.read(iprot)
+            self.success.append(_elem93)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2234,8 +2425,8 @@ class getNearUsers_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter87 in self.success:
-        iter87.write(oprot)
+      for iter94 in self.success:
+        iter94.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.uexp is not None:

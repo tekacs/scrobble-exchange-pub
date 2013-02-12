@@ -27,13 +27,6 @@ struct Artist {
     4: optional map<string,string> imageurl
 }
 
-/** Value of an artist at a single point in time
-    Date is assumed to be in UNIX time format
-struct ArtistHistoryValue {
-    1: required i32 date
-    2: required i32 value
-} */
-
 /** Keeps a list of artist values in time
     Ordered list by date from oldest to newest
     Format is <date,value>, both integers
@@ -84,19 +77,11 @@ struct Trophy {
     3: optional string challenge
 }
 
-/** (I think this is how the last.fm API works. Not sure if we care about 
-    whether they're a subscriber or not though) */
-struct UserAuth {
-    1: required string key
-    2: optional bool subscriber
-}
-
 /** Basic user info. This is all that is needed for most pages where the user 
     isn't the primary content. */
 struct User {
     1: required string name
-    2: required UserAuth auth
-    3: required i32 money
+    2: required i32 money
 }
 
 /** Encapsulates all the user data. For a new user, curtrades and curstocks 
@@ -110,11 +95,17 @@ struct UserData {
     5: optional i32 leaderboardpos
 }
 
+/** Encapsulates all the user info for profile pages */
+struct UserInfo {
+    1: required User user
+    2: optional list<Trade> rectrades
+}
+
 # Transaction
 
 /** Encapsulates the guarantee for purchase that is provided to the user. */
 struct Transaction {
-    1: required string token
+    1: required string elephant
     2: required i32 value
     3: required i32 time
 }
@@ -148,11 +139,10 @@ service ScrobbleExchange {
    
     # Login
     
-    /** If successful, returns a User object with their name and session token.
-        If not, returns an AuthException. AccountException is returned if 
-        account data is incorrect or doesn't exist, and should be handled 
-        appropriately */
-    User login(1: required string token) throws (1: AuthException authexp, 2: 
+    /** If successful, returns the user token. If not, returns an 
+        AuthException. AccountException is returned if account data is 
+        incorrect or doesn't exist, and should be handled appropriately */
+    string login(1: required string token) throws (1: AuthException authexp, 2: 
 AccountException accexp),
     
     # Data retrieval
@@ -190,9 +180,13 @@ SearchException searchexp),
     
     # User
    
-    /** Returns extended user data. User string must be the username of the 
-        user whose data you wish to return */
-    UserData getUserData (1: required string user) throws (1: UserException 
+    /** Returns extended user data for the current user */
+    UserData getUserData (1: required User user) throws (1: UserException 
+uexp),
+    
+    /** Returns extended user data for the user in the string. Mostly, used for 
+        profile pages */
+    UserInfo getUserInfo (1: required string user) throws (1: UserException 
 uexp),
     
     /** Returns the n top users by decreasing value in the given league. */

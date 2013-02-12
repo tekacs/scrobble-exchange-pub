@@ -23,14 +23,15 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print 'Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] function [arg1 [arg2...]]'
   print ''
   print 'Functions:'
-  print '  User login(string token)'
+  print '  string login(string token)'
   print '  Artist getArtist(Artist artist)'
   print '  ArtistSE getArtistSE(Artist artist)'
   print '  ArtistLFM getArtistLFM(Artist artist)'
   print '   searchArtist(string text)'
   print '   getTopArtists(i32 n, string tag)'
   print '   getTradedArtists(i32 n)'
-  print '  UserData getUserData(string user)'
+  print '  UserData getUserData(User user)'
+  print '  UserInfo getUserInfo(string user)'
   print '   getTopUsers(i32 n, string league)'
   print '   getNearUsers(string user)'
   print '  Transaction getTransaction(Artist artist)'
@@ -133,7 +134,13 @@ elif cmd == 'getUserData':
   if len(args) != 1:
     print 'getUserData requires 1 args'
     sys.exit(1)
-  pp.pprint(client.getUserData(args[0],))
+  pp.pprint(client.getUserData(eval(args[0]),))
+
+elif cmd == 'getUserInfo':
+  if len(args) != 1:
+    print 'getUserInfo requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getUserInfo(args[0],))
 
 elif cmd == 'getTopUsers':
   if len(args) != 2:
