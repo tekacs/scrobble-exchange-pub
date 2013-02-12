@@ -1,6 +1,9 @@
 ### Other
 venv
 
+# No css files stored in repo: see readme.md in css folder for info
+*.css
+
 ### Mac OSX
 ### https://github.com/github/gitignore/blob/master/Global/OSX.gitignore
 
