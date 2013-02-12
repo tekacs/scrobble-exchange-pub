@@ -18,11 +18,15 @@ except:
 
 
 class Iface(object):
+  def apikey(self, ):
+    """
+    Returns the SE API key for sending to last.fm
+    """
+    pass
+
   def login(self, token):
     """
-    If successful, returns the user token. If not, returns an
-    AuthException. AccountException is returned if account data is
-    incorrect or doesn't exist, and should be handled appropriately
+    If successful, returns the user token.
 
     Parameters:
      - token
@@ -32,7 +36,7 @@ class Iface(object):
   def getArtist(self, artist):
     """
     Returns basic artist info. If either the artist or the mbid is unknown,
-    then the empty string '' should be sent
+    then the empty string should be sent
 
     Parameters:
      - artist
@@ -41,7 +45,8 @@ class Iface(object):
 
   def getLightArtist(self, artist):
     """
-    Returns only MusicBrainz ID and name
+    Returns only MusicBrainz ID and name. If either artist or mbid are
+    unknown, then the empty string should be sent
 
     Parameters:
      - artist
@@ -50,7 +55,8 @@ class Iface(object):
 
   def getArtistHistory(self, artist):
     """
-    Returns a list of tuples of the price of the artist over time
+    Returns a list of tuples of the price of the artist over time. For new
+    artists the empty list is returned.
 
     Parameters:
      - artist
@@ -59,10 +65,9 @@ class Iface(object):
 
   def getArtistSE(self, artist):
     """
-    Returns the data from our db for the artist.
-    Assumes that if artist isn't in the DB, then it gets pulled in
-    on-demand and so will always return some data.
-    Artist string can be either the name, or the musicbrainz ID
+    Returns the data from our db for the artist. If the artist isn't there,
+    the data gets pulled in on-demand. If either artist or mbid are
+    unknown, then the empty string should be sent
 
     Parameters:
      - artist
@@ -71,8 +76,8 @@ class Iface(object):
 
   def getArtistLFM(self, artist):
     """
-    Returns the contextual artist info from last.fm for the artist
-    Artist string can be either the name or the musicbrainz ID
+    Returns the artist info from last.fm for the artist. If either artist
+    or mbid are unknown, then the empty string should be sent
 
     Parameters:
      - artist
@@ -91,9 +96,9 @@ class Iface(object):
 
   def getTopArtists(self, n, tag):
     """
-    Returns a list of the n top artists by decreasing value. By default, tag
-    should have a value of '' and only be used if you want to limit the
-    top lists to a certain tag.
+    Returns a list of the n top artists by decreasing value. By default,
+    tag should be the empty string, and only used if you want specific tag
+    access.
 
     Parameters:
      - n
@@ -119,13 +124,13 @@ class Iface(object):
     """
     pass
 
-  def getUserInfo(self, user):
+  def getUserInfo(self, userstr):
     """
     Returns extended user data for the user in the string. Mostly, used for
     profile pages
 
     Parameters:
-     - user
+     - userstr
     """
     pass
 
@@ -142,7 +147,7 @@ class Iface(object):
   def getNearUsers(self, user):
     """
     Returns a list of 10 users with 4 above and 5 below in the leaderboard
-    compared to the user provided
+    compared to the user provided, including the user's position
 
     Parameters:
      - user
@@ -151,7 +156,7 @@ class Iface(object):
 
   def getTransaction(self, artist):
     """
-    Returns the guarantee token to the front end
+    Returns the guarantee token (elephant) to the front end
 
     Parameters:
      - artist
@@ -161,9 +166,7 @@ class Iface(object):
   def buyArtist(self, transaction, user):
     """
     Buys artist for user, and returns the new value of that stock in the
-    game. Throws a transaction exception if something goes wrong while
-    buying or the user can't afford to buy the artist.
-    Throws user exception if the user already owns the stock
+    game.
 
     Parameters:
      - transaction
@@ -173,9 +176,7 @@ class Iface(object):
 
   def sellArtist(self, transaction, user):
     """
-    Sells artist for user, and returns the new value of that artist. User
-    exception is thrown if the user isn't allowed to sell or doesn't own
-    that artist
+    Sells artist for user, and returns the new value of that artist.
 
     Parameters:
      - transaction
@@ -191,11 +192,37 @@ class Client(Iface):
       self._oprot = oprot
     self._seqid = 0
 
+  def apikey(self, ):
+    """
+    Returns the SE API key for sending to last.fm
+    """
+    self.send_apikey()
+    return self.recv_apikey()
+
+  def send_apikey(self, ):
+    self._oprot.writeMessageBegin('apikey', TMessageType.CALL, self._seqid)
+    args = apikey_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_apikey(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = apikey_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "apikey failed: unknown result");
+
   def login(self, token):
     """
-    If successful, returns the user token. If not, returns an
-    AuthException. AccountException is returned if account data is
-    incorrect or doesn't exist, and should be handled appropriately
+    If successful, returns the user token.
 
     Parameters:
      - token
@@ -230,7 +257,7 @@ class Client(Iface):
   def getArtist(self, artist):
     """
     Returns basic artist info. If either the artist or the mbid is unknown,
-    then the empty string '' should be sent
+    then the empty string should be sent
 
     Parameters:
      - artist
@@ -264,7 +291,8 @@ class Client(Iface):
 
   def getLightArtist(self, artist):
     """
-    Returns only MusicBrainz ID and name
+    Returns only MusicBrainz ID and name. If either artist or mbid are
+    unknown, then the empty string should be sent
 
     Parameters:
      - artist
@@ -298,7 +326,8 @@ class Client(Iface):
 
   def getArtistHistory(self, artist):
     """
-    Returns a list of tuples of the price of the artist over time
+    Returns a list of tuples of the price of the artist over time. For new
+    artists the empty list is returned.
 
     Parameters:
      - artist
@@ -332,10 +361,9 @@ class Client(Iface):
 
   def getArtistSE(self, artist):
     """
-    Returns the data from our db for the artist.
-    Assumes that if artist isn't in the DB, then it gets pulled in
-    on-demand and so will always return some data.
-    Artist string can be either the name, or the musicbrainz ID
+    Returns the data from our db for the artist. If the artist isn't there,
+    the data gets pulled in on-demand. If either artist or mbid are
+    unknown, then the empty string should be sent
 
     Parameters:
      - artist
@@ -369,8 +397,8 @@ class Client(Iface):
 
   def getArtistLFM(self, artist):
     """
-    Returns the contextual artist info from last.fm for the artist
-    Artist string can be either the name or the musicbrainz ID
+    Returns the artist info from last.fm for the artist. If either artist
+    or mbid are unknown, then the empty string should be sent
 
     Parameters:
      - artist
@@ -439,9 +467,9 @@ class Client(Iface):
 
   def getTopArtists(self, n, tag):
     """
-    Returns a list of the n top artists by decreasing value. By default, tag
-    should have a value of '' and only be used if you want to limit the
-    top lists to a certain tag.
+    Returns a list of the n top artists by decreasing value. By default,
+    tag should be the empty string, and only used if you want specific tag
+    access.
 
     Parameters:
      - n
@@ -539,21 +567,21 @@ class Client(Iface):
       raise result.uexp
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserData failed: unknown result");
 
-  def getUserInfo(self, user):
+  def getUserInfo(self, userstr):
     """
     Returns extended user data for the user in the string. Mostly, used for
     profile pages
 
     Parameters:
-     - user
+     - userstr
     """
-    self.send_getUserInfo(user)
+    self.send_getUserInfo(userstr)
     return self.recv_getUserInfo()
 
-  def send_getUserInfo(self, user):
+  def send_getUserInfo(self, userstr):
     self._oprot.writeMessageBegin('getUserInfo', TMessageType.CALL, self._seqid)
     args = getUserInfo_args()
-    args.user = user
+    args.userstr = userstr
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -613,7 +641,7 @@ class Client(Iface):
   def getNearUsers(self, user):
     """
     Returns a list of 10 users with 4 above and 5 below in the leaderboard
-    compared to the user provided
+    compared to the user provided, including the user's position
 
     Parameters:
      - user
@@ -647,7 +675,7 @@ class Client(Iface):
 
   def getTransaction(self, artist):
     """
-    Returns the guarantee token to the front end
+    Returns the guarantee token (elephant) to the front end
 
     Parameters:
      - artist
@@ -682,9 +710,7 @@ class Client(Iface):
   def buyArtist(self, transaction, user):
     """
     Buys artist for user, and returns the new value of that stock in the
-    game. Throws a transaction exception if something goes wrong while
-    buying or the user can't afford to buy the artist.
-    Throws user exception if the user already owns the stock
+    game.
 
     Parameters:
      - transaction
@@ -716,15 +742,11 @@ class Client(Iface):
       return result.success
     if result.transexp is not None:
       raise result.transexp
-    if result.userexp is not None:
-      raise result.userexp
     raise TApplicationException(TApplicationException.MISSING_RESULT, "buyArtist failed: unknown result");
 
   def sellArtist(self, transaction, user):
     """
-    Sells artist for user, and returns the new value of that artist. User
-    exception is thrown if the user isn't allowed to sell or doesn't own
-    that artist
+    Sells artist for user, and returns the new value of that artist.
 
     Parameters:
      - transaction
@@ -756,8 +778,6 @@ class Client(Iface):
       return result.success
     if result.transexp is not None:
       raise result.transexp
-    if result.userexp is not None:
-      raise result.userexp
     raise TApplicationException(TApplicationException.MISSING_RESULT, "sellArtist failed: unknown result");
 
 
@@ -765,6 +785,7 @@ class Processor(Iface, TProcessor):
   def __init__(self, handler):
     self._handler = handler
     self._processMap = {}
+    self._processMap["apikey"] = Processor.process_apikey
     self._processMap["login"] = Processor.process_login
     self._processMap["getArtist"] = Processor.process_getArtist
     self._processMap["getLightArtist"] = Processor.process_getLightArtist
@@ -796,6 +817,17 @@ class Processor(Iface, TProcessor):
     else:
       self._processMap[name](self, seqid, iprot, oprot)
     return True
+
+  def process_apikey(self, seqid, iprot, oprot):
+    args = apikey_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = apikey_result()
+    result.success = self._handler.apikey()
+    oprot.writeMessageBegin("apikey", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
 
   def process_login(self, seqid, iprot, oprot):
     args = login_args()
@@ -937,7 +969,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = getUserInfo_result()
     try:
-      result.success = self._handler.getUserInfo(args.user)
+      result.success = self._handler.getUserInfo(args.userstr)
     except UserException as uexp:
       result.uexp = uexp
     oprot.writeMessageBegin("getUserInfo", TMessageType.REPLY, seqid)
@@ -996,8 +1028,6 @@ class Processor(Iface, TProcessor):
       result.success = self._handler.buyArtist(args.transaction, args.user)
     except TransactionException as transexp:
       result.transexp = transexp
-    except UserException as userexp:
-      result.userexp = userexp
     oprot.writeMessageBegin("buyArtist", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -1012,8 +1042,6 @@ class Processor(Iface, TProcessor):
       result.success = self._handler.sellArtist(args.transaction, args.user)
     except TransactionException as transexp:
       result.transexp = transexp
-    except UserException as userexp:
-      result.userexp = userexp
     oprot.writeMessageBegin("sellArtist", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -1021,6 +1049,107 @@ class Processor(Iface, TProcessor):
 
 
 # HELPER FUNCTIONS AND STRUCTURES
+
+class apikey_args(object):
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('apikey_args')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class apikey_result(object):
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRING, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRING:
+          self.success = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('apikey_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRING, 0)
+      oprot.writeString(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
 
 class login_args(object):
   """
@@ -1926,11 +2055,11 @@ class searchArtist_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype63, _size60) = iprot.readListBegin()
-          for _i64 in xrange(_size60):
-            _elem65 = Artist()
-            _elem65.read(iprot)
-            self.success.append(_elem65)
+          (_etype70, _size67) = iprot.readListBegin()
+          for _i71 in xrange(_size67):
+            _elem72 = Artist()
+            _elem72.read(iprot)
+            self.success.append(_elem72)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1953,8 +2082,8 @@ class searchArtist_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter66 in self.success:
-        iter66.write(oprot)
+      for iter73 in self.success:
+        iter73.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.searchexp is not None:
@@ -2078,11 +2207,11 @@ class getTopArtists_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype70, _size67) = iprot.readListBegin()
-          for _i71 in xrange(_size67):
-            _elem72 = Artist()
-            _elem72.read(iprot)
-            self.success.append(_elem72)
+          (_etype77, _size74) = iprot.readListBegin()
+          for _i78 in xrange(_size74):
+            _elem79 = Artist()
+            _elem79.read(iprot)
+            self.success.append(_elem79)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2099,8 +2228,8 @@ class getTopArtists_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter73 in self.success:
-        iter73.write(oprot)
+      for iter80 in self.success:
+        iter80.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2208,11 +2337,11 @@ class getTradedArtists_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype77, _size74) = iprot.readListBegin()
-          for _i78 in xrange(_size74):
-            _elem79 = Artist()
-            _elem79.read(iprot)
-            self.success.append(_elem79)
+          (_etype84, _size81) = iprot.readListBegin()
+          for _i85 in xrange(_size81):
+            _elem86 = Artist()
+            _elem86.read(iprot)
+            self.success.append(_elem86)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2229,8 +2358,8 @@ class getTradedArtists_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter80 in self.success:
-        iter80.write(oprot)
+      for iter87 in self.success:
+        iter87.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2390,16 +2519,16 @@ class getUserData_result(object):
 class getUserInfo_args(object):
   """
   Attributes:
-   - user
+   - userstr
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'user', None, None, ), # 1
+    (1, TType.STRING, 'userstr', None, None, ), # 1
   )
 
-  def __init__(self, user=None,):
-    self.user = user
+  def __init__(self, userstr=None,):
+    self.userstr = userstr
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2412,7 +2541,7 @@ class getUserInfo_args(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.user = iprot.readString();
+          self.userstr = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -2425,16 +2554,16 @@ class getUserInfo_args(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('getUserInfo_args')
-    if self.user is not None:
-      oprot.writeFieldBegin('user', TType.STRING, 1)
-      oprot.writeString(self.user)
+    if self.userstr is not None:
+      oprot.writeFieldBegin('userstr', TType.STRING, 1)
+      oprot.writeString(self.userstr)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.user is None:
-      raise TProtocol.TProtocolException(message='Required field user is unset!')
+    if self.userstr is None:
+      raise TProtocol.TProtocolException(message='Required field userstr is unset!')
     return
 
 
@@ -2606,7 +2735,7 @@ class getTopUsers_result(object):
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(User, User.thrift_spec)), None, ), # 0
+    (0, TType.STRUCT, 'success', (UserLeaderboard, UserLeaderboard.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'uexp', (UserException, UserException.thrift_spec), None, ), # 1
   )
 
@@ -2624,14 +2753,9 @@ class getTopUsers_result(object):
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype84, _size81) = iprot.readListBegin()
-          for _i85 in xrange(_size81):
-            _elem86 = User()
-            _elem86.read(iprot)
-            self.success.append(_elem86)
-          iprot.readListEnd()
+        if ftype == TType.STRUCT:
+          self.success = UserLeaderboard()
+          self.success.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 1:
@@ -2651,11 +2775,8 @@ class getTopUsers_result(object):
       return
     oprot.writeStructBegin('getTopUsers_result')
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.LIST, 0)
-      oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter87 in self.success:
-        iter87.write(oprot)
-      oprot.writeListEnd()
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
       oprot.writeFieldEnd()
     if self.uexp is not None:
       oprot.writeFieldBegin('uexp', TType.STRUCT, 1)
@@ -2687,7 +2808,7 @@ class getNearUsers_args(object):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'user', None, None, ), # 1
+    (1, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 1
   )
 
   def __init__(self, user=None,):
@@ -2703,8 +2824,9 @@ class getNearUsers_args(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.STRING:
-          self.user = iprot.readString();
+        if ftype == TType.STRUCT:
+          self.user = User()
+          self.user.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -2718,8 +2840,8 @@ class getNearUsers_args(object):
       return
     oprot.writeStructBegin('getNearUsers_args')
     if self.user is not None:
-      oprot.writeFieldBegin('user', TType.STRING, 1)
-      oprot.writeString(self.user)
+      oprot.writeFieldBegin('user', TType.STRUCT, 1)
+      self.user.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2749,7 +2871,7 @@ class getNearUsers_result(object):
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(User, User.thrift_spec)), None, ), # 0
+    (0, TType.STRUCT, 'success', (UserLeaderboard, UserLeaderboard.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'uexp', (UserException, UserException.thrift_spec), None, ), # 1
   )
 
@@ -2767,14 +2889,9 @@ class getNearUsers_result(object):
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype91, _size88) = iprot.readListBegin()
-          for _i92 in xrange(_size88):
-            _elem93 = User()
-            _elem93.read(iprot)
-            self.success.append(_elem93)
-          iprot.readListEnd()
+        if ftype == TType.STRUCT:
+          self.success = UserLeaderboard()
+          self.success.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 1:
@@ -2794,11 +2911,8 @@ class getNearUsers_result(object):
       return
     oprot.writeStructBegin('getNearUsers_result')
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.LIST, 0)
-      oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter94 in self.success:
-        iter94.write(oprot)
-      oprot.writeListEnd()
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
       oprot.writeFieldEnd()
     if self.uexp is not None:
       oprot.writeFieldBegin('uexp', TType.STRUCT, 1)
@@ -3041,19 +3155,16 @@ class buyArtist_result(object):
   Attributes:
    - success
    - transexp
-   - userexp
   """
 
   thrift_spec = (
     (0, TType.I32, 'success', None, None, ), # 0
     (1, TType.STRUCT, 'transexp', (TransactionException, TransactionException.thrift_spec), None, ), # 1
-    (2, TType.STRUCT, 'userexp', (UserException, UserException.thrift_spec), None, ), # 2
   )
 
-  def __init__(self, success=None, transexp=None, userexp=None,):
+  def __init__(self, success=None, transexp=None,):
     self.success = success
     self.transexp = transexp
-    self.userexp = userexp
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -3075,12 +3186,6 @@ class buyArtist_result(object):
           self.transexp.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.userexp = UserException()
-          self.userexp.read(iprot)
-        else:
-          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3098,10 +3203,6 @@ class buyArtist_result(object):
     if self.transexp is not None:
       oprot.writeFieldBegin('transexp', TType.STRUCT, 1)
       self.transexp.write(oprot)
-      oprot.writeFieldEnd()
-    if self.userexp is not None:
-      oprot.writeFieldBegin('userexp', TType.STRUCT, 2)
-      self.userexp.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -3204,19 +3305,16 @@ class sellArtist_result(object):
   Attributes:
    - success
    - transexp
-   - userexp
   """
 
   thrift_spec = (
     (0, TType.I32, 'success', None, None, ), # 0
     (1, TType.STRUCT, 'transexp', (TransactionException, TransactionException.thrift_spec), None, ), # 1
-    (2, TType.STRUCT, 'userexp', (UserException, UserException.thrift_spec), None, ), # 2
   )
 
-  def __init__(self, success=None, transexp=None, userexp=None,):
+  def __init__(self, success=None, transexp=None,):
     self.success = success
     self.transexp = transexp
-    self.userexp = userexp
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -3238,12 +3336,6 @@ class sellArtist_result(object):
           self.transexp.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.userexp = UserException()
-          self.userexp.read(iprot)
-        else:
-          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3261,10 +3353,6 @@ class sellArtist_result(object):
     if self.transexp is not None:
       oprot.writeFieldBegin('transexp', TType.STRUCT, 1)
       self.transexp.write(oprot)
-      oprot.writeFieldEnd()
-    if self.userexp is not None:
-      oprot.writeFieldBegin('userexp', TType.STRUCT, 2)
-      self.userexp.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

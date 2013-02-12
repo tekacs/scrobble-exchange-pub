@@ -81,26 +81,25 @@ class UserCode(object):
 
 class Artist(object):
   """
-  Basic artist info. Imageurl is a mapping to the image url from its
-  respective size
+  Basic artist info. imgurls is a mapping from size to location
 
   Attributes:
-   - name
    - mbid
-   - imageurl
+   - name
+   - imgurls
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'mbid', None, None, ), # 2
-    (3, TType.MAP, 'imageurl', (TType.STRING,None,TType.STRING,None), None, ), # 3
+    (1, TType.STRING, 'mbid', None, None, ), # 1
+    (2, TType.STRING, 'name', None, None, ), # 2
+    (3, TType.MAP, 'imgurls', (TType.STRING,None,TType.STRING,None), None, ), # 3
   )
 
-  def __init__(self, name=None, mbid=None, imageurl=None,):
-    self.name = name
+  def __init__(self, mbid=None, name=None, imgurls=None,):
     self.mbid = mbid
-    self.imageurl = imageurl
+    self.name = name
+    self.imgurls = imgurls
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -113,22 +112,22 @@ class Artist(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.name = iprot.readString();
+          self.mbid = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
-          self.mbid = iprot.readString();
+          self.name = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.MAP:
-          self.imageurl = {}
+          self.imgurls = {}
           (_ktype1, _vtype2, _size0 ) = iprot.readMapBegin() 
           for _i4 in xrange(_size0):
             _key5 = iprot.readString();
             _val6 = iprot.readString();
-            self.imageurl[_key5] = _val6
+            self.imgurls[_key5] = _val6
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -142,18 +141,18 @@ class Artist(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('Artist')
-    if self.name is not None:
-      oprot.writeFieldBegin('name', TType.STRING, 1)
-      oprot.writeString(self.name)
-      oprot.writeFieldEnd()
     if self.mbid is not None:
-      oprot.writeFieldBegin('mbid', TType.STRING, 2)
+      oprot.writeFieldBegin('mbid', TType.STRING, 1)
       oprot.writeString(self.mbid)
       oprot.writeFieldEnd()
-    if self.imageurl is not None:
-      oprot.writeFieldBegin('imageurl', TType.MAP, 3)
-      oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.imageurl))
-      for kiter7,viter8 in self.imageurl.items():
+    if self.name is not None:
+      oprot.writeFieldBegin('name', TType.STRING, 2)
+      oprot.writeString(self.name)
+      oprot.writeFieldEnd()
+    if self.imgurls is not None:
+      oprot.writeFieldBegin('imgurls', TType.MAP, 3)
+      oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.imgurls))
+      for kiter7,viter8 in self.imgurls.items():
         oprot.writeString(kiter7)
         oprot.writeString(viter8)
       oprot.writeMapEnd()
@@ -180,25 +179,24 @@ class Artist(object):
 
 class ArtistHistory(object):
   """
-  Keeps a list of artist values in time
-  Ordered list by date from oldest to newest
-  Format is <date,price>, both integers
-  Timeonmarket might help in drawing the graphs (Unsure?)
+  Ordered list by date of artist values (oldest to newest). Formatted as
+  (date,price) pairs.
+  Daterange might help in drawing the graphs (?)
 
   Attributes:
    - histvalue
-   - timeonmarket
+   - daterange
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.LIST, 'histvalue', (TType.MAP,(TType.I32,None,TType.I32,None)), None, ), # 1
-    (2, TType.I32, 'timeonmarket', None, None, ), # 2
+    (2, TType.I32, 'daterange', None, None, ), # 2
   )
 
-  def __init__(self, histvalue=None, timeonmarket=None,):
+  def __init__(self, histvalue=None, daterange=None,):
     self.histvalue = histvalue
-    self.timeonmarket = timeonmarket
+    self.daterange = daterange
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -227,7 +225,7 @@ class ArtistHistory(object):
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.I32:
-          self.timeonmarket = iprot.readI32();
+          self.daterange = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -251,9 +249,9 @@ class ArtistHistory(object):
         oprot.writeMapEnd()
       oprot.writeListEnd()
       oprot.writeFieldEnd()
-    if self.timeonmarket is not None:
-      oprot.writeFieldBegin('timeonmarket', TType.I32, 2)
-      oprot.writeI32(self.timeonmarket)
+    if self.daterange is not None:
+      oprot.writeFieldBegin('daterange', TType.I32, 2)
+      oprot.writeI32(self.daterange)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -277,10 +275,8 @@ class ArtistHistory(object):
 
 class ArtistSE(object):
   """
-  Contains all the data about the artist we have in our db
-  For a new artist, stockvalue is base value, and ArtistHistory would just
-  have an empty list. num_remaining is the current amount available to be
-  bought
+  Encapsulates the data in our db. num_remaining is the amount available to
+  be bought
 
   Attributes:
    - artist
@@ -373,8 +369,7 @@ class ArtistSE(object):
 
 class ArtistLFM(object):
   """
-  Essentially encapsulates the data from last.fm's artist.getInfo. It's
-  entirely possible that this won't be needed.
+  Encapsulates the data from last.fm's artist.getInfo.
 
   Attributes:
    - artist
@@ -518,8 +513,7 @@ class ArtistLFM(object):
 
 class Trade(object):
   """
-  User has some stuff on the market. Time is the amount of time you've been
-  trying to buy/sell this stock
+  A single purchase/sale. Time is when the trade occurred.
 
   Attributes:
    - artist
@@ -594,6 +588,8 @@ class Trade(object):
       raise TProtocol.TProtocolException(message='Required field artist is unset!')
     if self.price is None:
       raise TProtocol.TProtocolException(message='Required field price is unset!')
+    if self.time is None:
+      raise TProtocol.TProtocolException(message='Required field time is unset!')
     return
 
 
@@ -610,8 +606,8 @@ class Trade(object):
 
 class Trophy(object):
   """
-  User trophies. Desc is an extended description, and challenge is a possible
-  arbitrary `difficulty to obtain' measurement
+  User trophies. Challenge is a possible arbitrary `difficulty to obtain'
+  measurement, and is most likely not returned.
 
   Attributes:
    - name
@@ -780,16 +776,14 @@ class User(object):
 
 class UserData(object):
   """
-  Encapsulates all the user data. For a new user, trades and stocks will be
-  empty lists. Since we're unsure of how leaderboards will work, that
-  part of the user data is currently probably in an odd format
+  Encapsulates all the user data. For a new user: trades, stocks and trophies
+  will be empty lists.
 
   Attributes:
    - user
    - trades
    - stocks
    - trophies
-   - leaderboardpos
   """
 
   thrift_spec = (
@@ -798,15 +792,13 @@ class UserData(object):
     (2, TType.LIST, 'trades', (TType.STRUCT,(Trade, Trade.thrift_spec)), None, ), # 2
     (3, TType.LIST, 'stocks', (TType.STRUCT,(ArtistSE, ArtistSE.thrift_spec)), None, ), # 3
     (4, TType.LIST, 'trophies', (TType.STRUCT,(Trophy, Trophy.thrift_spec)), None, ), # 4
-    (5, TType.I32, 'leaderboardpos', None, None, ), # 5
   )
 
-  def __init__(self, user=None, trades=None, stocks=None, trophies=None, leaderboardpos=None,):
+  def __init__(self, user=None, trades=None, stocks=None, trophies=None,):
     self.user = user
     self.trades = trades
     self.stocks = stocks
     self.trophies = trophies
-    self.leaderboardpos = leaderboardpos
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -856,11 +848,6 @@ class UserData(object):
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 5:
-        if ftype == TType.I32:
-          self.leaderboardpos = iprot.readI32();
-        else:
-          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -896,10 +883,6 @@ class UserData(object):
         iter52.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
-    if self.leaderboardpos is not None:
-      oprot.writeFieldBegin('leaderboardpos', TType.I32, 5)
-      oprot.writeI32(self.leaderboardpos)
-      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -928,22 +911,22 @@ class UserData(object):
 
 class UserInfo(object):
   """
-  Encapsulates all the user info for profile pages
+  Encapsulates all the user info for others' profile pages
 
   Attributes:
    - user
-   - recent_trades
+   - trades
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 1
-    (2, TType.LIST, 'recent_trades', (TType.STRUCT,(Trade, Trade.thrift_spec)), None, ), # 2
+    (2, TType.LIST, 'trades', (TType.STRUCT,(Trade, Trade.thrift_spec)), None, ), # 2
   )
 
-  def __init__(self, user=None, recent_trades=None,):
+  def __init__(self, user=None, trades=None,):
     self.user = user
-    self.recent_trades = recent_trades
+    self.trades = trades
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -962,12 +945,12 @@ class UserInfo(object):
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.LIST:
-          self.recent_trades = []
+          self.trades = []
           (_etype56, _size53) = iprot.readListBegin()
           for _i57 in xrange(_size53):
             _elem58 = Trade()
             _elem58.read(iprot)
-            self.recent_trades.append(_elem58)
+            self.trades.append(_elem58)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -985,10 +968,10 @@ class UserInfo(object):
       oprot.writeFieldBegin('user', TType.STRUCT, 1)
       self.user.write(oprot)
       oprot.writeFieldEnd()
-    if self.recent_trades is not None:
-      oprot.writeFieldBegin('recent_trades', TType.LIST, 2)
-      oprot.writeListBegin(TType.STRUCT, len(self.recent_trades))
-      for iter59 in self.recent_trades:
+    if self.trades is not None:
+      oprot.writeFieldBegin('trades', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.trades))
+      for iter59 in self.trades:
         iter59.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
@@ -998,6 +981,94 @@ class UserInfo(object):
   def validate(self):
     if self.user is None:
       raise TProtocol.TProtocolException(message='Required field user is unset!')
+    if self.trades is None:
+      raise TProtocol.TProtocolException(message='Required field trades is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class UserLeaderboard(object):
+  """
+  Contains a list of users in decreasing leaderboard position. Position is
+  the place of the current user in that leaderboard.
+
+  Attributes:
+   - users
+   - position
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'users', (TType.STRUCT,(User, User.thrift_spec)), None, ), # 1
+    (2, TType.I32, 'position', None, None, ), # 2
+  )
+
+  def __init__(self, users=None, position=None,):
+    self.users = users
+    self.position = position
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.users = []
+          (_etype63, _size60) = iprot.readListBegin()
+          for _i64 in xrange(_size60):
+            _elem65 = User()
+            _elem65.read(iprot)
+            self.users.append(_elem65)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.position = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('UserLeaderboard')
+    if self.users is not None:
+      oprot.writeFieldBegin('users', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.users))
+      for iter66 in self.users:
+        iter66.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.position is not None:
+      oprot.writeFieldBegin('position', TType.I32, 2)
+      oprot.writeI32(self.position)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.users is None:
+      raise TProtocol.TProtocolException(message='Required field users is unset!')
     return
 
 
@@ -1015,6 +1086,7 @@ class UserInfo(object):
 class Transaction(object):
   """
   Encapsulates the guarantee for purchase/sale that is provided to the user.
+  Elephant is the generated token that is first sent and then returned.
 
   Attributes:
    - elephant
