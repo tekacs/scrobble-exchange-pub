@@ -54,8 +54,7 @@ def leaderboards(request):
     return render_to_response('leaderboards.html',{})
 
 def artist_single(request, artist):
-    artist = Artist()
-    artist.name = 'Coldplay'
+    artist = type('Artist', (), {'name': 'Coldplay'})();
     return render_to_response('artist_single.html', {'artist': artist})
 
 ############ Buy/Sell ############
