@@ -87,9 +87,9 @@ Since it's role is so central to the functionality of the entire application, th
 
 \subsubsection{Analytics}
 
-The analytics component of the program is tasked with the role of carrying out all of the calculations involving data from the last.fm website. This includes fetching the data in at a reasonable speed (through the DATM), processing it, and updating the database as required (again using the DATM). Since it is responsible for handling this data, this means that the analytics module is also at least partially responsible for ensuring game balance and stopping the markets from fluctuating too much or too little.
+The analytics component of the program is tasked with the role of carrying out all of the calculations involving data from the last.fm website. This includes fetching the data in at a reasonable speed (through the DATM), processing it, and updating the database as required (again using the DATM). In terms of implementation, this part of the project is simpler than the others, but equally in terms of game mechanics it is perhaps the most important.
 
-[Someone STILL needs to talk more about analytics here]
+Since it is responsible for handling this data, this means that the analytics module holds a lot of responsibility for game balance. It must ensure that the formulae it uses don't lead to inflation: this includes the way that that the artist score is calculated, as well as the proportion of users that are allowed to own an artist.
 
 \subsection{Acceptance Criteria}
 
@@ -99,6 +99,7 @@ The acceptance criteria for the finished product are reasonably simple: [Again, 
 \item To produce a working game that can be run on a server somewhere and tested.
 \item To ensure that the above game has the functionality mentioned earlier on in this document.
 \item To ensure that the game has been properly tested and is reasonably free of bugs.
+\item To ensure that the game cannot be abused by people - prevent cheating.
 \end{itemize}
 
 \section{Management}

@@ -1,0 +1,35 @@
+\documentclass[a4paper,10pt,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{a4}
+
+\renewcommand{\oddsidemargin}{-20pt}
+\renewcommand{\evensidemargin}{-20pt}
+\renewcommand{\topmargin}{-30pt}
+\renewcommand{\textwidth}{460pt}
+\renewcommand{\marginparwidth}{100pt}
+
+\setlength{\parindent}{0pt}
+\addtolength{\parskip}{1ex}
+
+\renewcommand{\labelitemi}{$\bullet$}
+
+\begin{document}
+
+\section{Progress Report}
+\subsection{Overview}
+
+Since the beginning of the project, we have made steady progress to achieving our initial goals. As things stand, the majority of the modules that are independent have been completed and have gone through a limited amount of testing, and are now waiting on integration into a single unified system. The last module, analytics, has not yet been implemented largely because it's entire action depends on the existence of the other three modules as a single functional whole, and hence the majority of the work that has gone into that has been on deciding on the functions and algorithms involved in the module.
+
+\subsection{Web Interface}
+\subsection{API}
+
+The API has been written in it's entirety, and tested roughly. In order to implement the API, the Apache Thrift library was chosen, since this allows for the easy definition of the interface of the API which is then used to automatically generate the majority of the RPC code involved in the API client and library. A Although it's complete as it is, the API is still subject to change if any new features are added last-minute to the project, and due to the fact that this would only require incrementing a version counter and regenerating the source from the definition, this would not involve a lot of work.
+
+In terms of functionality, the API currently supports getting various artist data (both from the game's database and from the last.fm API), getting various user data (primarily through the game's database, but also through the last.fm API), as well as the ability to authenticate a user with last.fm. This functionality has gone through limited testing through the use of a test client for the API, which creates the objects in the API and calls it's methods on the remote server, to which the server returns the arguments provided (if they're valid). This is only a basic test to ensure that the serialisation/deserialisation in the API works correctly, and that it is possible to transfer data over the network.
+
+Once the entire system is integrated, more comprehensive unit tests for the entire system can be created, which would involve creating a new database, populating it with test data, and then testing the functionality the API together with DATM. 
+
+\subsection{DATM}
+\subsection{Analytics}
+
+\end{document}
