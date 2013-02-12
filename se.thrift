@@ -2,7 +2,7 @@
 
 ## Interface definitions
 
-namespace py scrobbleexchange
+namespace py se_api
 
 ## API version
 # Format: Major/Minor/Patch
@@ -10,7 +10,7 @@ namespace py scrobbleexchange
 # Minor is for backwards-compatible ones (e.g. adding optional parameters)
 # Patch is for small bugfixes and similar
 
-const string VERSION = "0.0.0"
+const string VERSION = "1.0.0"
 
 ## Structs
 
@@ -21,24 +21,25 @@ const string VERSION = "0.0.0"
 /** Basic artist info. Imageurl is a mapping to the image url from its 
 respective size */
 struct Artist {
-    1: required string name
-    2: optional string mbid
+    1: optional string name
+    2: required string mbid
     3: optional string url
     4: optional map<string,string> imageurl
 }
 
 /** Value of an artist at a single point in time
-    Date is assumed to be in UNIX time format */
+    Date is assumed to be in UNIX time format
 struct ArtistHistoryValue {
     1: required i32 date
     2: required i32 value
-}
+} */
 
 /** Keeps a list of artist values in time
     Ordered list by date from oldest to newest
+    Format is <date,value>, both integers
     Timeonmarket might help in drawing the graphs (Unsure?) */
 struct ArtistHistory {
-    1: required list<ArtistHistoryValue> histvalues
+    1: required list<map<i32,i32>> histvalues
     2: optional i32 timeonmarket
 }
 
@@ -104,9 +105,18 @@ struct User {
 struct UserData {
     1: required User user
     2: required list<Trade> curtrades
-    3: required list<Artist> curstocks
+    3: required list<ArtistSE> curstocks
     4: required list<Trophy> curtrophies
     5: optional i32 leaderboardpos
+}
+
+# Transaction
+
+/** Encapsulates the guarantee for purchase that is provided to the user. */
+struct Transaction {
+    1: required string token
+    2: required i32 value
+    3: required i32 time
 }
 
 ## Exceptions
@@ -150,19 +160,19 @@ AccountException accexp),
     
     /** Returns basic artist info. Artist string can be either the name, or the 
         musicbrainz ID */
-    Artist getArtist (1: required string artist) throws (1: SearchException 
+    Artist getArtist (1: required Artist artist) throws (1: SearchException 
 searchexp),
     
     /** Returns the data from our db for the artist. 
         Assumes that if artist isn't in the DB, then it gets pulled in 
         on-demand and so will always return some data.
         Artist string can be either the name, or the musicbrainz ID */
-    ArtistSE getArtistSE (1: required string artist) throws 
+    ArtistSE getArtistSE (1: required Artist artist) throws 
 (1: SearchException searchexp),
     
     /** Returns the contextual artist info from last.fm for the artist
         Artist string can be either the name or the musicbrainz ID */
-    ArtistLFM getArtistLFM (1: required string artist) throws (1: 
+    ArtistLFM getArtistLFM (1: required Artist artist) throws (1: 
 SearchException searchexp),
     
     /** returns a list of possible artists from a partial string. Ordered by 
@@ -196,21 +206,21 @@ uexp),
     
     # Data Modification
     
+    /** Returns the guarantee token to the front end */
+    Transaction getTransaction (1: required Artist artist) throws (1: 
+TransactionException transexp),
+    
     /** Buys artist for user, and returns the new value of that stock in the 
         game. Throws a transaction exception if something goes wrong while 
-        buying or the user can't afford to buy the artist. Throws time 
-        exception if the expected artist value has changed since the request.
+        buying or the user can't afford to buy the artist.
         Throws user exception if the user already owns the stock */
-    i32 buyArtist (1: required Artist artist, 2: required User user, 3: 
-required i32 value) throws (1: TransactionException transexp, 2: UserException 
-userexp),
+    i32 buyArtist (1: required Transaction transaction, 2: required User user) 
+throws (1: TransactionException transexp, 2: UserException userexp),
     
-    /** Sells artist for user, and returns the new value of that artist. Throws 
-        a time exception if the expected sell value has changed since the 
-        request was made. User exception is thrown if the user isn't allowed to 
-        sell or doesn't own that artist */
-    i32 sellArtist (1: required Artist artist, 2: required User user, 3: 
-required i32 value) throws (1: TransactionException transexp, 2: UserException 
-userexp)
+    /** Sells artist for user, and returns the new value of that artist. User 
+        exception is thrown if the user isn't allowed to sell or doesn't own 
+        that artist */
+    i32 sellArtist (1: required Transaction transaction, 2: required User user) 
+throws (1: TransactionException transexp, 2: UserException userexp)
    
 }
