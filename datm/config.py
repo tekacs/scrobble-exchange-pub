@@ -6,7 +6,7 @@ from lastfm import Api
 from sqlalchemy import create_engine
 
 class DATMConfig(object):
-    def __init__(self, lastfm=None, db=None):
+    def __init__(self, lastfm=None, db_args=None):
         _db_args = {'pool_size': 20, 'max_overflow': 0}
         _lastfm = {}
         if lastfm is not None:
@@ -24,6 +24,7 @@ class DATMConfig(object):
             url = _db_args.pop('url')
             engine = create_engine(url, **_db_args)
             self._db = DATMDatabase(engine)
+        self._sessions = {}
 
     @property
     def lastfm(self):
