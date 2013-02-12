@@ -36,10 +36,50 @@ def home(request):
     # user_data = __portfolio(request.session['user'])
     # user_data.worth = sum(se_api.getArtistData(x).stockvalue
     #                         for x in user_data.curstocks)
+
+    # Dummy artist data
     user_data = models.UserData()
-    user_data.stocks = ['Coldplay', 'Maroon 5']
-    user_data.worth = 51000
-    return render_to_response('index.html',{'user_data': user_data})
+    user_data.curstocks = [
+        {
+            'artist': {
+                'name': 'Coldplay',
+                'current_price': 2500,
+                'images': {
+                    'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/75646980\/Coldplay+PNG.png',
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/75646980.png'
+                    # in real data, get all available image urls
+                }
+            }
+        }, 
+        {
+            'artist': {
+                'name': 'Daft Punk',
+                'current_price': 2200,
+                'images': {
+                    'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/4183432\/Daft+Punk+daftpunk_1.jpg',
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'    
+                    # in real data, get all available image urls
+                }
+            }
+        },
+        {
+            'artist': {
+                'name': 'Gorillaz',
+                'current_price': 2300,
+                'images': {
+                    'mega': 'http:\/\/userserve-ak.last.fm\/serve\/_\/411274\/Gorillaz.jpg',
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/411274.jpg'    
+                    # in real data, get all available image urls
+                }
+            }
+        }
+    ]
+    user_data.user = {'money': 140512}
+    portfolio_worth = 2500 + 2200 + 2300
+    return render_to_response('index.html',{
+            'user_data': user_data, 
+            'portfolio_worth': portfolio_worth
+        })
 
 def artists(request):
     # artistlist = se_api.lastfm.chart.get_top_artists()
@@ -54,7 +94,7 @@ def leaderboards(request):
     return render_to_response('leaderboards.html',{})
 
 def artist_single(request, artist):
-    artist = type('Artist', (), {'name': 'Coldplay'})();
+    artist = type('Artist', (), {'name': artist})();
     return render_to_response('artist_single.html', {'artist': artist})
 
 ############ Buy/Sell ############
