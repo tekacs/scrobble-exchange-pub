@@ -7,3 +7,9 @@ class Artist(models.Model):
 
 	def __unicode__(self):
 		return self.name
+
+class UserData(models.Model):
+	worth = models.IntegerField()
+
+	def __unicode__(self):
+		return 'user data'

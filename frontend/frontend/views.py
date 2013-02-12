@@ -1,6 +1,7 @@
 from django.template import RequestContext, loader
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
+import models
 
 ## Import thrift stuff
 #import sys
@@ -32,18 +33,26 @@ try:
 
     def home(request):
         # user_data = __portfolio(request.session['user'])
-        user_data = {}
-        return render_to_response('index.html',{'user_data': user_data})
+        # user_data.worth = sum(se_api.getArtistData(x).stockvalue
+        #                         for x in user_data.curstocks)
+        # user_data = []
+        # user_data.stocks = ['Coldplay', 'Maroon 5']
+        # user_data.worth = 51000
+        # return render_to_response('index.html',{'user_data': user_data})
+        return render_to_response('index.html',{})
 
     def artists(request):
-        artists = se_api.lastfm.chart.get_top_artists()
-        return render_to_response('artists.html', {'artistlist': artists})
+        # artists = se_api.lastfm.chart.get_top_artists()
+        artistlist = ['Iron Maiden', 'Foo Fighters']
+        return render_to_response('artists.html', {'artistlist': artistlist})
 
-    def charts(request):
-        return render_to_response('charts.html',{})
+    def leaderboards(request):
+        return render_to_response('leaderboards.html',{})
 
     def artist_single(request, artist):
-        return render_to_response('artist_single.html', {'name': artist})
+        artist = Artist()
+        artist.name = 'Coldplay'
+        return render_to_response('artist_single.html', {'artist': artist})
 
     ############ Buy/Sell ############
 
