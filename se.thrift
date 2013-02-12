@@ -23,8 +23,7 @@ respective size */
 struct Artist {
     1: optional string name
     2: required string mbid
-    3: optional string url
-    4: optional map<string,string> imageurl
+    3: optional map<string,string> imageurl
 }
 
 /** Keeps a list of artist values in time
@@ -32,7 +31,7 @@ struct Artist {
     Format is <date,value>, both integers
     Timeonmarket might help in drawing the graphs (Unsure?) */
 struct ArtistHistory {
-    1: required list<map<i32,i32>> histvalues
+    1: required list<map<i32,i32>> histvalue
     2: optional i32 timeonmarket
 }
 
@@ -151,8 +150,12 @@ AccountException accexp),
     
     /** Returns basic artist info. Artist string can be either the name, or the 
         musicbrainz ID */
-    Artist getArtist (1: required Artist artist) throws (1: SearchException 
+    Artist getArtist (1: required string artist) throws (1: SearchException 
 searchexp),
+    
+    /** Returns only MusicBrainz ID and name */
+    Artist getLightArtist (1: required string artist) throws (1: 
+SearchException searchexp),
     
     /** Returns the data from our db for the artist. 
         Assumes that if artist isn't in the DB, then it gets pulled in 
