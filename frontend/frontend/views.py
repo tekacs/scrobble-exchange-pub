@@ -130,7 +130,7 @@ def artist_single(request, artistname):
     })();
     artist_SE = type('ArtistSE', (), {
         'artist': artist,
-        'ownedby': True,
+        'ownedby': artist.name != 'Nickelback',
         'price': 2300,
         })();
     return render_to_response('artist_single.html', {'artist_SE': artist_SE})
