@@ -18,7 +18,8 @@ const string VERSION = "1.0.0"
 
 # Artist
 
-/** Basic artist info. imgurls is a mapping from size to location */
+/** Basic artist info. imgurls is a mapping from size to location. Optionally 
+    includes whether a predetermined user owns this artist or not */
 struct Artist {
     1: required string mbid
     2: optional string name
@@ -39,6 +40,7 @@ struct ArtistSE {
     1: required Artist artist
     2: required i32 price
     3: required i32 num_remaining
+    4: optional bool ownedby
 }
 
 /** Encapsulates the data from last.fm's artist.getInfo. */
@@ -47,8 +49,9 @@ struct ArtistLFM {
     2: required bool streamable
     3: required i32 listeners
     4: required i32 plays
-    5: required list<Artist> similar
-    6: required string bio
+    5: required list<string> tags
+    6: required list<Artist> similar
+    7: required string bio
 }
 
 # User
@@ -68,11 +71,16 @@ struct Trophy {
     3: optional string challenge
 }
 
-/** Basic user info. This is all that is needed for most pages where the user 
-    isn't the primary content. */
+/** Basic user info. */
 struct User {
     1: required string name
-    2: required i32 money
+}
+
+/** Basic authenticated user. Does not necessarily include their money */
+struct AuthUser {
+    1: required string name
+    2: required string session_key
+    3: optional i32 money
 }
 
 /** Encapsulates all the user data. For a new user: trades, stocks and trophies 
@@ -82,12 +90,7 @@ struct UserData {
     2: required list<Trade> trades
     3: required list<ArtistSE> stocks
     4: required list<Trophy> trophies
-}
-
-/** Encapsulates all the user info for others' profile pages */
-struct UserInfo {
-    1: required User user
-    2: required list<Trade> trades
+    5: optional i32 curleaguepos
 }
 
 /** Contains a list of users in decreasing leaderboard position. Position is 
@@ -101,7 +104,7 @@ struct UserLeaderboard {
 
 /** Encapsulates the guarantee for purchase/sale that is provided to the user. 
     Elephant is the generated token that is first sent and then returned. */
-struct Transaction {
+struct Guarantee {
     1: required string elephant
     2: required i32 value
     3: required i32 time
@@ -124,7 +127,8 @@ exception LoginException {
 
 enum SearchCode {
     NONE = 1,
-    CONN = 2
+    CONN = 2,
+    ARG = 3
 }
 
 exception SearchException {
@@ -162,36 +166,37 @@ service ScrobbleExchange {
     /** Returns the SE API key for sending to last.fm */
     string apikey (),
     
-    /** If successful, returns the user token. */
-    string login(1: required string token) throws (1: LoginException lexp),
+    /** If successful, returns the user session token. */
+    string login(1: required string username, 2: required string token) throws 
+(1: LoginException lexp),
     
     # Data retrieval
     # Artists
     
     /** Returns basic artist info. If either the artist or the mbid is unknown, 
-        then the empty string should be sent */
+        then the empty string should be sent. */
     Artist getArtist (1: required Artist artist) throws (1: SearchException 
 searchexp),
     
-    /** Returns only MusicBrainz ID and name. If either artist or mbid are 
-        unknown, then the empty string should be sent */
+    /** Returns only MBID and name. If either artist or mbid are unknown, then 
+        the empty string should be sent */
     Artist getLightArtist (1: required Artist artist) throws (1: 
 SearchException searchexp),
     
+    /** Returns the data from our db. If the artist isn't there, the data gets 
+        on-demand pulled. If either artist or mbid are unknown, then the empty 
+        string should be sent. */
+    ArtistSE getArtistSE (1: required Artist artist) throws (1: SearchException 
+searchexp),
+    
+    /** Returns the artist info from last.fm for the artist. If either artist 
+        or mbid are unknown, then the empty string should be sent. */
+    ArtistLFM getArtistLFM (1: required Artist artist) throws (1:SearchException 
+searchexp),
+
     /** Returns a list of tuples of the price of the artist over time. For new 
         artists the empty list is returned. */
     ArtistHistory getArtistHistory (1: required Artist artist) throws (1: 
-SearchException searchexp),
-    
-    /** Returns the data from our db for the artist. If the artist isn't there, 
-        the data gets pulled in on-demand. If either artist or mbid are 
-        unknown, then the empty string should be sent */
-    ArtistSE getArtistSE (1: required Artist artist) throws 
-(1: SearchException searchexp),
-    
-    /** Returns the artist info from last.fm for the artist. If either artist 
-        or mbid are unknown, then the empty string should be sent */
-    ArtistLFM getArtistLFM (1: required Artist artist) throws (1: 
 SearchException searchexp),
     
     /** returns a list of possible artists from a partial string. Ordered by 
@@ -205,17 +210,16 @@ SearchException searchexp),
     list<Artist> getTopArtists (1: required i32 n, 2: string tag),
     
     /** Returns a list of the n most traded artists by decreasing value. */
-    list<Artist> getTradedArtists (1: required i32 n), 
+    list<Artist> getTradedArtists (1: required i32 n),
+    
+    /** Returns a list of the n most recent trades */
+    list<Artist> getRecentTrades (1: required i32 n)
     
     # User
    
-    /** Returns extended user data for the current user */
-    UserData getUserData (1: required User user) throws (1: UserException 
-uexp),
-    
-    /** Returns extended user data for the user in the string. Mostly, used for 
-        profile pages */
-    UserInfo getUserInfo (1: required string userstr) throws (1: UserException 
+    /** Returns extended user data for the current user. Requires the authuser 
+        token for validation */
+    UserData getUserData (1: required AuthUser user) throws (1: UserException 
 uexp),
     
     /** Returns the n top users by decreasing value in the given league. */
@@ -223,23 +227,24 @@ uexp),
 throws (1: UserException uexp),
     
     /** Returns a list of 10 users with 4 above and 5 below in the leaderboard 
-        compared to the user provided, including the user's position  */
-    UserLeaderboard getNearUsers (1: required User user) throws (1: 
+        compared to the user provided, including the user's position. Requires 
+        the session token for validation */
+    UserLeaderboard getNearUsers (1: required AuthUser user) throws (1: 
 UserException uexp),
     
     # Data Modification
     
     /** Returns the guarantee token (elephant) to the front end */
-    Transaction getTransaction (1: required Artist artist) throws (1: 
+    Guarantee getGuarantee (1: required Artist artist) throws (1: 
 TransactionException transexp),
     
     /** Buys artist for user, and returns the new value of that stock in the 
         game. */
-    i32 buyArtist (1: required Transaction transaction, 2: required User user) 
-throws (1: TransactionException transexp),
+    i32 buyArtist (1: required Guarantee transaction, 2: required AuthUser 
+user) throws (1: TransactionException transexp),
     
     /** Sells artist for user, and returns the new value of that artist. */
-    i32 sellArtist (1: required Transaction transaction, 2: required User user) 
-throws (1: TransactionException transexp)
+    i32 sellArtist (1: required Guarantee transaction, 2: required AuthUser 
+user) throws (1: TransactionException transexp)
    
 }
