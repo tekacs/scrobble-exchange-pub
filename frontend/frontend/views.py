@@ -128,12 +128,12 @@ def artist_single(request, artistname):
             }
         ]
     })();
-    artistSE = type('ArtistSE', (), {
+    artist_SE = type('ArtistSE', (), {
         'artist': artist,
         'ownedby': True,
         'price': 2300
         })();
-    return render_to_response('artist_single.html', {'artistSE': artistSE})
+    return render_to_response('artist_single.html', {'artist_SE': artistSE})
 
 ############ Buy/Sell ############
 
