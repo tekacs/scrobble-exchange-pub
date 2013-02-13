@@ -1,29 +1,61 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load extras %}
 
 {% block title %}{{artist.name}}{% endblock title %}
 
-{% block main %}
-	<h4>{{artist.name}}</h4>
+{% block above_main %}
+    <h1 class="artist-name">{{artist.name}}</h1> 
+    <nav>
+        <ul>
+            <li><a href="#">Tracks</a></li>
+            <li><a href="#">Albums</a></li>
+            <li><a href="#">Pictures</a></li>
+            <li><a href="#">Videos</a></li>
+            <li><a href="#">Events</a></li>
+            <li><a href="#">Biography</a></li>
+            <li><a href="#">More...</a></li>
+        </ul>
+    </nav>  
+{% endblock above_main %}
+    
+{% block main %}	
 	<div id="chart_container">
 		<div id="y_axis"></div>
-		<div style="height: 0; overflow: visible;">
-		  <div id="barChart"></div>
+		<div style="overflow: visible;">
+		  <div id="dividendChart"></div>
 		</div>
 
 		<div style="overflow: visible;">
-		  <div id="lineChart"></div>
+		  <div id="priceChart"></div>
 		</div>
 	</div>
+
+    <p class="artist-bio">
+        {{artist.bio.summary|safe}}
+        <!-- TODO: read more link for full bio -->
+    <p>
+
+    <h3 class="artist-subheader">Similar Artists</h3>
+    {% for similar_artist in artist.similar_artists %}
+        <a href="/artist/{{ similar_artist.name|urlencode }}">
+            <div class="artist-img" style="background-image: url('{{ similar_artist.images|get_image:'mega' }}');">
+                <div class="text-over-image bottom">
+                    <span class="primary">{{ similar_artist.name|truncatechars:15 }}</span>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
 {% endblock main %}
 
 {% block sidebar %}
-	<h5>Current market price:</h5>
-	<h2>$25,051</h2>
+
+    <h2 class="sidebar-price-header">Current market price:</h2>
+    <p class="sidebar-price">$25,051</p>
+    
 	<a class="button" id="buy-button" href="#">Buy</a>
     <a class="button" id="sell-button" href="#">Sell</a>
-	<hr>
 {% endblock sidebar %}
 
 {% block body_additional_html %}

@@ -1,3 +1,4 @@
+// TODO: split this file into per-page files
 body {
     background: $bgColour;
     font-family: $bodyFontFamily;
@@ -9,47 +10,98 @@ body {
         margin-top: 8px;
     }
 
-    .main {
-        
-    }
+    .above_main {
+        .artist-name {
+            font-size: 20px;
+            margin: 20px inherit;
+            font-weight: bold;
+            width: 50%;
+            display: inline-block;
+            float: left;
+        }
 
-    div.portfolio-img {
-        $portfolio-img-height: 190px;
-        background-size: cover;
-        background-position: center;
-        background-color: #eee;
-        border-radius: 2px;
-        position: relative;
-        width: $portfolio-img-height;
-        height: $portfolio-img-height;
-        overflow: hidden;
-        float: left;
-        
-        margin: 0 24px 15px 0px;
-        
-        div.text-over-image {
-            position: absolute;
-            span {
-                color: #fff;
-                padding: 3px 6px;
-                display: inline-block;
-            }
-            bottom: 0;
-            left: 0;
-            span {                  
-                &.primary {                     
-                    background-color: #333; 
+        nav {
+            display: inline-block;
+            margin: 20px inherit;
+            ul {
+                list-style-type: none;
+                li {
+                    display: inline;
+                    margin-left: 10px;
+                    font-size: 13px;
                 }
-                &.secondary{
-                    bottom: 0;
-                    left: 0;
-                    background-color: #71b7e6;
-                }                   
-
-            }       
-        }   
+            }
+        }
     }
 
+    .main {
+        h1, h2, h3, h4 {
+            font-weight: bold;
+        }
+
+        p.artist-bio {
+            margin-top: 20px;
+        }
+
+        .artist-subheader {
+            color: $mainBarRed;
+            font-size: ms(1);
+        }
+
+        div.portfolio-img, div.artist-img {
+            $portfolio-img-height: 190px;
+            background-size: cover;
+            background-position: center;
+            background-color: #eee;
+            border-radius: 2px;
+            position: relative;
+            width: $portfolio-img-height;
+            height: $portfolio-img-height;
+            overflow: hidden;
+            float: left;
+            
+            margin: 0 24px 15px 0px;
+            
+            div.text-over-image {
+                position: absolute;
+                span {
+                    color: #fff;
+                    padding: 3px 6px;
+                    display: inline-block;
+                }
+                bottom: 0;
+                left: 0;
+                span {                  
+                    &.primary {                     
+                        background-color: #333; 
+                    }
+                    &.secondary{
+                        bottom: 0;
+                        left: 0;
+                        background-color: #71b7e6;
+                    }                   
+
+                }       
+            }   
+        }  
+
+        div.artist-img {
+            width: 140px;
+            height: 140px;
+        }  
+    }
+
+    .sidebar {
+        p.sidebar-price {
+            font-size: ms(3);
+            font-weight: bold;
+        }
+        .sidebar-price-header {
+            font-size: 20px;
+            margin-bottom: 5px;
+            margin-top: 0;
+        }
+    }
     img.badge-img {
         margin: 0 5px 5px 0;
     }

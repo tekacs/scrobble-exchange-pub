@@ -39,55 +39,57 @@ def home(request):
 
     # Dummy artist data
     user_data = models.UserData()
-    user_data.curstocks = [
+    user_data.stocks = \
+    [
         {
             'artist': {
                 'name': 'Coldplay',
-                'current_price': 2500,
                 'images': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/75646980\/Coldplay+PNG.png',
                     'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/75646980.png'
                     # in real data, get all available image urls
                 }
-            }
+            },
+            'price': 2500
         }, 
-        {
+        {  
             'artist': {
                 'name': 'Daft Punk',
-                'current_price': 2200,
                 'images': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/4183432\/Daft+Punk+daftpunk_1.jpg',
                     'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'    
                     # in real data, get all available image urls
                 }
-            }
+            },
+            'price': 2200
         },
         {
             'artist': {
                 'name': 'Gorillaz',
-                'current_price': 2300,
                 'images': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/_\/411274\/Gorillaz.jpg',
                     'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/411274.jpg'    
                     # in real data, get all available image urls
                 }
-            }
+            },
+            'price': 2300
         },
         {
             'artist': {
                 'name': 'A random band with a missing image and a long name! (and punctuation)',
-                'current_price': 100,
                 'images': {   
                     # in real data, get all available image urls
                 }
-            }
+            },
+            'price': 100
         }
     ]
     user_data.user = {'money': 140512, 'points': 242}
-    portfolio_worth = 2500 + 2200 + 2300 + 100
+    user_data.portfolio_worth = sum(artistSE['price'] for artistSE in user_data.stocks)
+
     return render_to_response('index.html',{
             'user_data': user_data, 
-            'portfolio_worth': portfolio_worth
+            # 'portfolio_worth': portfolio_worth
         })
 
 def artists(request):
@@ -103,7 +105,31 @@ def leaderboards(request):
     return render_to_response('leaderboards.html',{})
 
 def artist_single(request, artist):
-    artist = type('Artist', (), {'name': artist})();
+    example_bio = 'Coldplay is a British <a href="http://www.last.fm/tag/alternative%20rock" class="bbcode_tag" rel="tag">alternative rock</a> band, formed in London, United Kingdom in 1997. The band comprises vocalist and pianist <a href="http://www.last.fm/music/Chris+Martin" class="bbcode_artist">Chris Martin</a>, lead guitarist <a href="http://www.last.fm/music/Jonny+Buckland" class="bbcode_artist">Jonny Buckland</a>, bassist <a href="http://www.last.fm/music/Guy+Berryman" class="bbcode_artist">Guy Berryman</a>, and drummer <a href="http://www.last.fm/music/Will+Champion" class="bbcode_artist">Will Champion</a>. Having released four successful albums, (all of which debuted at #1 on the UK album chart) Coldplay have also achieved great success with their singles, such as <a title="Coldplay &ndash; Yellow" href="http://www.last.fm/music/Coldplay/_/Yellow" class="bbcode_track">Yellow</a>, <a title="Coldplay &ndash; Speed of Sound" href="http://www.last.fm/music/Coldplay/_/Speed+of+Sound" class="bbcode_track">Speed of Sound</a>, the Grammy-winning <a title="Coldplay &ndash; Clocks" href="http://www.last.fm/music/Coldplay/_/Clocks" class="bbcode_track">Clocks</a> and the US and UK #1 single <a title="Coldplay &ndash; Viva la Vida" href="http://www.last.fm/music/Coldplay/_/Viva+la+Vida" class="bbcode_track">Viva la Vida</a>. Frontman Chris Martin credits 1980s Norwegian pop band <a href="http://www.last.fm/music/a-ha" class="bbcode_artist">a-ha</a> for inspiring him to form his own band.'
+    artist = type('Artist', (), {
+        'name': artist, 
+        'bio': {
+            'summary': example_bio
+        },
+        'similar_artists': [
+            {
+                'name': 'Daft Punk',
+                'current_price': 2200,
+                'images': {
+                    'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/4183432\/Daft+Punk+daftpunk_1.jpg',
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'    
+                    # in real data, get all available image urls
+                }
+            },
+            {
+                'name': 'A random band with a missing image and a long name! (and punctuation)',
+                'current_price': 100,
+                'images': {   
+                    # in real data, get all available image urls
+                }
+            }
+        ]
+    })();
     return render_to_response('artist_single.html', {'artist': artist})
 
 ############ Buy/Sell ############

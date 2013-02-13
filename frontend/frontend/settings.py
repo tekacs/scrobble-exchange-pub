@@ -120,12 +120,17 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'frontend',
+    'lastfmauth',
     #'frontendapp',
     # 'django_url_framework',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'lastfmauth.backends.LastfmAuthBackend',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -156,3 +161,7 @@ LOGGING = {
         },
     }
 }
+
+LASTFM_API_KEY = "9dd5403b2dccbc443222d331d66b4424"
+LASTFM_SECRET = "070a2c23f4cff56c14da0a11b6c64f83"
+LASTFM_WS_BASE_URL = "http://ws.audioscrobbler.com/2.0/"
