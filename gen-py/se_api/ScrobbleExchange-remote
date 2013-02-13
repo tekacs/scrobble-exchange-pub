@@ -24,22 +24,24 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print ''
   print 'Functions:'
   print '  string apikey()'
-  print '  string login(string token)'
+  print '  AuthUser login(string username, string token)'
   print '  Artist getArtist(Artist artist)'
   print '  Artist getLightArtist(Artist artist)'
-  print '  ArtistHistory getArtistHistory(Artist artist)'
-  print '  ArtistSE getArtistSE(Artist artist)'
+  print '  ArtistSE getArtistSE(Artist artist, User user)'
   print '  ArtistLFM getArtistLFM(Artist artist)'
+  print '  ArtistHistory getArtistHistory(Artist artist, i32 n)'
   print '   searchArtist(string text)'
-  print '   getTopArtists(i32 n, string tag)'
+  print '   getSETop(i32 n)'
+  print '   getLFMTop(i32 n)'
   print '   getTradedArtists(i32 n)'
+  print '   getRecentTrades(i32 n)'
   print '  UserData getUserData(User user)'
-  print '  UserInfo getUserInfo(string userstr)'
-  print '  UserLeaderboard getTopUsers(i32 n, string league)'
+  print '  AuthUser getUserMoney(AuthUser user)'
+  print '  UserLeaderboard getTopUsers(i32 n, League league)'
   print '  UserLeaderboard getNearUsers(User user)'
-  print '  Transaction getTransaction(Artist artist)'
-  print '  i32 buyArtist(Transaction transaction, User user)'
-  print '  i32 sellArtist(Transaction transaction, User user)'
+  print '  Guarantee getGuarantee(Artist artist, AuthUser user)'
+  print '  bool buy(Guarantee guarantee, AuthUser user)'
+  print '  bool sell(Guarantee guarantee, AuthUser user)'
   print ''
   sys.exit(0)
 
@@ -98,10 +100,10 @@ if cmd == 'apikey':
   pp.pprint(client.apikey())
 
 elif cmd == 'login':
-  if len(args) != 1:
-    print 'login requires 1 args'
+  if len(args) != 2:
+    print 'login requires 2 args'
     sys.exit(1)
-  pp.pprint(client.login(args[0],))
+  pp.pprint(client.login(args[0],args[1],))
 
 elif cmd == 'getArtist':
   if len(args) != 1:
@@ -115,17 +117,11 @@ elif cmd == 'getLightArtist':
     sys.exit(1)
   pp.pprint(client.getLightArtist(eval(args[0]),))
 
-elif cmd == 'getArtistHistory':
-  if len(args) != 1:
-    print 'getArtistHistory requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.getArtistHistory(eval(args[0]),))
-
 elif cmd == 'getArtistSE':
-  if len(args) != 1:
-    print 'getArtistSE requires 1 args'
+  if len(args) != 2:
+    print 'getArtistSE requires 2 args'
     sys.exit(1)
-  pp.pprint(client.getArtistSE(eval(args[0]),))
+  pp.pprint(client.getArtistSE(eval(args[0]),eval(args[1]),))
 
 elif cmd == 'getArtistLFM':
   if len(args) != 1:
@@ -133,17 +129,29 @@ elif cmd == 'getArtistLFM':
     sys.exit(1)
   pp.pprint(client.getArtistLFM(eval(args[0]),))
 
+elif cmd == 'getArtistHistory':
+  if len(args) != 2:
+    print 'getArtistHistory requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.getArtistHistory(eval(args[0]),eval(args[1]),))
+
 elif cmd == 'searchArtist':
   if len(args) != 1:
     print 'searchArtist requires 1 args'
     sys.exit(1)
   pp.pprint(client.searchArtist(args[0],))
 
-elif cmd == 'getTopArtists':
-  if len(args) != 2:
-    print 'getTopArtists requires 2 args'
+elif cmd == 'getSETop':
+  if len(args) != 1:
+    print 'getSETop requires 1 args'
     sys.exit(1)
-  pp.pprint(client.getTopArtists(eval(args[0]),args[1],))
+  pp.pprint(client.getSETop(eval(args[0]),))
+
+elif cmd == 'getLFMTop':
+  if len(args) != 1:
+    print 'getLFMTop requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getLFMTop(eval(args[0]),))
 
 elif cmd == 'getTradedArtists':
   if len(args) != 1:
@@ -151,23 +159,29 @@ elif cmd == 'getTradedArtists':
     sys.exit(1)
   pp.pprint(client.getTradedArtists(eval(args[0]),))
 
+elif cmd == 'getRecentTrades':
+  if len(args) != 1:
+    print 'getRecentTrades requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getRecentTrades(eval(args[0]),))
+
 elif cmd == 'getUserData':
   if len(args) != 1:
     print 'getUserData requires 1 args'
     sys.exit(1)
   pp.pprint(client.getUserData(eval(args[0]),))
 
-elif cmd == 'getUserInfo':
+elif cmd == 'getUserMoney':
   if len(args) != 1:
-    print 'getUserInfo requires 1 args'
+    print 'getUserMoney requires 1 args'
     sys.exit(1)
-  pp.pprint(client.getUserInfo(args[0],))
+  pp.pprint(client.getUserMoney(eval(args[0]),))
 
 elif cmd == 'getTopUsers':
   if len(args) != 2:
     print 'getTopUsers requires 2 args'
     sys.exit(1)
-  pp.pprint(client.getTopUsers(eval(args[0]),args[1],))
+  pp.pprint(client.getTopUsers(eval(args[0]),eval(args[1]),))
 
 elif cmd == 'getNearUsers':
   if len(args) != 1:
@@ -175,23 +189,23 @@ elif cmd == 'getNearUsers':
     sys.exit(1)
   pp.pprint(client.getNearUsers(eval(args[0]),))
 
-elif cmd == 'getTransaction':
-  if len(args) != 1:
-    print 'getTransaction requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.getTransaction(eval(args[0]),))
-
-elif cmd == 'buyArtist':
+elif cmd == 'getGuarantee':
   if len(args) != 2:
-    print 'buyArtist requires 2 args'
+    print 'getGuarantee requires 2 args'
     sys.exit(1)
-  pp.pprint(client.buyArtist(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.getGuarantee(eval(args[0]),eval(args[1]),))
 
-elif cmd == 'sellArtist':
+elif cmd == 'buy':
   if len(args) != 2:
-    print 'sellArtist requires 2 args'
+    print 'buy requires 2 args'
     sys.exit(1)
-  pp.pprint(client.sellArtist(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.buy(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'sell':
+  if len(args) != 2:
+    print 'sell requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.sell(eval(args[0]),eval(args[1]),))
 
 else:
   print 'Unrecognized method %s' % cmd

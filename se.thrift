@@ -27,19 +27,23 @@ struct Artist {
 }
 
 /** Ordered list by date of artist values (oldest to newest). Formatted as 
-    (date,price) pairs.
-    Daterange might help in drawing the graphs (?) */
+    (date,price) pairs. */
 struct ArtistHistory {
     1: required list<map<i32,i32>> histvalue
-    2: optional i32 daterange
+}
+
+/** Artist biography object */
+struct ArtistBio {
+    1: required string summary
+    2: required string content
 }
 
 /** Encapsulates the data in our db. num_remaining is the amount available to 
-    be bought */ 
+    be bought. Price will be either the buy price or sell price */ 
 struct ArtistSE {
     1: required Artist artist
     2: required i32 price
-    3: required i32 num_remaining
+    3: required i32 numremaining
     4: optional bool ownedby
 }
 
@@ -51,7 +55,7 @@ struct ArtistLFM {
     4: required i32 plays
     5: required list<string> tags
     6: required list<Artist> similar
-    7: required string bio
+    7: required ArtistBio bio
 }
 
 # User
@@ -71,14 +75,22 @@ struct Trophy {
     3: optional string challenge
 }
 
+/** User leagues. */
+struct League {
+    1: required string name
+    2: optional string description
+    3: optional string icon
+}
+
 /** Basic user info. */
 struct User {
     1: required string name
+    2: optional i32 points
 }
 
 /** Basic authenticated user. Does not necessarily include their money */
 struct AuthUser {
-    1: required string name
+    1: required User name
     2: required string session_key
     3: optional i32 money
 }
@@ -90,7 +102,7 @@ struct UserData {
     2: required list<Trade> trades
     3: required list<ArtistSE> stocks
     4: required list<Trophy> trophies
-    5: optional i32 curleaguepos
+    5: required League league
 }
 
 /** Contains a list of users in decreasing leaderboard position. Position is 
@@ -106,8 +118,9 @@ struct UserLeaderboard {
     Elephant is the generated token that is first sent and then returned. */
 struct Guarantee {
     1: required string elephant
-    2: required i32 value
-    3: required i32 time
+    2: required Artist artist
+    3: required i32 price
+    4: required i32 time
 }
 
 ## Exceptions
@@ -139,7 +152,8 @@ exception SearchException {
 enum TransactionCode {
     NONE = 1,
     CONN = 2,
-    NUM = 3
+    NUM = 3,
+    ARG = 4
 }
 
 exception TransactionException {
@@ -166,9 +180,9 @@ service ScrobbleExchange {
     /** Returns the SE API key for sending to last.fm */
     string apikey (),
     
-    /** If successful, returns the user session token. */
-    string login(1: required string username, 2: required string token) throws 
-(1: LoginException lexp),
+    /** If successful, returns the AuthUser with the user session token */
+    AuthUser login(1: required string username, 2: required string token) 
+throws (1: LoginException lexp),
     
     # Data retrieval
     # Artists
@@ -185,29 +199,31 @@ SearchException searchexp),
     
     /** Returns the data from our db. If the artist isn't there, the data gets 
         on-demand pulled. If either artist or mbid are unknown, then the empty 
-        string should be sent. */
-    ArtistSE getArtistSE (1: required Artist artist) throws (1: SearchException 
-searchexp),
+        string should be sent. User sets the `ownedby' bool, by default it 
+        should be an empty string the name */
+    ArtistSE getArtistSE (1: required Artist artist, 2: required User user) 
+throws (1: SearchException searchexp),
     
     /** Returns the artist info from last.fm for the artist. If either artist 
         or mbid are unknown, then the empty string should be sent. */
     ArtistLFM getArtistLFM (1: required Artist artist) throws (1:SearchException 
 searchexp),
 
-    /** Returns a list of tuples of the price of the artist over time. For new 
-        artists the empty list is returned. */
-    ArtistHistory getArtistHistory (1: required Artist artist) throws (1: 
-SearchException searchexp),
+    /** Returns a list of tuples of the price of the artist the past n days. 
+        For new artists the empty list is returned. */
+    ArtistHistory getArtistHistory (1: required Artist artist, 2: required i32 
+n) throws (1: SearchException searchexp),
     
     /** returns a list of possible artists from a partial string. Ordered by 
         decreasing relevance. List size is limited to 5 elements. */
     list<Artist> searchArtist (1: required string text) throws (1: 
 SearchException searchexp),
     
-    /** Returns a list of the n top artists by decreasing value. By default, 
-        tag should be the empty string, and only used if you want specific tag 
-        access. */
-    list<Artist> getTopArtists (1: required i32 n, 2: string tag),
+    /** Returns a list of the n top SE artists by decreasing value. */
+    list<Artist> getSETop (1: required i32 n),
+    
+    /** Returns a list of the n top last.fm artists by decreasing value. */
+    list<Artist> getLFMTop (1: required i32 n),
     
     /** Returns a list of the n most traded artists by decreasing value. */
     list<Artist> getTradedArtists (1: required i32 n),
@@ -217,34 +233,37 @@ SearchException searchexp),
     
     # User
    
-    /** Returns extended user data for the current user. Requires the authuser 
-        token for validation */
-    UserData getUserData (1: required AuthUser user) throws (1: UserException 
+    /** Returns extended user data for the current user. */
+    UserData getUserData (1: required User user) throws (1: UserException 
+uexp),
+    
+    /** Returns the current user with money. Requires AuthUser to auth */
+   AuthUser getUserMoney (1: required AuthUser user) throws (1: UserException 
 uexp),
     
     /** Returns the n top users by decreasing value in the given league. */
-    UserLeaderboard getTopUsers (1: required i32 n, 2: required string league) 
+    UserLeaderboard getTopUsers (1: required i32 n, 2: required League league) 
 throws (1: UserException uexp),
     
     /** Returns a list of 10 users with 4 above and 5 below in the leaderboard 
-        compared to the user provided, including the user's position. Requires 
-        the session token for validation */
-    UserLeaderboard getNearUsers (1: required AuthUser user) throws (1: 
+        compared to the user provided, including the user's position. */
+    UserLeaderboard getNearUsers (1: required User user) throws (1: 
 UserException uexp),
     
     # Data Modification
     
     /** Returns the guarantee token (elephant) to the front end */
-    Guarantee getGuarantee (1: required Artist artist) throws (1: 
-TransactionException transexp),
-    
-    /** Buys artist for user, and returns the new value of that stock in the 
-        game. */
-    i32 buyArtist (1: required Guarantee transaction, 2: required AuthUser 
+    Guarantee getGuarantee (1: required Artist artist, 2: required AuthUser 
 user) throws (1: TransactionException transexp),
     
-    /** Sells artist for user, and returns the new value of that artist. */
-    i32 sellArtist (1: required Guarantee transaction, 2: required AuthUser 
+    /** Buys artist for user, and returns a bool as to whether it was 
+        successful or not */
+    bool buy (1: required Guarantee guarantee, 2: required AuthUser 
+user) throws (1: TransactionException transexp),
+    
+    /** Sells artist for user, and returns a bool as to whether it was 
+        successful or not */
+    bool sell (1: required Guarantee guarantee, 2: required AuthUser 
 user) throws (1: TransactionException transexp)
    
 }

@@ -12,17 +12,20 @@ from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 from thrift.server import TServer
 
-#import datm
-#import config
+import datm
+import config
 
-#lastfm_config = {
-    #'api_key': config.lastfmcred['api_key'],
-    #'secret' : config.lastfmcred['secret']
-#}
+from datetime import datetime
+import time, hmac
 
-#db_args = {
-    #'url': 'sqlite:///:memory:'
-#}
+lastfm_config = {
+    'api_key': config.lastfmcred['api_key'],
+    'secret' : config.lastfmcred['secret']
+}
+
+db_args = {
+    'url': 'sqlite:///:memory:'
+}
 
 class SEHandler(object):
     #_config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args)
@@ -31,204 +34,193 @@ class SEHandler(object):
         """
         Returns the SE API key for sending to last.fm
         """
-        #return config.lastfmcred['apikey']
-        pass
+        return config.lastfmcred['api_key']
 
     def login(self, username, token):
         """
-        If successful, returns the user session token.
-
+        If successful, returns the AuthUser with the user session token
+        
         Parameters:
         - username
         - token
         """
-        #with datm.DATMSession(_config):
-            #try:
-                #user = datm.User(self._config, username)
-                #stoken = user.getSession(self._config, token)
+        with datm.DATMSession(_config):
+            try:
+                user = datm.user(_config, username)
+                sessiontoken = user.getSession(_config, token)
         
-                #return stoken
-            #except InvalidAuthorisationException:
-                #l = LoginException()
-                #l.code = LoginCode.AUTH
-                #l.message = 'User not authenticated'
-                #raise l
-        pass
+                return stoken
+            except InvalidAuthorisationException:
+                raise LoginException(LoginCode.AUTH, 'User not authenticated')
 
-    def getArtist(self, artist, user, token):
+    def getArtist(self, artist):
         """
         Returns basic artist info. If either the artist or the mbid is unknown,
-        then the empty string should be sent. User will add the `ownedby'
-        property to artist
-
+        then the empty string should be sent.
+        
         Parameters:
         - artist
-        - user
-        - token
         """
-        #with datm.DATMSession(_config):
-            #if not artist.mbid:
-                #a = datm.Artist(self._config, mbid = artist.mbid, user=user)
-            #else if not artist.name:
-                #a = datm.Artist(self._config, name = artist.name, user = user)
-            #else:
-                #s = SearchException()
-                #s.code = SearchCode.ARG
-                #s.message = 'Incorrect artist data'
-                #raise s
+        with datm.DATMSession(_config):
+            if not artist.mbid:
+                a = datm.artist(_config, mbid = artist.mbid)
+            else if not artist.name:
+                a = datm.artist(_config, name = artist.name)
+            else:
+                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
                 
-            #u = datm.User(self._config, user.name, token)
-            
-            #ret = Artist()
-            #ret.mbid = a.mbid
-            #ret.name = a.name
-            #ret.imgurls = a.images
-            #ret.ownedby = u.owns(a)
+            ret = Artist(mbid = a.mbid, name = a.name, imgurls = a.images)
         
-            #return ret
-        pass
+            return ret
 
-    def getLightArtist(self, artist, user):
+    def getLightArtist(self, artist):
         """
-        Returns only MBID and name. If either artist or mbid are unknown, then
-        the empty string should be sent
+        Returns only MBID and name. If either artist or mbid are unknown, 
+        then the empty string should be sent
+        
+        Parameters:
+        - artist
+        """
+        with datm.DATMSession(_config):
+            if not artist.mbid:
+                a = datm.artist(_config, mbid = artist.mbid)
+            else if not artist.name:
+                a = datm.artist(_config, name = artist.name)
+            else:
+                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
+            
+            ret = Artist(mbid = a.mbid, name = a.name)
+        
+            return ret
 
+    def getArtistSE(self, artist, user):
+        """
+        Returns the data from our db. If the artist isn't there, the data 
+        gets on-demand pulled. If either artist or mbid are unknown, then the 
+        empty string should be sent. User sets the `ownedby' bool, by default it
+        should be an empty string
+        
         Parameters:
         - artist
         - user
         """
-        #with datm.DATMSession(_config):
-            #if not artist.mbid:
-                #a = datm.Artist(self._config, mbid = artist.mbid, user=user)
-            #else if not artist.name:
-                #a = datm.Artist(self._config, name = artist.name, user = user)
-            #else:
-                #s = SearchException()
-                #s.code = SearchCode.ARG
-                #s.message = 'Incorrect artist data'
-                #raise s
+        with datm.DATMSession(_config):
+            if not artist.mbid:
+                a = datm.artist(_config, mbid = artist.mbid,user = user)
+            else if not artist.name:
+                a = datm.artist(_config, name = artist.name, user = user)
+            else:
+                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
             
-            #ret = Artist()
-            #ret.mbid = a.mbid
-            #ret.name = a.name
-        
-            #return ret
-        pass
-
-    def getArtistHistory(self, artist):
-        """
-        Returns a list of tuples of the price of the artist over time. For new
-        artists the empty list is returned.
-
-        Parameters:
-        - artist
-        """
-        pass
-
-    def getArtistSE(self, artist, user, token):
-        """
-        Returns the data from our db. If the artist isn't there, the data gets
-        on-demand pulled. If either artist or mbid are unknown, then the empty
-        string should be sent. User will add the `ownedby' property to artist
-
-        Parameters:
-        - artist
-        - user
-        - token
-        """
-        #with datm.DATMSession(_config):
-            #if not artist.mbid:
-                #a = datm.Artist(self._config, mbid = artist.mbid, 
-                    #user=user)
-            #else if not artist.name:
-                #a = datm.Artist(self._config, name = artist.name, user = 
-                    #user)
-            #else:
-                #s = SearchException()
-                #s.code = SearchCode.ARG
-                #s.message = 'Incorrect artist data'
-                #raise s
+            u = datm.user(_config, user.name)
             
-            #u = datm.User(self._config, user.name, token)
+            r = Artist(mbid = a.mbid, name = a.name, imgurls = a.images)
+            ret = ArtistSE(artist = r, numremaining = a.no_remaining, ownedby 
+                                                                    = u.owns(a))
             
-            #r = Artist()
-            #r.mbid = a.mbid
-            #r.name = a.name
-            #r.imgurls = a.images
-            #r.ownedby = u.owns(a)
+            if (u.owns(a)):
+                ret.price = a.local_price * 0.97
+            else:
+                ret.price = a.local_price
             
-            #ret = ArtistSE()
-            #ret.artist = r
-            #ret.price = a.price
-            #ret.num_remaining = a.no_remaining
-            
-            #return ret
-        pass
+            return ret
 
-    def getArtistLFM(self, artist, user, token):
+    def getArtistLFM(self, artist):
         """
         Returns the artist info from last.fm for the artist. If either artist
-        or mbid are unknown, then the empty string should be sent. User will add
-        the `ownedby' property to the artist
-
+        or mbid are unknown, then the empty string should be sent.
+        
         Parameters:
         - artist
-        - user
-        - token
         """
-        #with datm.DATMSession(_config):
-            #if not artist.mbid:
-                #a = datm.Artist(self._config, mbid = artist.mbid, 
-                    #user=user)
-            #else if not artist.name:
-                #a = datm.Artist(self._config, name = artist.name, user = 
-                    #user)
-            #else:
-                #s = SearchException()
-                #s.code = SearchCode.ARG
-                #s.message = 'Incorrect artist data'
-                #raise s
+        with datm.DATMSession(_config):
+            if not artist.mbid:
+                a = datm.artist(_config, mbid = artist.mbid)
+            else if not artist.name:
+                a = datm.artist(_config, name = artist.name)
+            else:
+                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
+
+            b = ArtistBio(summary = a.summary, content = a.content)       
             
-            #u = datm.User(self._config, user.name, token)
+            r = Artist(mbid = a.mbid, name = a.name, imgurls = a.images)
+            ret = ArtistLFM(artist = r, streamable = a.streamable, listeners = 
+                            a.listeners, plays = a.plays, tags = a.tags, 
+similar                             = a.similar, bio = b)
             
-            #r = Artist()
-            #r.mbid = a.mbid
-            #r.name = a.name
-            #r.imgurls = a.images
-            #r.ownedby = u.owns(a)
-            
-            #ret = ArtistLFM()
-            #ret.artist = a.streamable
-            #ret.listeners = a.listeners
-            #ret.plays = a.plays
-            #ret.similar = a.similar
-            #ret.bio = a.bio
-            
-            #return ret
+            return ret
+
+    def getArtistHistory(self, artist, n):
+        """
+        Returns a list of tuples of the price of the artist the past n days.
+        For new artists the empty list is returned.
         
-        pass
+        Parameters:
+        - artist
+        - n
+        """
+        with datm.DATMSession(_config):
+            if not artist.mbid:
+                a = datm.artist(_config, mbid = artist.mbid)
+            else if not artist.name:
+                a = datm.artist(_config, name = artist.name)
+            else:
+                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
+            
+            time_now = datetime.now()
+            time_utc = time.mktime(time_now.timetuple()) - time.timezone
+            time_utc_old = time_utc - n*24*60*60
+            
+            ret = ArtistHistory()
+            ret.histvalue = a.history(_config, after = time_utc_old)
+            
+            return ret
 
     def searchArtist(self, text):
         """
         returns a list of possible artists from a partial string. Ordered by
         decreasing relevance. List size is limited to 5 elements.
-
+        
         Parameters:
         - text
         """
-        pass
+        with datm.DATMSession(_config):
+            alist = datm.artist.search(_config, text, limit = 5)
+            
+            ret = [Artist(mbid = a.mbid, name = a.name, imgurls = a.images) for
+                                                                    a in alist]
+            
+            return ret
 
-    def getTopArtists(self, n, tag):
+    def getSETop(self, n):
         """
-        Returns a list of the n top artists by decreasing value. By default,
-        tag should be the empty string, and only used if you want specific tag
-        access.
+        Returns a list of the n top SE artists by decreasing value.
 
         Parameters:
         - n
-        - tag
         """
-        pass
+        with datm.DATMSession(_config):
+            alist = datm.artist.top(_config, limit = n)
+            
+            ret = [Artist(mbid = a.mbid, name = a.name, imgurls = a.images) for
+                                                                    a in alist]
+
+            return ret
+    
+    def getLFMTop(self, n):
+        """
+        Returns a list of the n top last.fm artists by decreasing value.
+
+        Parameters:
+        - n
+        """
+        with datm.DATMSession(_config):
+            alist = datm.artist.popular(_config, limit = n)
+            
+            ret = [Artist(mbid = a.mbid, name = a.name, imgurls = a.images) for
+                                                                    a in alist]
+            
+            return ret
 
     def getTradedArtists(self, n):
         """
@@ -237,8 +229,14 @@ class SEHandler(object):
         Parameters:
         - n
         """
-        pass
+        with datm.DATMSession(_config):
+            alist = datm.artist.most_traded(_config, limit = n)
+            
+            ret = [Artist(mbid = a.mbid, name = a.name, imgurls = a.images) for
+                                                                    a in alist]
 
+            return ret
+    
     def getRecentTrades(self, n):
         """
         Returns a list of the n most recent trades
@@ -246,38 +244,64 @@ class SEHandler(object):
         Parameters:
         - n
         """
-        pass
+        with datm.DATMSession(_config):
+            tlist = datm.trade.recent(_config, limit = n)
+            
+            ret = [Artist(mbid = t.mbid, name = t.name, imgurls = t.images) for
+                                                                    t in tlist]
+            
+            return ret
 
-    def getRecentArtistTrades(self, n):
+    def getUserData(self, user):
         """
-        Returns a list of the n most recent trades of this artist
-
-        Parameters:
-        - n
-        """
-        pass
-
-    def getUserData(self, user, token):
-        """
-        Returns extended user data for the current user. Requires the session
-        token for validation
-
+        Returns extended user data for the current user.
+        
         Parameters:
         - user
-        - token
         """
-        pass
-
-    def getUserInfo(self, userstr):
+        with datm.DATMSession(_config):
+            u = datm.user(_config, user.name)
+            
+            basicu = User(name = u.name, points = u.points)
+            
+            ret = UserData(user = basicu)
+            ret.trades = []
+            ret.stocks = []
+            ret.trophies = [Trophy(name = u.trophies.name, description = 
+                                                        u.trophies.description)]
+            ret.league = League(name = u.league.name, description = 
+                                    u.league.description, icon = u.league.icon)
+           
+            for t in u.trades:
+                a = Artist(mbid = t.Artist.mbid, name = t.Artist.name, imgurls 
+                                                            = t.Artist.images)
+                
+                ret.trades.append(Trade(artist = a, price = t.price, time = 
+                                                                        t.time))
+            
+            for t in u.stocks:
+                a = Artist(mbid = t.Artist.mbid, name = t.Artist.name, imgurls 
+                                                            = t.Artist.images)
+                
+                ret.stocks.append(ArtistSE(artist = a, price = t.price, 
+                                                numremaining = no_remaining)
+            
+            return ret
+        
+    def getUserMoney(self, user):
         """
-        Returns extended user data for the user in the string. Mostly, used for
-        profile pages
-
+        Returns the current user with money. Requires AuthUser to auth
+        
         Parameters:
-        - userstr
+        - user
         """
-        pass
+        with datm.DATMSession(_config):
+            u = datm.user(_config, user.name, user.session_key)
+            
+            return AuthUser(name = user.name, session_key = user.session_key, 
+                                                                money = u.money)
 
+    
     def getTopUsers(self, n, league):
         """
         Returns the n top users by decreasing value in the given league.
@@ -286,49 +310,98 @@ class SEHandler(object):
         - n
         - league
         """
-        pass
+        with datm.DATMSession(_config):
+            ulist = datm.user.top(_config, limit = n, league = league.name)
+            
+            return UserLeaderboard(users = [User(name = u.name) for u in ulist])
 
-    def getNearUsers(self, user, token):
+    def getNearUsers(self, user):
         """
         Returns a list of 10 users with 4 above and 5 below in the leaderboard
-        compared to the user provided, including the user's position. Requires
-        the session token for validation
+        compared to the user provided, including the user's position.
 
         Parameters:
         - user
-        - token
         """
-        pass
-
-    def getGuarantee(self, artist):
+        with datm.DATMSession(_config):
+            ulist = datm.user.near(_config, name = user.name)
+            
+            return UserLeaderboard(users = [User(name = u.name) for u in ulist])
+   
+    def getGuarantee(self, artist, user):
         """
         Returns the guarantee token (elephant) to the front end
-
+        
         Parameters:
         - artist
-        """
-        pass
-
-    def buyArtist(self, transaction, user):
-        """
-        Buys artist for user, and returns the new value of that stock in the
-        game.
-
-        Parameters:
-        - transaction
         - user
         """
-        pass
+        with datm.DATMSession(_config):
+            if not artist.mbid:
+                a = datm.artist(_config, mbid = artist.mbid, user = user)
+            else if not artist.name:
+                a = datm.artist(_config, name = artist.name, user = user)
+            else:
+                raise TransactionException(TransactionCode.ARG, 'Incorrect \
+                                                                artist data')
+            
+            u = datm.user(_config, user.name)
+            
+            if (u.owns(a)):
+                price = a.local_price * 0.97
+            else:
+                price = a.local_price
+           
+            # Calculating the elephant
+            time_now = datetime.now()
+            time_utc = time.mktime(time_now.timetuple()) - time.timezone
 
-    def sellArtist(self, transaction, user):
+            m = hmac.new(datm.auth_secret)
+            m.update(str(time_utc))
+            m.update(str(price))
+            el = m.hexdigest()
+            
+            return Guarantee(elephant = el, artist = artist, price = price, 
+                   time = time_utc)
+        
+
+    def buy(self, guarantee, user):
         """
-        Sells artist for user, and returns the new value of that artist.
+        Buys artist for user, and returns a bool as to whether it was
+        successful or not
 
         Parameters:
-        - transaction
+        - guarantee
         - user
         """
-        pass
+        with datm.DATMSession(_config):
+            try:
+                #authenticate the elephant
+                #create trade
+                #decrement money
+            except NoStockRemainingException:
+                raise TransactionException(code = TransactionCode.NUM, message 
+                                                    = 'Some error happened!')
+
+        
+
+    def sell(self, guarantee, user):
+        """
+        Sells artist for user, and returns a bool as to whether it was
+        successful or not
+
+        Parameters:
+        - guarantee
+        - user
+        """
+        with datm.DATMSession(_config):
+           try:
+           
+           except NoStockRemainingException:
+               raise TransactionException(code = TransactionCode.NUM, message 
+                                                    = 'Some error happened!')
+        
+
 
 
 processor = ScrobbleExchange.Processor(SEHandler())

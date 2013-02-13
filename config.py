@@ -1,4 +1,6 @@
 # Python config
 
-apikey = ''
-secret = ''
+lastfmcred = {
+    'api_key': '',
+    'secret': ''
+}
