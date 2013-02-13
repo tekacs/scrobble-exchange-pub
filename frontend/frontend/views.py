@@ -5,16 +5,14 @@ import models
 from utils import json_response
 
 ## Import thrift stuff
-#import sys
-#sys.path.append('../../../api/gen-py') # Variable depending on install
 
-#from se_api import ScrobbleExchange
-#import se_api.ttypes
+from se_api import ScrobbleExchange
+import se_api.ttypes
 
-#from thrift import Thrift
-#from thrift.transport import TSocket
-#from thrift.transport import TTransport
-#from thrift.protocol import TBinaryProtocol
+from thrift import Thrift
+from thrift.transport import TSocket
+from thrift.transport import TTransport
+from thrift.protocol import TBinaryProtocol
 ## End of thrift
 
 #try:
@@ -36,6 +34,7 @@ def home(request):
     # user_data = __portfolio(request.session['user'])
     # user_data.worth = sum(se_api.getArtistData(x).stockvalue
     #                         for x in user_data.curstocks)
+    #api_user_data = client.getUserData(request.session['user'])
 
     # Dummy artist data
     user_data = models.UserData()

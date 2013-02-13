@@ -23,6 +23,9 @@ Icon
 ### Python
 ### https://github.com/github/gitignore/blob/master/Python.gitignore
 
+## SQLite Database
+*.db
+
 *.py[cod]
 
 # C extensions
