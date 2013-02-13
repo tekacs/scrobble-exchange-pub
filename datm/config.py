@@ -1,9 +1,17 @@
 __author__ = 'amar'
 
+# FIXME: Shouldn't need to munge sys.path! :P
+import sys
+sys.path.append('..')
+
+import threading
 from functools import wraps
 
 from lastfm import Api
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from base import DATMObject
 
 class DATMConfig(object):
     def __init__(self, lastfm=None, db_args=None):
@@ -23,16 +31,21 @@ class DATMConfig(object):
             _db_args.update(db_args)
             url = _db_args.pop('url')
             engine = create_engine(url, **_db_args)
-            self._db = DATMDatabase(engine)
-        self._sessions = {}
+            SessionBase = sessionmaker(bind=engine)
+            self._db = DATMDatabase(engine, SessionBase)
+        self._sessions = threading.local()
 
     @property
     def lastfm(self):
-        return self._lastfm
+        getattr(self, '_lastfm', None)
 
     @property
     def db(self):
-        return self._db
+        getattr(self, '_db', None)
+
+    @property
+    def session(self):
+        return self._sessions.current_session
 
 class DATMLastFm(object):
     def __init__(self, api):
@@ -43,35 +56,55 @@ class DATMLastFm(object):
         return self._api
 
 class DATMDatabase(object):
-    def __init__(self, engine):
+    def __init__(self, engine, SessionBase):
         self._engine = engine
+        self._SessionBase = SessionBase
 
     @property
     def engine(self):
         return self._engine
 
+    @property
+    def SessionBase(self):
+        return self._SessionBase
+
+def has_db(obj):
+    if isinstance(obj, DATMObject):
+        return obj.db_object is not None
+    if isinstance(obj, DATMConfig):
+        return obj.session is not None
+    return False
+
+def has_lastfm(obj):
+    if isinstance(obj, DATMObject):
+        return obj.lastfm_object is not None
+    if isinstance(obj, DATMConfig):
+        return obj.lastfm is not None
+    return False
+
 def require_data_source(f):
     @wraps(f)
-    def inner(self, *args, **kwargs):
-        if (self.lastfm is None) and (self.lastfm is None):
+    def inner(first, *args, **kwargs):
+        if has_db(first) or has_lastfm(first):
+            return f(first, *args, **kwargs)
+        else:
             raise NoDataSourceException()
-        f(self, *args, **kwargs)
     return inner
 
 def require_lastfm(f):
     @wraps(f)
-    def inner(self, *args, **kwargs):
-        if self.lastfm is None:
+    def inner(first, *args, **kwargs):
+        if not has_lastfm(first):
             raise NoLastFMException()
-        f(self, *args, **kwargs)
+        return f(first, *args, **kwargs)
     return inner
 
 def require_db(f):
     @wraps(f)
-    def inner(self, *args, **kwargs):
-        if self.db is None:
+    def inner(first, *args, **kwargs):
+        if has_db(first):
             raise NoDatabaseException()
-        f(self, *args, **kwargs)
+        return f(first, *args, **kwargs)
     return inner
 
 class NoDataSourceException(Exception):

@@ -2,25 +2,33 @@ __author__ = 'amar'
 
 import thread
 
-from sqlalchemy.orm import sessionmaker
-
-from config import NoDatabaseException
+from config import NoDatabaseException, DATMDatabase
 
 class DATMSession(object):
     def __init__(self, config):
         self._config = config
-        if config.db is None:
+        if not isinstance(config, DATMDatabase):
             raise NoDatabaseException()
-        self._db_session = sessionmaker(bind=config.db.engine)
+        self._db_session = config.db.SessionBase()
 
     def __enter__(self):
-        self._config.sessions[thread.get_ident()]
+        self._config.sessions.current_session = self
 
     def __exit__(self):
         try:
-            self._config.sessions.popitem(thread.get_ident())
-        except KeyError:
+            del self._config.sessions.current_session
+        except TypeError:
             raise InvalidSessionException()
+        self.db_session.commit()
+        self.db_session.remove()
+
+    @property
+    def config(self):
+        return self._config
+
+    @property
+    def db_session(self):
+        return self._db_session
 
 class InvalidSessionException(Exception):
     pass
