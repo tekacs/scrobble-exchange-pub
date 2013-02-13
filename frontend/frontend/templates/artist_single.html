@@ -1,22 +1,34 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load extras %}
 
 {% block title %}{{artist.name}}{% endblock title %}
 
 {% block above_main %}
-    <h1 class="artist-name">{{artist.name}}</h1>   
+    <h1 class="artist-name">{{artist.name}}</h1> 
+    <nav>
+        <ul>
+            <li><a href="#">Tracks</a></li>
+            <li><a href="#">Albums</a></li>
+            <li><a href="#">Pictures</a></li>
+            <li><a href="#">Videos</a></li>
+            <li><a href="#">Events</a></li>
+            <li><a href="#">Biography</a></li>
+            <li><a href="#">More...</a></li>
+        </ul>
+    </nav>  
 {% endblock above_main %}
     
 {% block main %}	
 	<div id="chart_container">
 		<div id="y_axis"></div>
-		<div style="height: 0; overflow: visible;">
-		  <div id="barChart"></div>
+		<div style="overflow: visible;">
+		  <div id="dividendChart"></div>
 		</div>
 
 		<div style="overflow: visible;">
-		  <div id="lineChart"></div>
+		  <div id="priceChart"></div>
 		</div>
 	</div>
 
@@ -24,6 +36,17 @@
         {{artist.bio.summary|safe}}
         <!-- TODO: read more link for full bio -->
     <p>
+
+    <h3 class="artist-subheader">Similar Artists</h3>
+    {% for similar_artist in artist.similar_artists %}
+        <a href="/artist/{{ similar_artist.name|urlencode }}">
+            <div class="artist-img" style="background-image: url('{{ similar_artist.images|get_image:'mega' }}');">
+                <div class="text-over-image bottom">
+                    <span class="primary">{{ similar_artist.name|truncatechars:15 }}</span>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
 {% endblock main %}
 
 {% block sidebar %}

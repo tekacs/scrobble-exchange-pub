@@ -110,7 +110,25 @@ def artist_single(request, artist):
         'name': artist, 
         'bio': {
             'summary': example_bio
-        }
+        },
+        'similar_artists': [
+            {
+                'name': 'Daft Punk',
+                'current_price': 2200,
+                'images': {
+                    'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/4183432\/Daft+Punk+daftpunk_1.jpg',
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'    
+                    # in real data, get all available image urls
+                }
+            },
+            {
+                'name': 'A random band with a missing image and a long name! (and punctuation)',
+                'current_price': 100,
+                'images': {   
+                    # in real data, get all available image urls
+                }
+            }
+        ]
     })();
     return render_to_response('artist_single.html', {'artist': artist})
 

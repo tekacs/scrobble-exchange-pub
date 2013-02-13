@@ -9,25 +9,32 @@ var Artist = {
         //set up our data series with 50 random data points
         var Rickshaw = window.Rickshaw;
 
-        var seriesData = [ [] ];
+        var artistPriceData = [ [] ];
+        var artistDividendData = [ [] ];
         var random = new Rickshaw.Fixtures.RandomData(60);
 
         for (var i = 0; i < 60; i++) {
-          random.addData(seriesData);
+          random.addData(artistPriceData);
+          random.addData(artistDividendData);
         }
 
         var graph = new Rickshaw.Graph( {
-          element: document.getElementById("lineChart"),
+          element: document.getElementById("priceChart"),
           width: 620,
           height: 300,
-          renderer: 'area',
+          renderer: 'line',
           stroke: true,
           series: [
             {
-              color: "#eee",
-              stroke: "#0187c5",
-              data: seriesData[0],
+              color: "#dc1303",
+              stroke: "",
+              data: artistPriceData[0],
               name: 'Price for ' + this.name
+            }, {
+              color: "#0187c5",
+              stroke: "#0187c5",
+              data: artistDividendData[0],
+              name: 'Dividends for ' + this.name
             }
           ]
         } );

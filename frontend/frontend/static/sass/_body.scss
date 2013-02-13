@@ -15,6 +15,22 @@ body {
             font-size: 20px;
             margin: 20px inherit;
             font-weight: bold;
+            width: 50%;
+            display: inline-block;
+            float: left;
+        }
+
+        nav {
+            display: inline-block;
+            margin: 20px inherit;
+            ul {
+                list-style-type: none;
+                li {
+                    display: inline;
+                    margin-left: 10px;
+                    font-size: 13px;
+                }
+            }
         }
     }
 
@@ -27,7 +43,12 @@ body {
             margin-top: 20px;
         }
 
-        div.portfolio-img {
+        .artist-subheader {
+            color: $mainBarRed;
+            font-size: ms(1);
+        }
+
+        div.portfolio-img, div.artist-img {
             $portfolio-img-height: 190px;
             background-size: cover;
             background-position: center;
@@ -62,7 +83,12 @@ body {
 
                 }       
             }   
-        }    
+        }  
+
+        div.artist-img {
+            width: 140px;
+            height: 140px;
+        }  
     }
 
     .sidebar {
