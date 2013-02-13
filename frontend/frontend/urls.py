@@ -23,7 +23,8 @@ urlpatterns = patterns('',
     url(r'^artists/', 'frontend.views.artists', name='artists'),
     url(r'^leaderboards/', 'frontend.views.leaderboards', name='leaderboards'),
     url(r'^sell/', 'frontend.views.sell', name='sell'),
-    
+    url(r'^lastfmauth/', include('lastfmauth.urls')),
+
     # TODO: need to fix for artists with spaces in names
     url(r'^artist/([^/]+)/$', 'frontend.views.artist_single', name ='artist_single'),
 
