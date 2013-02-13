@@ -2793,7 +2793,7 @@ class getUserData_args(object):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 1
+    (1, TType.STRING, 'user', None, None, ), # 1
   )
 
   def __init__(self, user=None,):
@@ -2809,9 +2809,8 @@ class getUserData_args(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.STRUCT:
-          self.user = User()
-          self.user.read(iprot)
+        if ftype == TType.STRING:
+          self.user = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -2825,8 +2824,8 @@ class getUserData_args(object):
       return
     oprot.writeStructBegin('getUserData_args')
     if self.user is not None:
-      oprot.writeFieldBegin('user', TType.STRUCT, 1)
-      self.user.write(oprot)
+      oprot.writeFieldBegin('user', TType.STRING, 1)
+      oprot.writeString(self.user)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -3215,7 +3214,7 @@ class getNearUsers_args(object):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 1
+    (1, TType.STRING, 'user', None, None, ), # 1
   )
 
   def __init__(self, user=None,):
@@ -3231,9 +3230,8 @@ class getNearUsers_args(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.STRUCT:
-          self.user = User()
-          self.user.read(iprot)
+        if ftype == TType.STRING:
+          self.user = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -3247,8 +3245,8 @@ class getNearUsers_args(object):
       return
     oprot.writeStructBegin('getNearUsers_args')
     if self.user is not None:
-      oprot.writeFieldBegin('user', TType.STRUCT, 1)
-      self.user.write(oprot)
+      oprot.writeFieldBegin('user', TType.STRING, 1)
+      oprot.writeString(self.user)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

@@ -260,7 +260,7 @@ similar                             = a.similar, bio = b)
         - user
         """
         with datm.DATMSession(_config):
-            u = datm.user(_config, user.name)
+            u = datm.user(_config, user)
             
             basicu = User(name = u.name, points = u.points)
             
@@ -324,7 +324,7 @@ similar                             = a.similar, bio = b)
         - user
         """
         with datm.DATMSession(_config):
-            ulist = datm.user.near(_config, name = user.name)
+            ulist = datm.user.near(_config, name = user)
             
             return UserLeaderboard(users = [User(name = u.name) for u in ulist])
    

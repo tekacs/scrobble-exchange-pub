@@ -35,10 +35,10 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getLFMTop(i32 n)'
   print '   getTradedArtists(i32 n)'
   print '   getRecentTrades(i32 n)'
-  print '  UserData getUserData(User user)'
+  print '  UserData getUserData(string user)'
   print '  AuthUser getUserMoney(AuthUser user)'
   print '  UserLeaderboard getTopUsers(i32 n, League league)'
-  print '  UserLeaderboard getNearUsers(User user)'
+  print '  UserLeaderboard getNearUsers(string user)'
   print '  Guarantee getGuarantee(Artist artist, AuthUser user)'
   print '  bool buy(Guarantee guarantee, AuthUser user)'
   print '  bool sell(Guarantee guarantee, AuthUser user)'
@@ -169,7 +169,7 @@ elif cmd == 'getUserData':
   if len(args) != 1:
     print 'getUserData requires 1 args'
     sys.exit(1)
-  pp.pprint(client.getUserData(eval(args[0]),))
+  pp.pprint(client.getUserData(args[0],))
 
 elif cmd == 'getUserMoney':
   if len(args) != 1:
@@ -187,7 +187,7 @@ elif cmd == 'getNearUsers':
   if len(args) != 1:
     print 'getNearUsers requires 1 args'
     sys.exit(1)
-  pp.pprint(client.getNearUsers(eval(args[0]),))
+  pp.pprint(client.getNearUsers(args[0],))
 
 elif cmd == 'getGuarantee':
   if len(args) != 2:

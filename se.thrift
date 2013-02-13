@@ -234,7 +234,7 @@ SearchException searchexp),
     # User
    
     /** Returns extended user data for the current user. */
-    UserData getUserData (1: required User user) throws (1: UserException 
+    UserData getUserData (1: required string user) throws (1: UserException 
 uexp),
     
     /** Returns the current user with money. Requires AuthUser to auth */
@@ -247,7 +247,7 @@ throws (1: UserException uexp),
     
     /** Returns a list of 10 users with 4 above and 5 below in the leaderboard 
         compared to the user provided, including the user's position. */
-    UserLeaderboard getNearUsers (1: required User user) throws (1: 
+    UserLeaderboard getNearUsers (1: required string user) throws (1: 
 UserException uexp),
     
     # Data Modification
