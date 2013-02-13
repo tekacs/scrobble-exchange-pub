@@ -22,7 +22,7 @@
     {% block header_additional %}{% endblock %}
 </head>
 <body>
-    
+
     <header>
         <div class="header-container row">
             <a href="#" class="logo">
@@ -47,6 +47,9 @@
     {% block content %}
     <div class="row body-content">
         <div class="twentyfour columns">
+            <div class="above_main">
+                {% block above_main %}{% endblock %}
+            </div>
             <div class="row">
                 <div class="seventeen columns main">   
                     {% block main %}{% endblock %}

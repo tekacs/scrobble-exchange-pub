@@ -4,8 +4,11 @@
 
 {% block title %}{{artist.name}}{% endblock title %}
 
-{% block main %}
-	<h4>{{artist.name}}</h4>
+{% block above_main %}
+    <h1 class="artist-name">{{artist.name}}</h1>   
+{% endblock above_main %}
+    
+{% block main %}	
 	<div id="chart_container">
 		<div id="y_axis"></div>
 		<div style="height: 0; overflow: visible;">
@@ -16,14 +19,20 @@
 		  <div id="lineChart"></div>
 		</div>
 	</div>
+
+    <p class="artist-bio">
+        {{artist.bio.summary|safe}}
+        <!-- TODO: read more link for full bio -->
+    <p>
 {% endblock main %}
 
 {% block sidebar %}
-	<h5>Current market price:</h5>
-	<h2>$25,051</h2>
+
+    <h2 class="sidebar-price-header">Current market price:</h2>
+    <p class="sidebar-price">$25,051</p>
+    
 	<a class="button" id="buy-button" href="#">Buy</a>
     <a class="button" id="sell-button" href="#">Sell</a>
-	<hr>
 {% endblock sidebar %}
 
 {% block body_additional_html %}
