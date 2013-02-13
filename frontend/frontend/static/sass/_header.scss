@@ -39,6 +39,13 @@ header {
                     float: left;                
                     display: block;                 
                     a {
+                        &.inactive {
+                            color: #b40200;
+                            &:hover {
+                                background-image: none;
+
+                            }
+                        }
                         color: #FFF;
                         text-shadow: rgb(135, 8, 2) 0px 1px 0px;
                         display: block;
