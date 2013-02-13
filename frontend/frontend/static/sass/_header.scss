@@ -50,7 +50,18 @@ header {
                         }
                     }
                 }
-            }   
+            } 
+        }
+
+        .login-link {
+            font-size: 11px;
+            float: right;
+            display: inline-block;
+            color: #eee;
+            padding: 15px 9px 7px 9px;
+            &:hover {
+                color: #fff;
+            }
         }
 
         div.header-promo {
