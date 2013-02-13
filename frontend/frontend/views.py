@@ -43,7 +43,7 @@ def home(request):
         {
             'artist': {
                 'name': 'Coldplay',
-                'images': {
+                'imgurls': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/75646980\/Coldplay+PNG.png',
                     'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/75646980.png'
                     # in real data, get all available image urls
@@ -54,7 +54,7 @@ def home(request):
         {  
             'artist': {
                 'name': 'Daft Punk',
-                'images': {
+                'imgurls': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/4183432\/Daft+Punk+daftpunk_1.jpg',
                     'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'    
                     # in real data, get all available image urls
@@ -65,7 +65,7 @@ def home(request):
         {
             'artist': {
                 'name': 'Gorillaz',
-                'images': {
+                'imgurls': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/_\/411274\/Gorillaz.jpg',
                     'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/411274.jpg'    
                     # in real data, get all available image urls
@@ -76,14 +76,14 @@ def home(request):
         {
             'artist': {
                 'name': 'A random band with a missing image and a long name! (and punctuation)',
-                'images': {   
+                'imgurls': {   
                     # in real data, get all available image urls
                 }
             },
             'price': 100
         }]
     user_data.user = {'money': 140512, 'points': 242}
-    user_data.portfolio_worth = sum(artistSE['price'] for artistSE in user_data.stocks)
+    user_data.portfolio_worth = sum(artist_SE['price'] for artist_SE in user_data.stocks)
 
     return render_to_response('index.html',{
             'user_data': user_data, 
@@ -109,11 +109,11 @@ def artist_single(request, artistname):
         'bio': {
             'summary': example_bio
         },
-        'similar_artists': [
+        'similar': [
             {
                 'name': 'Daft Punk',
                 'current_price': 2200,
-                'images': {
+                'imgurls': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/4183432\/Daft+Punk+daftpunk_1.jpg',
                     'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'    
                     # in real data, get all available image urls
@@ -122,7 +122,7 @@ def artist_single(request, artistname):
             {
                 'name': 'A random band with a missing image and a long name! (and punctuation)',
                 'current_price': 100,
-                'images': {   
+                'imgurls': {   
                     # in real data, get all available image urls
                 }
             }
@@ -131,9 +131,9 @@ def artist_single(request, artistname):
     artist_SE = type('ArtistSE', (), {
         'artist': artist,
         'ownedby': True,
-        'price': 2300
+        'price': 2300,
         })();
-    return render_to_response('artist_single.html', {'artist_SE': artistSE})
+    return render_to_response('artist_single.html', {'artist_SE': artist_SE})
 
 ############ Buy/Sell ############
 
