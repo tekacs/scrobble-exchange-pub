@@ -7,13 +7,13 @@
     {% block main %}
         <h4>Portfolio</h4>
 
-        {% for artist_SE in user_data.curstocks %}
+        {% for artist_SE in user_data.stocks %}
             <a href="/artist/{{ artist_SE.artist.name|urlencode }}">
                 <div class="portfolio-img" style="background-image: url('{{ artist_SE.artist.images|get_image:'mega' }}');">
                     <div class="text-over-image bottom">
                         <span class="primary">{{ artist_SE.artist.name|truncatechars:20 }}</span>
                         <br>
-                        <span class="secondary">${{ artist_SE.artist.current_price }}</span>
+                        <span class="secondary">${{ artist_SE.price }}</span>
                     </div>
                 </div>
             </a>    
