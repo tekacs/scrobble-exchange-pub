@@ -32,6 +32,9 @@ function startCountdown() {
 }
 
 $(document).ready(function() {
+
+    $(document).foundationTabs();
+    
     $("#buy-button, #sell-button").click(function() {
         var elementID = $(this).attr('id');
         var subText = (elementID === 'buy-button') ? 'buy' : 'sell';

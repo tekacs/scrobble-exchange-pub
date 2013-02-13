@@ -1,1 +1,122 @@
 {% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Leaderboards{% endblock title %}
+
+{% block above_main %}
+    <h1 class="main-header">Leaderboards</h1> 
+{% endblock above_main %}
+
+{% block main %}
+    
+    <dl class="tabs">
+      <dd class="active"><a href="#simple1">League 1</a></dd>
+      <dd><a href="#simple2">League 2</a></dd>
+      <dd class="hide-for-small"><a href="#simple3">League 3</a></dd>
+    </dl>
+    <ul class="tabs-content">
+      <li class="active" id="simple1Tab">
+        <table class="twenty">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>User</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><a href="#">joebateson</a></td>
+              <td>47103</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><a href="#">tekacs</a></td>
+              <td>37210</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><a href="#">randomNamX</a></td>
+              <td>32715</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><a href="#">lfmCop</a></td>
+              <td>31098</td>
+            </tr>
+          </tbody>
+        </table>  
+      </li>
+      <li id="simple2Tab">
+        <table class="twenty">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>User</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><a href="#">anotheUSR81</a></td>
+              <td>25490</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><a href="#">techkid</a></td>
+              <td>23164</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><a href="#">gngmST1l3</a></td>
+              <td>21094</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><a href="#">2l82c0d3_H3LP</a></td>
+              <td>19012</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+      <li id="simple3Tab">
+        <table class="twenty">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>User</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><a href="#">abc_de</a></td>
+              <td>18023</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><a href="#">lol_you_read_this</a></td>
+              <td>17118</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><a href="#">hahahhahaha</a></td>
+              <td>16443</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><a href="#">snakeSNAKESNAKE</a></td>
+              <td>14724</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+{% endblock main %}
+
+{% block sidebar %}
+{% endblock sidebar %}
