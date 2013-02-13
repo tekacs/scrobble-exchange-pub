@@ -10,6 +10,7 @@ function startCountdown() {
     
     // Reduce knob value and start a new timer
     $('.dial').val(seconds).trigger('change');
+    $('.timer-text').text(seconds);
     if (seconds <= 5){
         $('.dial').trigger(
             'configure',
@@ -34,8 +35,12 @@ $(document).ready(function() {
     $("#buy-button, #sell-button").click(function() {
         var elementID = $(this).attr('id');
         var subText = (elementID === 'buy-button') ? 'buy' : 'sell';
+        var price = $(this).data('price');
+        var artistname = $(this).data('artistname');
 
         $('.buy-sell').text(subText);
+        $('#buy-sell-modal .price-text').text(price);
+        $('#buy-sell-modal .artist-text').text(artistname);
 
         $("#buy-sell-modal").reveal({
             // Order of function calls for knob:

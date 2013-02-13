@@ -6,7 +6,7 @@
 {% block title %}{{artist_SE.artist.name}}{% endblock title %}
 
 {% block above_main %}
-    <h1 class="artist-name">{{artist_SE.artist.name}}</h1> 
+    <h1 class="main-header">{{artist_SE.artist.name}}</h1> 
     <nav>
         <ul>
             <li><a href="#">Tracks</a></li>
@@ -51,12 +51,12 @@
 
 {% block sidebar %}
     <h2 class="sidebar-price-header">Current market price:</h2>
-    <p class="sidebar-price">$25,051</p>
+    <p class="sidebar-price">${{ artist_SE.price }}</p>
     
     {% if artist_SE.ownedby %}
-        <a class="button" id="sell-button" href="#">Sell</a>
+        <a class="button large" id="sell-button" href="#" data-price="{{ artist_SE.price }}" data-artistname="{{ artist_SE.artist.name }}">Sell</a>
     {% else %}
-        <a class="button" id="buy-button" href="#">Buy</a>
+        <a class="button large" id="buy-button" href="#" data-price="{{ artist_SE.price }}" data-artistname="{{ artist_SE.artist.name }}">Buy</a>
     {% endif %}
 
 {% endblock sidebar %}

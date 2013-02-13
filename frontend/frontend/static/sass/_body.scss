@@ -11,7 +11,7 @@ body {
     }
 
     .above_main {
-        .artist-name {
+        .main-header {
             font-size: 20px;
             margin: 20px inherit;
             font-weight: bold;
@@ -100,6 +100,9 @@ body {
             font-size: 20px;
             margin-bottom: 5px;
             margin-top: 0;
+        }
+        #buy-button, #sell-button {
+            width: 150px;
         }
     }
     img.badge-img {
