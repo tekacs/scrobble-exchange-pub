@@ -1,0 +1,9 @@
+Progress Report - Neil Satra
+
+Django Frontend Code
+I wrote dummy data to mock up the objects that will eventually be received from the API, with matching naming conventions, and made it available to the templates.
+
+Also, Last.fm authentication is now supported, so that users are redirected to a Last.fm page where they can give the Scrobble Exchange app permissions to access their profile. Last.fm then redirects back to us, with a token that can be used for API calls. Functionality to redirect back to the specific page that the user was on previously still needs to be added.
+
+Game mechanics
+Took key decisions with Karolis and Asen regarding how to price stocks, how often to update and reward users.
