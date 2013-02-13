@@ -6,13 +6,13 @@ from utils import json_response
 
 ## Import thrift stuff
 
-from se_api import ScrobbleExchange
-import se_api.ttypes
+# from se_api import ScrobbleExchange
+# import se_api.ttypes
 
-from thrift import Thrift
-from thrift.transport import TSocket
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol
+# from thrift import Thrift
+# from thrift.transport import TSocket
+# from thrift.transport import TTransport
+# from thrift.protocol import TBinaryProtocol
 ## End of thrift
 
 #try:
