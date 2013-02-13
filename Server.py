@@ -444,7 +444,7 @@ similar                             = a.similar, bio = b)
             try:
                 t = datm.trade.sell(_config, user = u, artist = a, price = 
                                                                 guarantee.price)
-            except UserIsLyingToYouException:
+            except StockNotOwnedException:
                 raise TransactionException(code = TransactionCode.NONE, message 
                                                           = 'User cannot sell')
         
