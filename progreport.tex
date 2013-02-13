@@ -32,18 +32,43 @@ Testing on the frontend Javascript and HTML will potentially use a suite such as
 
 \subsection{API}
 
-The API has been written in it's entirety, and tested roughly. In terms of functionality, the API current supports getting various artist data (both from the game's database and from the last.fm API), getting various user data (primarily through the game's database, but also through the last.fm API), as well as the ability to authenticate a user with last.fm. In addition to simply fetching data, the API also supports the buy/sell mechanics that are fundamental to the game.
+The API has been written in it's entirety, and tested roughly. In terms of functionality, the API currently supports getting various artist data (both from the game's database and from the last.fm API), getting various user data (primarily through the game's database, but also through the last.fm API), as well as the ability to authenticate a user with last.fm. In addition to simply fetching data, the API also supports the buy/sell mechanics that are fundamental to the game.
 
 With regards to the implementation of the API, the Apache Thrift library was chosen to be used, rather than writing the entire library from scratch. Thrift allows for a declarative approach to the API: a thrift file is created (essentially C-style definitions), which is then used to automatically generate code in your chosen language (in this case python) for the client and server. This has a number of benefits, the first being that changing the API by adding or removing functions becomes vastly easier (a version counter can be incremented as well to maintain client/server consistency). Secondly, using an established library to handle the serialisation and transfer of data over the network means that extensive testing has already been carried out in this area and it's unlikely to have any (major) bugs in the code. Thirdly, the code not require much documentation - the thrift file essentially contains all of the class and methods definitions, commented with their purpose/function and their method signature.
 
 Since the API is difficult to test in a standalone fashion (it would involve essentially testing that thrift works and setting up dummy responses from the API server), no extensive testing to see if the API functions correctly. Once the entire system is integrated and DATM returns actual data from a database, proper unit testing can be carried out by creating a new database, populating it with test data, creating a dummy testing client and then checking that all the methods that the API server provides take the correct arguments and reject any input outside of what was expected.
 
 \subsection{DATM}
+
+In accordance with the project's structure, DATM has been implemented in response to demand from those working on the frontend and API - that is, the latter have been given free rein to request absolutely any methods that they require and it has been considered DATM's responsibility to declare a suitable signature for use immediately and implement such methods as soon as possible after this fact.
+
+Due to the sheer scope of its implementation, DATM is not yet complete, but it does currently have...
+
+\begin{itemize}
+    \item ... a complete and final public interface, such that all external code (API, Analytics) which need call it in any way may be written against it and will receive either dummy data or a NotImplementedException (which is not caught in the implementing code as it shall not in any way form a part of the final implementation).
+        
+        This approach has already been used to great success in implementing the API in its entirety.
+    
+    \item ... a complete data model, to be used to store \emph{all} data persisted by the Scrobble Exchange service as a whole, implemented as objects ready to be mapped into the database as tables by the Object-Relational Mapper used by DATM.
+    
+    \item ... tests written and \emph{run} validating the syntax, internal consistency (foreign key references, etc.) and expected functionality of the aforementioned models.
+    
+        These demonstrate that the data model as implemented in objects \emph{is} ready-for-use and only awaits data entry.
+        
+    \item ... a suite of tests and test stubs pre-empting the implementation of the the public interface as used by the API and frontend.
+    
+    \item ... a full set of objects to configure DATM on an application- and session- specific basis, prepared for thread-safety and transactions (using Python context managers).
+\end{itemize}
+
+
+
 \subsection{Analytics}
-Analytics is divided into two parts. The first one calculates the price and initial copies available for artists that have not been sold on the market yet, adjusts the price of artist according to the supply and demand and is going to be implemented in the API.
+Analytics as an entity is divided into two parts.
 
-The second one is semi-external utility module that is used daily to analyze and update the server's database using fetched data from the last.fm API. It rewards players by paying royalties for their artists' performance as well as aggregating score for performance, used in leaderboards. It also clears time-based leaderboards as well as adjusting available copies of artist to the size of the playerbase.
+The first calculates the price and the seed number of copies available for artists that have not been sold on the market yet, adjusts the price of artist according to the supply and demand and forms a part of the API.
 
-Since analytics module is dependent on other modules it still has not been implemented and algorithms will require further testing and balancing.
+The second is a semi-external, long-running utility application that runs daily to analyze and update the server's database using data fetched from the last.fm API. It rewards players by paying royalties for their artists' performance as well as aggregating score for a performance metric, used in leaderboards. It also resets data for time-based leaderboards as well as adjusting the number of available copies of artists based upon the size of the playerbase at the time of its execution.
+
+Since the analytics module had been dependent on other modules and more importantly the \emph{absolute} finalisation of mechanics it has yet to be implemented and we expect that its algorithms, upon implementation, will require further testing and balancing.
 
 \end{document}
