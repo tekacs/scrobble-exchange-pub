@@ -83,7 +83,7 @@ def home(request):
             }
         }
     ]
-    user_data.user = {'money': 140512}
+    user_data.user = {'money': 140512, 'points': 242}
     portfolio_worth = 2500 + 2200 + 2300 + 100
     return render_to_response('index.html',{
             'user_data': user_data, 
