@@ -3,10 +3,10 @@
 {% load static %}
 {% load extras %}
 
-{% block title %}{{artist.name}}{% endblock title %}
+{% block title %}{{artist_SE.artist.name}}{% endblock title %}
 
 {% block above_main %}
-    <h1 class="artist-name">{{artist.name}}</h1> 
+    <h1 class="artist-name">{{artist_SE.artist.name}}</h1> 
     <nav>
         <ul>
             <li><a href="#">Tracks</a></li>
@@ -33,14 +33,14 @@
 	</div>
 
     <p class="artist-bio">
-        {{artist.bio.summary|safe}}
+        {{artist_SE.artist.bio.summary|safe}}
         <!-- TODO: read more link for full bio -->
     <p>
 
     <h3 class="artist-subheader">Similar Artists</h3>
-    {% for similar_artist in artist.similar_artists %}
+    {% for similar_artist in artist_SE.artist.similar %}
         <a href="/artist/{{ similar_artist.name|urlencode }}">
-            <div class="artist-img" style="background-image: url('{{ similar_artist.images|get_image:'mega' }}');">
+            <div class="artist-img" style="background-image: url('{{ similar_artist.imgurls|get_image:'mega' }}');">
                 <div class="text-over-image bottom">
                     <span class="primary">{{ similar_artist.name|truncatechars:15 }}</span>
                 </div>
@@ -50,12 +50,15 @@
 {% endblock main %}
 
 {% block sidebar %}
-
     <h2 class="sidebar-price-header">Current market price:</h2>
     <p class="sidebar-price">$25,051</p>
     
-	<a class="button" id="buy-button" href="#">Buy</a>
-    <a class="button" id="sell-button" href="#">Sell</a>
+    {% if artist_SE.ownedby %}
+        <a class="button" id="sell-button" href="#">Sell</a>
+    {% else %}
+        <a class="button" id="buy-button" href="#">Buy</a>
+    {% endif %}
+
 {% endblock sidebar %}
 
 {% block body_additional_html %}
@@ -65,7 +68,7 @@
 {% block body_additional_js %}
     <script type="text/javascript" src="{% static "js/artist.js" %}"></script>
 	<script type="text/javascript">
-		Artist.name = '{{artist.name}}';
+		Artist.name = '{{artist_SE.artist.name}}';
 		Artist.drawGraph();
 	</script>
 {% endblock body_additional_js %}
