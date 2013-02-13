@@ -152,8 +152,8 @@ exception SearchException {
 enum TransactionCode {
     NONE = 1,
     CONN = 2,
-    NUM = 3,
-    ARG = 4
+    ARG = 3,
+    TIME = 4
 }
 
 exception TransactionException {

@@ -106,7 +106,7 @@ class SEHandler(object):
         """
         with datm.DATMSession(_config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid = artist.mbid,user = user)
+                a = datm.artist(_config, mbid = artist.mbid, user = user)
             else if not artist.name:
                 a = datm.artist(_config, name = artist.name, user = user)
             else:
@@ -356,13 +356,14 @@ similar                             = a.similar, bio = b)
             time_now = datetime.now()
             time_utc = time.mktime(time_now.timetuple()) - time.timezone
 
-            m = hmac.new(datm.auth_secret)
+            m = hmac.new(datm.auth.secret(_config))
             m.update(str(time_utc))
             m.update(str(price))
             el = m.hexdigest()
             
-            return Guarantee(elephant = el, artist = artist, price = price, 
-                   time = time_utc)
+            return Guarantee(elephant = el, artist = Artist(mbid = a.mbid, 
+                            name = a.name, imgurls = a.images), price = price,   
+                            time = time_utc)
         
 
     def buy(self, guarantee, user):
@@ -375,13 +376,35 @@ similar                             = a.similar, bio = b)
         - user
         """
         with datm.DATMSession(_config):
+            
+            # Calculating the elephant
+            time_now = datetime.now()
+            time_utc = time.mktime(time_now.timetuple()) - time.timezone
+
+            m = hmac.new(datm.auth.secret(_config))
+            m.update(str(time_utc))
+            m.update(str(guarantee.price))
+            el = m.hexdigest() 
+            
+            #authenticate the elephant
+            if guarantee.elephant != el:
+                raise TransactionException(code = TransactionCode.ARG, message  
+                                                        = 'Incorrect Elephant')
+            
+            #check for 15s time (with some leeway)
+            if (time_utc - guarantee.time) > 17:
+                raise TransactionException(code = TransactionCode.TIME, message 
+                                                                  = 'Too late')
+            
+            u = datm.user(_config, user = user.name)
+            a = datm.artist(_config, mbid = guarantee.artist.mbid)
+            
             try:
-                #authenticate the elephant
-                #create trade
-                #decrement money
+                t = datm.trade.buy(_config, user = u, artist = a, price = 
+                                                                guarantee.price)
             except NoStockRemainingException:
                 raise TransactionException(code = TransactionCode.NUM, message 
-                                                    = 'Some error happened!')
+                                                         = 'No stock remaining')
 
         
 
@@ -395,11 +418,35 @@ similar                             = a.similar, bio = b)
         - user
         """
         with datm.DATMSession(_config):
-           try:
-           
-           except NoStockRemainingException:
-               raise TransactionException(code = TransactionCode.NUM, message 
-                                                    = 'Some error happened!')
+            
+            # Calculating the elephant
+            time_now = datetime.now()
+            time_utc = time.mktime(time_now.timetuple()) - time.timezone
+
+            m = hmac.new(datm.auth.secret(_config))
+            m.update(str(time_utc))
+            m.update(str(guarantee.price))
+            el = m.hexdigest() 
+            
+            #authenticate the elephant
+            if guarantee.elephant != el:
+                raise TransactionException(code = TransactionCode.ARG, message  
+                                                        = 'Incorrect Elephant')
+            
+            #check for 15s time (with some leeway)
+            if (time_utc - guarantee.time) > 17:
+                raise TransactionException(code = TransactionCode.TIME, message 
+                                                                  = 'Too late')
+            
+            u = datm.user(_config, user = user.name)
+            a = datm.artist(_config, mbid = guarantee.artist.mbid)
+            
+            try:
+                t = datm.trade.sell(_config, user = u, artist = a, price = 
+                                                                guarantee.price)
+            except UserIsLyingToYouException:
+                raise TransactionException(code = TransactionCode.NONE, message 
+                                                          = 'User cannot sell')
         
 
 
@@ -409,7 +456,7 @@ transport = TSocket.TServerSocket(port=9090)
 tfactory = TTransport.TBufferedTransportFactory()
 pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 
-server = TServer.TSimpleServer(processor, transport, tfactory, pfactory)
+server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
 
 print 'Starting the server...'
 server.serve()

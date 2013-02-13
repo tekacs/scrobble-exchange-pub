@@ -53,21 +53,21 @@ class SearchCode(object):
 class TransactionCode(object):
   NONE = 1
   CONN = 2
-  NUM = 3
-  ARG = 4
+  ARG = 3
+  TIME = 4
 
   _VALUES_TO_NAMES = {
     1: "NONE",
     2: "CONN",
-    3: "NUM",
-    4: "ARG",
+    3: "ARG",
+    4: "TIME",
   }
 
   _NAMES_TO_VALUES = {
     "NONE": 1,
     "CONN": 2,
-    "NUM": 3,
-    "ARG": 4,
+    "ARG": 3,
+    "TIME": 4,
   }
 
 class UserCode(object):
