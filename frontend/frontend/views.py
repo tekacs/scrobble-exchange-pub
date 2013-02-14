@@ -84,10 +84,13 @@ def home(request):
     user_data.user = {'money': 140512, 'points': 242}
     user_data.portfolio_worth = sum(artist_SE['price'] for artist_SE in user_data.stocks)
 
-    return render_to_response('index.html',{
+    return render_to_response(
+        'index.html',
+        {
             'user_data': user_data, 
-            # 'portfolio_worth': portfolio_worth
-        })
+        },
+        context_instance=RequestContext(request)
+        )
 
 def artists(request):
     # artistlist = se_api.lastfm.chart.get_top_artists()
@@ -99,7 +102,7 @@ def artists(request):
     return render_to_response('artists.html', {'artistlist': artistlist})
 
 def leaderboards(request):
-    return render_to_response('leaderboards.html',{})
+    return render_to_response('leaderboards.html',{}, context_instance=RequestContext(request))
 
 def artist_single(request, artistname):
     example_bio = 'Coldplay is a British <a href="http://www.last.fm/tag/alternative%20rock" class="bbcode_tag" rel="tag">alternative rock</a> band, formed in London, United Kingdom in 1997. The band comprises vocalist and pianist <a href="http://www.last.fm/music/Chris+Martin" class="bbcode_artist">Chris Martin</a>, lead guitarist <a href="http://www.last.fm/music/Jonny+Buckland" class="bbcode_artist">Jonny Buckland</a>, bassist <a href="http://www.last.fm/music/Guy+Berryman" class="bbcode_artist">Guy Berryman</a>, and drummer <a href="http://www.last.fm/music/Will+Champion" class="bbcode_artist">Will Champion</a>. Having released four successful albums, (all of which debuted at #1 on the UK album chart) Coldplay have also achieved great success with their singles, such as <a title="Coldplay &ndash; Yellow" href="http://www.last.fm/music/Coldplay/_/Yellow" class="bbcode_track">Yellow</a>, <a title="Coldplay &ndash; Speed of Sound" href="http://www.last.fm/music/Coldplay/_/Speed+of+Sound" class="bbcode_track">Speed of Sound</a>, the Grammy-winning <a title="Coldplay &ndash; Clocks" href="http://www.last.fm/music/Coldplay/_/Clocks" class="bbcode_track">Clocks</a> and the US and UK #1 single <a title="Coldplay &ndash; Viva la Vida" href="http://www.last.fm/music/Coldplay/_/Viva+la+Vida" class="bbcode_track">Viva la Vida</a>. Frontman Chris Martin credits 1980s Norwegian pop band <a href="http://www.last.fm/music/a-ha" class="bbcode_artist">a-ha</a> for inspiring him to form his own band.'
@@ -132,7 +135,7 @@ def artist_single(request, artistname):
         'ownedby': artist.name != 'Nickelback',
         'price': 2300,
         })();
-    return render_to_response('artist_single.html', {'artist_SE': artist_SE})
+    return render_to_response('artist_single.html', {'artist_SE': artist_SE}, context_instance=RequestContext(request))
 
 ############ Buy/Sell ############
 

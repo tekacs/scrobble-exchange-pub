@@ -41,8 +41,8 @@
                     </li>
                 </ul>
             </nav>  
-
-            <a class="login-link" href="{% url lastfmauth_login %}">Login using your Last.fm account</a>
+            <!-- <span>Current Path: {{ current_path }}</span> -->
+            <a class="login-link" href="{% url lastfmauth_login%}?next={{current_path}}">Login using your Last.fm account</a>
             <div class="header-promo">Testing... 1, 2, 3....</div>
 
         </div>  
