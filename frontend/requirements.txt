@@ -1,0 +1,5 @@
+Django==1.4.3
+-e git+https://github.com/neil-s/django-lastfm-auth.git#egg=django_lastfmauth-dev
+psycopg2==2.4.6
+thrift==0.9.0
+wsgiref==0.1.2
