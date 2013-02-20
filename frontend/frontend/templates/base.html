@@ -24,28 +24,29 @@
 <body>
 
     <header>
-        <div class="header-container row">
-            
-            <a href="/" class="logo">
-            </a>
-            <nav>
-                <ul>            
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-                    <li>
-                        <a class="inactive">Artists</a>
-                    </li>
-                    <li>
-                        <a href="/leaderboards">Leaderboards</a>
-                    </li>
-                </ul>
-            </nav>  
-
-            <a class="login-link" href="{% url lastfmauth_login %}">Login using your Last.fm account</a>
-            <div class="header-promo">Testing... 1, 2, 3....</div>
-
-        </div>  
+        <div class="row">
+          <div class="twentyfour columns">
+            <nav class="top-bar">
+              <ul class="left">
+                <li class="name">
+                  <h1>
+                    <a href="#">
+                      Scrobble Exchange
+                    </a>
+                  </h1>
+                </li>
+                <li><a href="/">Portfolio</a></li>
+                <li><a href="/artists">Artists</a></li>
+                <li><a href="/leaderboards">Leaderboards</a></li>
+                <li class="toggle-topbar"><a href="#"></a></li>
+              </ul>
+              <ul class="right">
+                <li><a href="{% url lastfmauth_login %}">Login using your Last.fm account</a></li>
+              </ul>
+              <div class="header-promo"><p>Welcome to Scrobble Exchange!</p></div>
+            </nav>
+          </div>
+        </div>
     </header>
 
     {% block content %}
