@@ -104,6 +104,11 @@ body {
         #buy-button, #sell-button {
             width: 150px;
         }
+
+        #sell-button {
+            background-color: $subBarRed;
+            border-color: darken($subBarRed, 20%);
+        }
     }
     img.badge-img {
         margin: 0 5px 5px 0;
