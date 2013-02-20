@@ -111,6 +111,14 @@ body {
         }
     }
     img.badge-img {
+        height: 50px;
+        width: 50px;
         margin: 0 5px 5px 0;
+        border-radius: 150px;
+        -webkit-border-radius: 150px;
+        -moz-border-radius: 150px;
+        box-shadow: 1px 0 5px rgba(0, 0, 0, .5);
+        -webkit-box-shadow: 1px 0 5px rgba(0, 0, 0, .5);
+        -moz-box-shadow: 1px 0 5px rgba(0, 0, 0, .5);
     }
 }
