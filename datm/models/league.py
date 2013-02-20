@@ -13,4 +13,13 @@ class League(base.Base):
     desc = Column(String(255), nullable=False)
     icon = Column(String(255), nullable=False)
 
-    users = relationship("User", backref=backref("league", uselist=False))
+    users = relationship(
+        "User",
+        backref=backref("league", uselist=False)
+    )
+
+    def __init__(self, name, desc, icon):
+        """Create a new, empty ``League``, ready to contain ``User``s."""
+        self.name = name
+        self.desc = desc
+        self.icon = icon

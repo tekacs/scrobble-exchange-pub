@@ -9,3 +9,6 @@ class Internal(base.Base):
 
     id = Column(Integer, primary_key=True)
     secret = Column(String(255), nullable=False)
+
+    # No constructor here - only one instance, which should be instantiated
+    # by the default, kwarg'd constructor.

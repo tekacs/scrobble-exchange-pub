@@ -25,7 +25,23 @@ class Artist(base.Base):
 
 #   owners = ... # Many-to-many
 
-    history = relationship("ArtistHistory", backref=backref("artist", uselist=False))
+    trades = relationship(
+        "Trade",
+        backref=backref("artist", uselist=False)
+    )
+
+    history = relationship(
+        "ArtistHistory",
+        backref=backref("artist", uselist=False)
+    )
+
+    def __init__(self, mbid, name, lastfm_price, local_price, max_available):
+        self.mbid = mbid
+        self.name = name
+
+        self.lastfm_price = lastfm_price
+        self.local_price = local_price
+        self.max_available = max_available
 
 class ArtistHistory(base.Base):
     __tablename__ = 'artist_history'
@@ -34,3 +50,8 @@ class ArtistHistory(base.Base):
     value = Column(Integer, nullable=False)
 
     artist_id = Column(Integer, ForeignKey("artists.mbid"))
+
+    def __init__(self, artist, date, value):
+        self.artist = artist
+        self.date = date
+        self.value = value

@@ -14,3 +14,9 @@ class Trophy(base.Base):
     icon = Column(String(255), nullable=False)
 
 #   possessors = ... # Many-to-many
+
+    def __init__(self, name, desc, icon):
+        """Create a new ``Trophy``, ready to be (but not yet actually) won."""
+        self.name = name
+        self.desc = desc
+        self.icon = icon

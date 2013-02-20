@@ -1,6 +1,6 @@
 __author__ = 'amar'
 
-from sqlalchemy import Column, Integer, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 
 import base
 
@@ -12,3 +12,11 @@ class Trade(base.Base):
     purchase = Column(Boolean, nullable=False)
 
     user_id = Column(Integer, ForeignKey("users.id"))
+    artist_id = Column(String, ForeignKey("artists.mbid"))
+
+    def __init__(self, user, artist, price, purchase):
+        """Create new ``Trade`` for ``user``, of ``artist``, at ``price``."""
+        self.user = user
+        self.artist = artist
+        self.price = price
+        self.purchase = purchase

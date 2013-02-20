@@ -22,11 +22,34 @@ class User(base.Base):
 
     last_reset = Column(Integer)
 
-    stocks = relationship("Artist", secondary=lambda: assoc_artist_user, backref="owners")
-    trades = relationship("Trade", backref=backref("user", uselist=False))
-    trophies = relationship("Trophy", secondary=lambda: assoc_trophy_user, backref="possessors")
+    artists = relationship(
+        "Artist",
+        secondary=lambda: assoc_artist_user,
+        backref="owners"
+    )
+    trades = relationship(
+        "Trade",
+        backref=backref("user", uselist=False)
+    )
+    trophies = relationship(
+        "Trophy",
+        secondary=lambda: assoc_trophy_user,
+        backref="possessors"
+    )
 
     league_id = Column(Integer, ForeignKey("leagues.id"))
+
+    def __init__(self, name, money, points):
+        """Create a new, blank ``User``."""
+        self.name = name
+        self.money = money
+        self.points = points
+
+        self.daily_points = points
+        self.weekly_points = points
+        self.monthly_points = points
+
+        self.last_reset = None
 
 # FIXME: More magic! Magic!
 #           - Create column names from attributes, don't use strings.
