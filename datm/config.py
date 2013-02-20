@@ -21,7 +21,7 @@ class DATMConfig(object):
 #                raise TypeError(
 #                    'Argument lastfm must bear keys api_key, secret.'
 #                )
-#            self._lastfm = DATMLastFm(api)
+#            self._lastfm = DATMLastFM(api)
             pass
 
         _db_args = {'pool_size': 20, 'max_overflow': 0}
@@ -52,7 +52,7 @@ class DATMConfig(object):
     def session(self):
         return self._sessions.current_session
 
-class DATMLastFm(object):
+class DATMLastFM(object):
     def __init__(self):
         pass
 
