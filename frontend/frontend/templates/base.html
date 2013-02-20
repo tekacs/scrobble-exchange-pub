@@ -41,7 +41,13 @@
                 <li class="toggle-topbar"><a href="#"></a></li>
               </ul>
               <ul class="right">
-                <li><a href="{% url lastfmauth_login %}">Login using your Last.fm account</a></li>
+                <li>
+                    {% if user.is_authenticated %}
+                        <a href="#">Logged in as {{ user.username }}</a>
+                    {% else %}
+                        <a href="{% url lastfmauth_login%}?next={{current_path}}">Login using your Last.fm account</a>
+                    {% endif %}
+                </li>
               </ul>
               <div class="header-promo"><p>Welcome to Scrobble Exchange!</p></div>
             </nav>
