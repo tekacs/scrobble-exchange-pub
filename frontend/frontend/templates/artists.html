@@ -1,1 +1,222 @@
 {% extends "base.html" %}
+
+{% load static %}
+{% load extras %}
+
+{% block title %}Artists{% endblock title %}
+
+{% block above_main %}
+    <h1 class="main-header">Artists</h1> 
+    <nav>
+        <ul>
+            <li><a href="#">Top Artists</a></li>
+            <li><a href="#">Rising Artists</a></li>
+            <li><a href="#">Recommended Artists</a></li>
+        </ul>
+    </nav>  
+{% endblock above_main %}
+
+{% block main %}
+    <div class="row collapse">
+        <div class="eighteen mobile-three columns">
+            <input type="text" placeholder="Search for an artist">
+        </div>
+        <div class="four mobile-one columns end">
+            <button class="button expand postfix">Search</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="eleven columns rank-list">
+            <h3 class="artist-subheader">Most Expensive Artists</h3>
+            <p class="lead">Artists worth the most</p>
+            <ol class="top-list primary valuable">
+                {% for valuable_artist_SE in top_SE_artists %}
+
+                    <li class="rankItem">
+                        <div class="rankItem-wrap">
+                            <div class="rankItem-wrap2">
+                                <a href="/artist/{{valuable_artist_SE.artist.name|urlencode}}" class="rankItem-blockLink">            
+                                    <h4>
+                                        <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
+                                        <span class="rankItem-title">{{valuable_artist_SE.artist.name}}</span>
+                                    </h4>
+                                    {% if forloop.counter == 1 %}
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{valuable_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                            <div class="rankItem-imageCrop-wrap">
+                                                <img src="{{valuable_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{valuable_artist_SE.artist.imgurls|get_image:'large'}}');">
+                                            <div class="rankItem-imageCrop-wrap">
+                                                <img src="{{valuable_artist_SE.artist.imgurls|get_image:'large'}}">
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <p class="rankItem-bar">
+                                <span class="rankItem-bar-percentage" style="width: 100%">
+                                    <span>
+                                        <strong>${{ valuable_artist_SE.price }}</strong>
+                                    </span>
+                                </span>
+                            </p>
+                        </div>
+                    </li>
+
+                {% endfor %}
+
+            </ol>
+        </div>
+
+        <div class="eleven columns end rank-list">
+            <h3 class="artist-subheader">Highest Ranked Artists</h3>
+            <p class="lead">Artists with the highest score</p>
+            <ol class="top-list popular">
+                
+                {% for popular_artist_SE in top_LFM_artists %}
+
+                    <li class="rankItem">
+                        <div class="rankItem-wrap">
+                            <div class="rankItem-wrap2">
+                                <a href="/artist/{{popular_artist_SE.artist.name|urlencode}}" class="rankItem-blockLink">            
+                                    <h4>
+                                        <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
+                                        <span class="rankItem-title">{{popular_artist_SE.artist.name}}</span>
+                                    </h4>
+                                    {% if forloop.counter == 1 %}
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{popular_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                            <div class="rankItem-imageCrop-wrap">
+                                                <img src="{{popular_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{popular_artist_SE.artist.imgurls|get_image:'large'}}');">
+                                            <div class="rankItem-imageCrop-wrap">
+                                                <img src="{{popular_artist_SE.artist.imgurls|get_image:'large'}}">
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <p class="rankItem-bar">
+                                <span class="rankItem-bar-percentage" style="width: 100%">
+                                    <span>
+                                        <strong>{{ popular_artist_SE.points }} points</strong>
+                                    </span>
+                                </span>
+                            </p>
+                        </div>
+                    </li>
+
+                {% endfor %}
+                
+            </ol>   
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="eleven columns end rank-list">
+            <h3 class="artist-subheader">Rising Artists</h3>
+            <p class="lead">Artists that are new to the market</p>
+
+            <ol class="top-list rising primary">
+
+                {% for rising_artist_SE in rising_SE_artists %}
+
+                    <li class="rankItem">
+                        <div class="rankItem-wrap">
+                            <div class="rankItem-wrap2">
+                                <a href="/artist/{{rising_artist_SE.artist.name|urlencode}}" class="rankItem-blockLink">            
+                                    <h4>
+                                        <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
+                                        <span class="rankItem-title">{{rising_artist_SE.artist.name}}</span>
+                                    </h4>
+                                    {% if forloop.counter == 1 %}
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{rising_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                            <div class="rankItem-imageCrop-wrap">
+                                                <img src="{{rising_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{rising_artist_SE.artist.imgurls|get_image:'large'}}');">
+                                            <div class="rankItem-imageCrop-wrap">
+                                                <img src="{{rising_artist_SE.artist.imgurls|get_image:'large'}}">
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <p class="rankItem-bar">
+                                <span class="rankItem-bar-percentage" style="width: 100%">
+                                    <span>
+                                        <strong>{{ rising_artist_SE.points }} points</strong>
+                                    </span>
+                                </span>
+                            </p>
+                        </div>
+                    </li>
+
+                {% endfor %}
+
+            </ol>
+
+        </div>
+    </div>
+
+{% endblock main %}
+
+{% block sidebar %}
+    <h2 class="sidebar-red">Recommended artists</h2>
+    <p>Based on your scrobbles and loved tracks</p>
+
+    <div class="rank-list">
+
+        <ol class="top-list rising primary sidebar-list">
+
+            {% for recommended_artist_SE in recommended_artists %}
+
+                <li class="rankItem sidebar-item">
+                    <div class="rankItem-wrap">
+                        <div class="rankItem-wrap2">
+                            <a href="/artist/{{recommended_artist_SE.artist.name|urlencode}}" class="rankItem-blockLink">            
+                                <h4>
+                                    <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
+                                    <span class="rankItem-title">{{recommended_artist_SE.artist.name}}</span>
+                                </h4>
+                                {% if forloop.counter == 1 %}
+                                    <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                        <div class="rankItem-imageCrop-wrap">
+                                            <img src="{{recommended_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.artist.imgurls|get_image:'large'}}');">
+                                        <div class="rankItem-imageCrop-wrap">
+                                            <img src="{{recommended_artist_SE.artist.imgurls|get_image:'large'}}">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </a>
+                        </div>
+                        <p class="rankItem-bar">
+                            <span class="rankItem-bar-percentage" style="width: 100%">
+                                <span>
+                                    <strong>${{ recommended_artist_SE.price }} / {{ recommended_artist_SE.points }} points</strong>
+                                </span>
+                            </span>
+                        </p>
+                    </div>
+                </li>
+
+            {% endfor %}
+
+        </ol>
+
+    </div>
+
+{% endblock sidebar %}
+
+

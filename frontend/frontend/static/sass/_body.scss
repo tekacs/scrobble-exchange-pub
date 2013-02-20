@@ -21,14 +21,15 @@ body {
         }
 
         nav {
+            float: right;
             display: inline-block;
             margin: 20px inherit;
             ul {
                 list-style-type: none;
                 li {
                     display: inline;
-                    margin-left: 10px;
-                    font-size: 13px;
+                    margin-left: 1em;
+                    font-size: 12px;
                 }
             }
         }
@@ -88,19 +89,31 @@ body {
         div.artist-img {
             width: 140px;
             height: 140px;
-        }  
+        } 
     }
 
     .sidebar {
+        h2 {
+
+            &.sidebar-red {
+                color: $mainBarRed;
+                font-weight: bold;
+                font-size: 20px;
+                
+                &:first-child {                    
+                    margin-bottom: 5px;
+                    margin-top: 0;    
+                }
+            }
+
+            
+        }
+
         p.sidebar-price {
             font-size: ms(3);
             font-weight: bold;
         }
-        .sidebar-price-header {
-            font-size: 20px;
-            margin-bottom: 5px;
-            margin-top: 0;
-        }
+
         #buy-button, #sell-button {
             width: 150px;
         }
@@ -110,6 +123,7 @@ body {
             border-color: darken($subBarRed, 20%);
         }
     }
+
     img.badge-img {
         height: 50px;
         width: 50px;
@@ -121,4 +135,217 @@ body {
         -webkit-box-shadow: 1px 0 5px rgba(0, 0, 0, .5);
         -moz-box-shadow: 1px 0 5px rgba(0, 0, 0, .5);
     }
+
+
+    /* 
+       Begin lists shown on artists page - style taken from Last.fm charts page:
+       http://www.last.fm/charts 
+       TODO: remove redundant attributes, combine to reduce code, extract to seperate scss file
+    */
+
+    div.rank-list {
+        margin-right: 8px;
+
+        h3, p.lead {
+            margin-bottom: 0;
+        }
+
+        ol.top-list {
+            list-style-type: none;
+            margin-left: 0;
+            
+            li.rankItem {
+                padding-bottom: 10px;
+                padding-top: 10px;
+                border: 1px solid #ccc;
+                border-width: 0 0 1px 0;
+                width: 290px;
+
+                &.sidebar-item {
+                    width: auto;
+                }
+
+                h4 {
+                    font-size: 14px;
+                    margin: 0;
+                    font-weight: bold;
+                }
+
+                &:hover {
+                    background: #d1e4ef;    
+                }
+
+                .rm {
+                    border: 0;
+                    clip: rect(0, 0, 0, 0);
+                    height: 1px;
+                    margin: -1px;
+                    overflow: hidden;
+                    padding: 0;
+                    position: absolute;
+                    width: 1px;
+                    z-index: -1;
+                }
+
+            }
+
+            .rankItem-wrap {
+                position: relative;
+                margin-left: 52px;
+            }
+
+            .rankItem-wrap2 {
+                padding-left: 96px;
+                min-height: 80px;
+                margin-bottom: 2px;
+                padding-right: 15px;
+            }
+
+            .rankItem-wrap2,
+            .rankItem-bar {
+                width: 238px;
+            }
+
+            .rankItem.sidebar-item {
+                .rankItem-wrap2,
+                .rankItem-bar {
+                    width: auto;
+                }                
+            }
+
+            .rankItem-blockLink:hover,
+            .rankItem-blockLink:focus {
+                text-decoration: none;
+            }
+
+            .rankItem-title {
+                display: block;
+                word-wrap: break-word;
+                color: #000;
+                padding-right: 190px;
+                padding-right: 0px;
+                line-height: 1.142857;
+                margin-bottom: 0.071429em;
+                top: -0.214286em;
+                position: relative;
+            }
+
+            .rankItem-position {
+                position: absolute;
+                left: -52px;
+                width: 50px;    
+                padding: 0 5px;
+                text-align: center;
+                color: #fff;
+                top: 0;
+                height: 100%;
+                background: #61a7de;
+                font-size: 24px;
+                line-height: 1.7;
+            }
+
+            .rankItem-image,
+            .rankItem-imageCrop {
+                position: absolute;
+                display: block;
+                left: 0;
+                top: 0;
+                width: 80px;
+                height: 80px;
+                background-color: #eee;
+            }
+
+            .rankItem-imageCrop {
+                overflow: hidden;
+                background-size: cover;
+                background-position: 50% 0;
+            }
+
+            .rankItem-imageCrop-hidden img {
+                display: none;
+            }
+
+            .rankItem:first-child {
+
+                // We want a large first-child image if we're not in the sidebar
+                &:not(.sidebar-item) {
+                    .rankItem-image, 
+                    .rankItem-imageCrop {
+                        width: 238px;
+                        height: 235px; 
+                        z-index: -1;
+                    }
+
+                    .rankItem-wrap2 {
+                        padding-left: 254px;
+                        background: url('http://cdn.lst.fm/flatness/black-transparent60.png');
+                        min-height: 72px;
+                        padding-left: 0;
+                        padding-bottom: 3px;
+                        float: none;
+                        overflow: hidden;
+                    }
+
+                    .rankItem-wrap {
+                        padding-top: 163px;
+                        z-index: 2;    
+                    }
+
+                    .rankItem-title {
+                        color: #fff;
+                        display: block;
+                        padding: 0.285714em 10px 0 10px;
+                        top: 0;
+                        margin-bottom: 0.142857em;
+                    }    
+                }
+                
+            }
+
+            .rankItem-bar {
+                clear: both;
+                position: relative;
+                padding-left: 10em;    
+                font-size: 16px;
+                margin-bottom: 0;
+
+                .icon {
+                    margin: 0 3px -3px 2px;
+                }
+
+            }
+
+            .rankItem.sidebar-item .rankItem-bar {
+                font-size: ms(0);
+            }
+
+            .rankItem-bar-percentage {
+                display: block;
+                color: #fff;
+
+                span {
+                    display: block;
+                    margin-left: -10em;
+                    padding: 0.2em 5px;
+                    background: #61a7de;
+                    border-radius: 2px;
+                }
+            }
+
+            &.primary {
+                .rankItem-position,
+                .rankItem-bar-percentage span {
+                    background: #3ec6ff;
+                }    
+            }
+
+            &.sidebar-list {
+                .rankItem-position,
+                .rankItem-bar-percentage span {
+                }      
+            }
+
+        }    
+    }
+
 }

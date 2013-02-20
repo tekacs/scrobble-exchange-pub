@@ -4,6 +4,8 @@ from django.shortcuts import render_to_response
 import models
 from utils import json_response
 
+import random
+
 ## Import thrift stuff
 
 # from se_api import ScrobbleExchange
@@ -96,7 +98,93 @@ def artists(request):
     artist2 = models.Artist()
     artist2.name = 'Foo Fighters'
     artistlist = [artist1, artist2]
-    return render_to_response('artists.html', {'artistlist': artistlist})
+
+    top_SE_artists = [
+        {
+            'artist': {
+                'name': 'Coldplay',
+                'imgurls': {
+                    'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/75646980\/Coldplay+PNG.png',
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/75646980.png',
+                    'large': 'http://userserve-ak.last.fm/serve/126/75646980.png',
+                    'medium': 'http://userserve-ak.last.fm/serve/64/75646980.png',
+                    'small': 'http://userserve-ak.last.fm/serve/34/75646980.png'                    
+                }
+            },
+            'price': 2542,
+            'points': 242
+        },
+        {
+            'artist': {
+                'name': 'Flight of the Conchords',
+                'imgurls': {
+                    'mega': 'http://userserve-ak.last.fm/serve/_/22957595/Flight+of+the+Conchords+flight.jpg',
+                    'extralarge': 'http://userserve-ak.last.fm/serve/252/22957595.jpg',
+                    'large': 'http://userserve-ak.last.fm/serve/126/22957595.jpg',
+                    'medium': 'http://userserve-ak.last.fm/serve/64/22957595.jpg',
+                    'small': 'http://userserve-ak.last.fm/serve/34/22957595.jpg'
+                }
+            },
+            'price': 2401,
+            'points': 309
+        },        
+        {  
+            'artist': {
+                'name': 'Daft Punk',
+                'imgurls': {
+                    'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/4183432\/Daft+Punk+daftpunk_1.jpg',
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg',
+                    'large': 'http://userserve-ak.last.fm/serve/126/4183432.jpg',
+                    'medium': 'http://userserve-ak.last.fm/serve/64/4183432.jpg',
+                    'small': 'http://userserve-ak.last.fm/serve/34/4183432.jpg'
+                }
+            },
+            'price': 2200,
+            'points': 420
+        },
+        {  
+            'artist': {
+                'name': 'The Killers',
+                'imgurls': {
+                    'mega': 'http://userserve-ak.last.fm/serve/500/82785611/The+Killers+tumblr_1280.png',
+                    'extralarge': 'http://userserve-ak.last.fm/serve/252/82785611.png',
+                    'large': 'http://userserve-ak.last.fm/serve/126/82785611.png',
+                    'medium': 'http://userserve-ak.last.fm/serve/64/82785611.png',
+                    'small': 'http://userserve-ak.last.fm/serve/34/82785611.png'
+                }
+            },
+            'price': 1920,
+            'points': 523
+        },
+        {  
+            'artist': {
+                'name': 'Hans Zimmer',
+                'imgurls': {
+                    'mega': 'http://userserve-ak.last.fm/serve/500/73701504/Hans+Zimmer+hz4.png',
+                    'extralarge': 'http://userserve-ak.last.fm/serve/252/73701504.png',
+                    'large': 'http://userserve-ak.last.fm/serve/126/73701504.png',
+                    'medium': 'http://userserve-ak.last.fm/serve/64/73701504.png',
+                    'small': 'http://userserve-ak.last.fm/serve/34/73701504.png'
+                }
+            },
+            'price': 1605,
+            'points': 688
+        },
+    ]
+
+    rising_SE_artists = list(top_SE_artists)
+    random.shuffle(rising_SE_artists)
+
+    recommended_artists = list(top_SE_artists)
+    random.shuffle(recommended_artists)
+
+    return render_to_response('artists.html', {
+        'artistlist': artistlist, 
+        'top_SE_artists': top_SE_artists, 
+        'top_LFM_artists': reversed(top_SE_artists), 
+        'rising_SE_artists': rising_SE_artists,
+        'recommended_artists': recommended_artists
+    })
 
 def leaderboards(request):
     return render_to_response('leaderboards.html',{})
