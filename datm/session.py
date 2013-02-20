@@ -1,34 +1,45 @@
 __author__ = 'amar'
 
-import thread
-
-from config import NoDatabaseException, DATMDatabase
+from config import has_db, NoDatabaseException
 
 class DATMSession(object):
     def __init__(self, config):
         self._config = config
-        if not isinstance(config, DATMDatabase):
-            raise NoDatabaseException()
-        self._db_session = config.db.SessionBase()
+        if has_db(config):
+            self._db = config.db.SessionBase()
 
     def __enter__(self):
-        self._config.sessions.current_session = self
+        self.bind()
+        return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is not None:
+            return False
+
+        if self.db is not None:
+            self.db.commit()
+
+        self.unbind()
+
+    def bind(self):
+        self.config.sessions.current_session = self
+
+    def unbind(self):
         try:
-            del self._config.sessions.current_session
+            del self.config.sessions.current_session
         except TypeError:
             raise InvalidSessionException()
-        self.db_session.commit()
-        self.db_session.remove()
 
     @property
     def config(self):
         return self._config
 
     @property
-    def db_session(self):
-        return self._db_session
+    def db(self):
+        try:
+            return self._db
+        except AttributeError:
+            raise NoDatabaseException()
 
 class InvalidSessionException(Exception):
     pass

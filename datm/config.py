@@ -1,35 +1,36 @@
 __author__ = 'amar'
 
-# FIXME: Shouldn't need to munge sys.path! :P
-import sys
-sys.path.append('..')
-
 import threading
 from functools import wraps
 
-from lastfm import Api
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from base import DATMObject
+from models.base import Base as DeclarativeBase
 
 class DATMConfig(object):
     def __init__(self, lastfm=None, db_args=None):
-        _db_args = {'pool_size': 20, 'max_overflow': 0}
         _lastfm = {}
         if lastfm is not None:
-            try:
-                api = Api(api_key=_lastfm['api_key'],
-                            secret=_lastfm['secret'],
-                            input_encoding='utf-8')
-            except KeyError:
-                raise TypeError(
-                    'Argument lastfm must bear keys api_key, secret.'
-                )
-            self._lastfm = DATMLastFm(api)
+#            try:
+#                api = Api(api_key=_lastfm['api_key'],
+#                            secret=_lastfm['secret'],
+#                            input_encoding='utf-8')
+#            except KeyError:
+#                raise TypeError(
+#                    'Argument lastfm must bear keys api_key, secret.'
+#                )
+#            self._lastfm = DATMLastFm(api)
+            pass
+
+        _db_args = {'pool_size': 20, 'max_overflow': 0}
         if db_args is not None:
             _db_args.update(db_args)
+            for key in [k for k, v in _db_args.iteritems() if v is None]:
+                _db_args.pop(key)
             url = _db_args.pop('url')
+
             engine = create_engine(url, **_db_args)
             SessionBase = sessionmaker(bind=engine)
             self._db = DATMDatabase(engine, SessionBase)
@@ -37,23 +38,23 @@ class DATMConfig(object):
 
     @property
     def lastfm(self):
-        getattr(self, '_lastfm', None)
+        return getattr(self, '_lastfm', None)
 
     @property
     def db(self):
-        getattr(self, '_db', None)
+        return getattr(self, '_db', None)
+
+    @property
+    def sessions(self):
+        return self._sessions
 
     @property
     def session(self):
         return self._sessions.current_session
 
 class DATMLastFm(object):
-    def __init__(self, api):
-        self._api = api
-
-    @property
-    def api(self):
-        return self._api
+    def __init__(self):
+        pass
 
 class DATMDatabase(object):
     def __init__(self, engine, SessionBase):
@@ -68,11 +69,14 @@ class DATMDatabase(object):
     def SessionBase(self):
         return self._SessionBase
 
+    def create_all(self):
+        DeclarativeBase.metadata.create_all(self._engine)
+
 def has_db(obj):
     if isinstance(obj, DATMObject):
         return obj.db_object is not None
     if isinstance(obj, DATMConfig):
-        return obj.session is not None
+        return obj.db is not None
     return False
 
 def has_lastfm(obj):
@@ -88,14 +92,14 @@ def require_data_source(f):
         if has_db(first) or has_lastfm(first):
             return f(first, *args, **kwargs)
         else:
-            raise NoDataSourceException()
+            raise NoDataSourceException(f.func_name)
     return inner
 
 def require_lastfm(f):
     @wraps(f)
     def inner(first, *args, **kwargs):
         if not has_lastfm(first):
-            raise NoLastFMException()
+            raise NoLastFMException(f.func_name)
         return f(first, *args, **kwargs)
     return inner
 
@@ -103,7 +107,7 @@ def require_db(f):
     @wraps(f)
     def inner(first, *args, **kwargs):
         if has_db(first):
-            raise NoDatabaseException()
+            raise NoDatabaseException(f.func_name)
         return f(first, *args, **kwargs)
     return inner
 

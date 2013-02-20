@@ -5,6 +5,12 @@ __author__ = 'amar'
 from functools import wraps
 
 class DATMObject(object):
+    # FIXME: This is a decidedly temporary affair.
+    #        It exists to throw a useful error if someone expects something
+    #           from DATM it doens't currently have.
+    def __getattr__(self, name):
+        raise NotImplementedError(name)
+
     @property
     def lastfm_object(self):
         return getattr(self, '_lastfm_object', None)
