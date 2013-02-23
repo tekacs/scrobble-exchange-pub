@@ -66,8 +66,14 @@
 {% endblock body_additional_html %}
 
 {% block body_additional_js %}
+    <script type="text/javascript" src="{% static "js/libs/jquery.knob.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/libs/d3.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/libs/d3.layout.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/libs/rickshaw.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.reveal.js" %}"></script>
     <script type="text/javascript" src="{% static "js/artist.js" %}"></script>
 	<script type="text/javascript">
+        // Pass in artist name here
 		Artist.name = '{{artist_SE.artist.name}}';
 		Artist.drawGraph();
 	</script>
