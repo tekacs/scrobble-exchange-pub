@@ -16,12 +16,11 @@ header {
 
             &:not(.name){
                 height: 42px;
-                top: 1px;
+                margin-top: 1px;
 
                 a {
                     font-size: 14px;
                 }
-
 
                 &:hover, &.active, &:focus {
                     background-image: $headerSpriteUrl;
