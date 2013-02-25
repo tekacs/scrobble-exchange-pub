@@ -6,7 +6,7 @@
 {% block title %}{{artist_SE.artist.name}}{% endblock title %}
 
 {% block above_main %}
-    <h1 class="main-header">{{artist_SE.artist.name}}</h1> 
+    <h1 class="main-header">{{artist_SE.artist.name}}</h1>
     <nav>
         <ul>
             <li><a href="#">Tracks</a></li>
@@ -17,10 +17,10 @@
             <li><a href="#">Biography</a></li>
             <li><a href="#">More...</a></li>
         </ul>
-    </nav>  
+    </nav>
 {% endblock above_main %}
-    
-{% block main %}	
+
+{% block main %}
 	<div id="chart_container">
 		<div id="y_axis"></div>
 		<div style="overflow: visible;">
@@ -52,7 +52,7 @@
 {% block sidebar %}
     <h2 class="sidebar-red">Current market price:</h2>
     <p class="sidebar-price">${{ artist_SE.price }}</p>
-    
+
     {% if artist_SE.ownedby %}
         <a class="button large" id="sell-button" href="#" data-price="{{ artist_SE.price }}" data-artistname="{{ artist_SE.artist.name }}">Sell</a>
     {% else %}
@@ -74,7 +74,7 @@
     <script type="text/javascript" src="{% static "js/artist.js" %}"></script>
 	<script type="text/javascript">
         // Pass in artist name here
-		Artist.name = '{{artist_SE.artist.name}}';
-		Artist.drawGraph();
+		window.SE.Artist.name = '{{artist_SE.artist.name}}';
+		window.SE.Artist.drawGraph();
 	</script>
 {% endblock body_additional_js %}

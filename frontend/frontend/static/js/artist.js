@@ -1,5 +1,5 @@
 // Very rough and ready approach to handling the JS on artists' pages
-var Artist = {
+window.SE.Artist = {
     name: '',
     id: '',
 
@@ -46,16 +46,13 @@ var Artist = {
     }
 };
 
-// TODO: set up object to contain settings such as this
-var price_countdown;
-
-function startCountdown() {
+window.SE.startCountdown = function () {
     var seconds = $('.dial').val();
 
     // We have reached the end of the timer, need to get a new price
     // TODO: get new price
     seconds = (seconds < 1) ? 15 : seconds - 1;
-    
+
     // Reduce knob value and start a new timer
     $('.dial').val(seconds).trigger('change');
     $('.timer-text').text(seconds);
@@ -76,8 +73,8 @@ function startCountdown() {
             }
         );
     }
-    price_countdown = setTimeout(startCountdown, 1000);
-}
+    window.SE.price_countdown = setTimeout(window.SE.startCountdown, 1000);
+};
 
 jQuery(document).ready(function($) {
   $("#buy-button, #sell-button").click(function() {
@@ -105,7 +102,7 @@ jQuery(document).ready(function($) {
               );
           },
           "opened": function() {
-              startCountdown();
+              window.SE.startCountdown();
           },
           "closed": function() {
               clearTimeout(window.price_countdown);
