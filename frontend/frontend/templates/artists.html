@@ -184,7 +184,7 @@
                             <a href="/artist/{{recommended_artist_SE.artist.name|urlencode}}" class="rankItem-blockLink">            
                                 <h4>
                                     <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
-                                    <span class="rankItem-title">{{recommended_artist_SE.artist.name}}</span>
+                                    <span class="rankItem-title">{{recommended_artist_SE.artist.name|truncatechars:30}}</span>
                                 </h4>
                                 <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.artist.imgurls|get_image:'mega'}}');">
                                     <div class="rankItem-imageCrop-wrap">
