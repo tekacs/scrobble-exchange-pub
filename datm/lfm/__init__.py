@@ -9,5 +9,6 @@ from .lastfm import RequestBuilder
 from .artist import Artist
 from .user import User
 from .auth import Auth
+from .chart import Chart
 
-__all__ = ['RequestBuilder', 'Artist', 'User', 'Auth']
+__all__ = ['RequestBuilder', 'Artist', 'User', 'Auth', 'Chart']
