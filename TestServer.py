@@ -21,7 +21,7 @@ class SEHandler(object):
         """
         Returns the SE API key for sending to last.fm
         """
-        return config.lastfmcred['api_key']
+        return 'apikey'
 
     def login(self, username, token):
         """
@@ -31,9 +31,8 @@ class SEHandler(object):
         - username
         - token
         """
-        ret = AuthUser(name = username, session_key = 'randomstringhere', money 
-                                                                        = 9399)
-        
+        ret = AuthUser(User(name = username), session_key = 'randomstringhere', 
+                                                                money = 9399)
         return ret
 
     def getArtist(self, artist):
@@ -72,7 +71,8 @@ class SEHandler(object):
                 'extralarge': 'http:\/\/userserve-' \
                 'ak.last.fm\/serve\/252\/411274.jpg'}
             ),
-            'Flight of the Conchords':Artist(mbid = '', name = 'Conchords', 
+            'Flight of the Conchords':Artist(mbid = '', name = 
+                                                    'Flight of the Conchords', 
             imgurls = {
                 'mega': 'http://userserve-ak.last.fm' \
                 '/serve/_/22957595/Flight+of+the+Conchords+flight.jpg',
@@ -103,13 +103,13 @@ class SEHandler(object):
                 'small': 'http://userserve-ak.last.fm/serve/34/73701504.png'
                 }
             ),
-            'A random band with a missing image and a long name! (and'\
-            'punctuation)':Artist(mbid = '', name = 'A random band with a'\
+            'A random band with a missing image and a long name! (and '\
+            'punctuation)':Artist(mbid = '', name = 'A random band with a '\
             'missing image and a long name! (and punctuation)', imgurls = {}
             )
         }
       
-        return artist[artist.name]
+        return artists[artist.name]
 
     def getLightArtist(self, artist):
         pass
@@ -139,9 +139,9 @@ class SEHandler(object):
                 1920, numremaining = 38, points = 523, ownedby = True),
             'Hans Zimmer':ArtistSE(artist = self.getArtist(artist), price = 
                 1605, numremaining = 289, points = 688, ownedby = True),
-            'A random band with a missing image and a long name! (and'\
+            'A random band with a missing image and a long name! (and '\
             'punctuation)':ArtistSE(artist = self.getArtist(artist), price = 
-                100, numremaining = 1829, points = 444, ownedby = False)
+                100, numremaining = 1829, points = 444, ownedby = True)
         }
         
         return artists[artist.name]
@@ -155,7 +155,7 @@ class SEHandler(object):
         - artist
         """
         artists = {
-            'Coldplay':ArtistSE(artist = self.getArtist(artist), streamable = 
+            'Coldplay':ArtistLFM(artist = self.getArtist(artist), streamable = 
                 True, listeners = 1000, plays = 1000, tags = ['one','two'], 
                 similar = [], bio = ArtistBio(content = '', summary = 
                 """Coldplay is a British <a 
@@ -189,26 +189,61 @@ class SEHandler(object):
                 class="bbcode_artist">a-ha</a> for inspiring him to form his 
                 own band."""
                 )),
-            'Daft Punk':ArtistSE(artist = self.getArtist(artist), streamable = 
-                True, listeners = 1500, plays = 900, tags = ['one','three'], 
-                similar = [], bio = ArtistBio(summary = '', content = '')),
-            'Gorillaz':ArtistSE(artist = self.getArtist(artist), streamable = 
-                True, listeners = 700, plays = 1300, tags = ['one','two'], 
-                similar = [], bio = ArtistBio(summary = '', content = '')),
-            'Flight of the Conchords':ArtistSE(artist = self.getArtist(artist), 
-                streamable = True, listeners = 700, plays = 1300, tags = 
-                ['one','two'], similar = [], bio = ArtistBio(summary = '', 
-                content = '')),
-            'The Killers':ArtistSE(artist = self.getArtist(artist), streamable 
-                = True, listeners = 700, plays = 1300, tags = ['one','two'], 
-                similar = [], bio = ArtistBio(summary = '', content = '')),
-            'Hanz Zimmer':ArtistSE(artist = self.getArtist(artist), streamable 
-                = True, listeners = 700, plays = 1300, tags = ['one','two'], 
-                similar = [], bio = ArtistBio(summary = '', content = '')),
-            'A random band with a missing image and a long name! (and' \
-            'punctuation)':ArtistSE(artist = self.getArtist(artist), streamable 
-                = True, listeners = 10, plays = 200, tags = ['one','two'], 
-                similar = [], bio = ArtistBio(summary = '', content = ''))
+            'Daft Punk':ArtistLFM(
+                artist = self.getArtist(artist),
+                streamable = True, listeners = 1500, plays = 900,
+                tags = ['one','three'], 
+                similar = [self.getArtist(Artist(mbid = '', name = 'Daft '\
+                    'Punk')), self.getArtist(Artist(mbid ='',name = 'A random'\
+                    ' band with a missing image and a long name! (and'\
+                    ' punctuation)'))],
+                bio = ArtistBio(summary = '', content = '')),
+            'Gorillaz':ArtistLFM(
+                artist = self.getArtist(artist),
+                streamable = True, listeners = 700, plays = 1300,
+                tags = ['one','two'], 
+                similar = [self.getArtist(Artist(mbid = '', name = 'Daft '\
+                    'Punk')), self.getArtist(Artist(mbid ='',name = 'A random'\
+                    ' band with a missing image and a long name! (and'\
+                    ' punctuation)'))],
+                bio = ArtistBio(summary = '', content = '')),
+            'Flight of the Conchords':ArtistLFM(
+                artist = self.getArtist(artist),
+                streamable = True, listeners = 700, plays = 1300, 
+                tags = ['one','two'],
+                similar = [self.getArtist(Artist(mbid = '', name = 'Daft '\
+                    'Punk')), self.getArtist(Artist(mbid ='',name = 'A random'\
+                    ' band with a missing image and a long name! (and'\
+                    ' punctuation)'))],
+                bio = ArtistBio(summary = '', content = '')),
+            'The Killers':ArtistLFM(
+                artist = self.getArtist(artist),
+                streamable = True, listeners = 700, plays = 1300,
+                tags = ['one','two'], 
+                similar = [self.getArtist(Artist(mbid = '', name = 'Daft '\
+                    'Punk')), self.getArtist(Artist(mbid ='',name = 'A random'\
+                    ' band with a missing image and a long name! (and'\
+                    ' punctuation)'))],
+                bio = ArtistBio(summary = '', content = '')),
+            'Hans Zimmer':ArtistLFM(
+                artist = self.getArtist(artist),
+                streamable = True, listeners = 700, plays = 1300,
+                tags = ['one','two'], 
+                similar = [self.getArtist(Artist(mbid = '', name = 'Daft '\
+                    'Punk')), self.getArtist(Artist(mbid ='',name = 'A random'\
+                    ' band with a missing image and a long name! (and'\
+                    ' punctuation)'))],
+                bio = ArtistBio(summary = '', content = '')),
+            'A random band with a missing image and a long name! (and '\
+            'punctuation)':ArtistLFM(
+                artist = self.getArtist(artist), 
+                streamable = True, listeners = 10, plays = 200,
+                tags = ['one','two'],
+                similar = [self.getArtist(Artist(mbid = '', name = 'Daft '\
+                    'Punk')), self.getArtist(Artist(mbid ='',name = 'A random'\
+                    ' band with a missing image and a long name! (and'\
+                    ' punctuation)'))],
+                bio = ArtistBio(summary = '', content = ''))
         }
         
         return artists[artist.name]
@@ -226,9 +261,14 @@ class SEHandler(object):
         Parameters:
         - n
         """
-        top = [self.getArtist('Coldplay'), self.getArtist('Flight of the'\
-        'Conchords'), self.getArtist('Daft Punk'), self.getArtist('The'\
-        'Killers'), self.getArtist('Hans Zimmer')]
+        top = [self.getArtist(Artist(mbid = '', name = 'Coldplay')), 
+                self.getArtist(Artist(mbid = '',
+                                    name = 'Flight of the Conchords')),
+                self.getArtist(Artist(mbid = '', name = 'Daft Punk')), 
+                self.getArtist(Artist(mbid = '', name = 'The Killers')), 
+                self.getArtist(Artist(mbid = '', name = 'Hans Zimmer'))]
+        
+        return top
     
     def getLFMTop(self, n):
         pass
@@ -246,10 +286,13 @@ class SEHandler(object):
         Parameters:
         - user
         """
+        u = User(name = user)
         ret = UserData(user = User(name = user, points = 242), trades = [], 
-            stocks = [self.getArtistSE(Artist(name = 'Coldplay')), 
-            self.getArtistSE(Artist(name ='The Killers')), 
-            self.getArtistSE(Artist(name = 'Hanz Zimmer'))],             
+            stocks = [self.getArtistSE(Artist(name = 'Coldplay'),u), 
+            self.getArtistSE(Artist(name ='The Killers'),u), 
+            self.getArtistSE(Artist(name = 'Hans Zimmer'),u),
+            self.getArtistSE(Artist(name = 'A random band with a missing '\
+                'image and a long name! (and punctuation)'),u)],             
             trophies = [], league = League(name = 'bronze'))
         
         return ret
@@ -262,7 +305,7 @@ class SEHandler(object):
         - user
         """
         ret = user
-        ret.money = 29
+        ret.money = 2903
         
         return ret
 
