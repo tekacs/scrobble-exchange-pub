@@ -28,7 +28,7 @@ db_args = {
 }
 
 class SEHandler(object):
-    #_config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args)
+    _config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args)
     
     def apikey(self):
         """
@@ -64,7 +64,7 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             if not artist.mbid:
                 a = datm.artist(_config, mbid = artist.mbid)
-            else if not artist.name:
+            elif not artist.name:
                 a = datm.artist(_config, name = artist.name)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
@@ -84,7 +84,7 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             if not artist.mbid:
                 a = datm.artist(_config, mbid = artist.mbid)
-            else if not artist.name:
+            elif not artist.name:
                 a = datm.artist(_config, name = artist.name)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
@@ -107,7 +107,7 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             if not artist.mbid:
                 a = datm.artist(_config, mbid = artist.mbid, user = user)
-            else if not artist.name:
+            elif not artist.name:
                 a = datm.artist(_config, name = artist.name, user = user)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
@@ -115,8 +115,8 @@ class SEHandler(object):
             u = datm.user(_config, user.name)
             
             r = Artist(mbid = a.mbid, name = a.name, imgurls = a.images)
-            ret = ArtistSE(artist = r, numremaining = a.no_remaining, ownedby 
-                                                                    = u.owns(a))
+            ret = ArtistSE(artist = r, numremaining = a.no_remaining, 
+                                        points = a.points, ownedby = u.owns(a))
             
             if (u.owns(a)):
                 ret.price = a.local_price * 0.97
@@ -136,7 +136,7 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             if not artist.mbid:
                 a = datm.artist(_config, mbid = artist.mbid)
-            else if not artist.name:
+            elif not artist.name:
                 a = datm.artist(_config, name = artist.name)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
@@ -162,7 +162,7 @@ similar                             = a.similar, bio = b)
         with datm.DATMSession(_config):
             if not artist.mbid:
                 a = datm.artist(_config, mbid = artist.mbid)
-            else if not artist.name:
+            elif not artist.name:
                 a = datm.artist(_config, name = artist.name)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
@@ -271,7 +271,7 @@ similar                             = a.similar, bio = b)
                                                         u.trophies.description)]
             ret.league = League(name = u.league.name, description = 
                                     u.league.description, icon = u.league.icon)
-           
+            
             for t in u.trades:
                 a = Artist(mbid = t.Artist.mbid, name = t.Artist.name, imgurls 
                                                             = t.Artist.images)
@@ -284,7 +284,7 @@ similar                             = a.similar, bio = b)
                                                             = t.Artist.images)
                 
                 ret.stocks.append(ArtistSE(artist = a, price = t.price, 
-                                                numremaining = no_remaining)
+                                                numremaining = no_remaining))
             
             return ret
         
@@ -339,7 +339,7 @@ similar                             = a.similar, bio = b)
         with datm.DATMSession(_config):
             if not artist.mbid:
                 a = datm.artist(_config, mbid = artist.mbid, user = user)
-            else if not artist.name:
+            elif not artist.name:
                 a = datm.artist(_config, name = artist.name, user = user)
             else:
                 raise TransactionException(TransactionCode.ARG, 'Incorrect \

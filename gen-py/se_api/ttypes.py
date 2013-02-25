@@ -354,6 +354,7 @@ class ArtistSE(object):
    - artist
    - price
    - numremaining
+   - points
    - ownedby
   """
 
@@ -362,13 +363,15 @@ class ArtistSE(object):
     (1, TType.STRUCT, 'artist', (Artist, Artist.thrift_spec), None, ), # 1
     (2, TType.I32, 'price', None, None, ), # 2
     (3, TType.I32, 'numremaining', None, None, ), # 3
-    (4, TType.BOOL, 'ownedby', None, None, ), # 4
+    (4, TType.I32, 'points', None, None, ), # 4
+    (5, TType.BOOL, 'ownedby', None, None, ), # 5
   )
 
-  def __init__(self, artist=None, price=None, numremaining=None, ownedby=None,):
+  def __init__(self, artist=None, price=None, numremaining=None, points=None, ownedby=None,):
     self.artist = artist
     self.price = price
     self.numremaining = numremaining
+    self.points = points
     self.ownedby = ownedby
 
   def read(self, iprot):
@@ -397,6 +400,11 @@ class ArtistSE(object):
         else:
           iprot.skip(ftype)
       elif fid == 4:
+        if ftype == TType.I32:
+          self.points = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
         if ftype == TType.BOOL:
           self.ownedby = iprot.readBool();
         else:
@@ -423,8 +431,12 @@ class ArtistSE(object):
       oprot.writeFieldBegin('numremaining', TType.I32, 3)
       oprot.writeI32(self.numremaining)
       oprot.writeFieldEnd()
+    if self.points is not None:
+      oprot.writeFieldBegin('points', TType.I32, 4)
+      oprot.writeI32(self.points)
+      oprot.writeFieldEnd()
     if self.ownedby is not None:
-      oprot.writeFieldBegin('ownedby', TType.BOOL, 4)
+      oprot.writeFieldBegin('ownedby', TType.BOOL, 5)
       oprot.writeBool(self.ownedby)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -437,6 +449,8 @@ class ArtistSE(object):
       raise TProtocol.TProtocolException(message='Required field price is unset!')
     if self.numremaining is None:
       raise TProtocol.TProtocolException(message='Required field numremaining is unset!')
+    if self.points is None:
+      raise TProtocol.TProtocolException(message='Required field points is unset!')
     return
 
 
