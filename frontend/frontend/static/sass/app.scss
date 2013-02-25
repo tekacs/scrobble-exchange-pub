@@ -11,7 +11,11 @@
 
 @import "header";
 @import "body";
+@import "leaderboards";
 @import "modal";
+
+@import "dataTables";
+@import "jqueryUI_smoothness";
 
 // ----------------------------------------
 // Import specific parts of Foundation by commenting the import "foundation"
