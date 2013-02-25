@@ -146,7 +146,7 @@ class SEHandler(object):
             r = Artist(mbid = a.mbid, name = a.name, imgurls = a.images)
             ret = ArtistLFM(artist = r, streamable = a.streamable, listeners = 
                             a.listeners, plays = a.plays, tags = a.tags, 
-similar                             = a.similar, bio = b)
+                            similar = a.similar, bio = b)
             
             return ret
 
@@ -405,7 +405,6 @@ similar                             = a.similar, bio = b)
             except NoStockRemainingException:
                 raise TransactionException(code = TransactionCode.NUM, message 
                                                          = 'No stock remaining')
-
         
 
     def sell(self, guarantee, user):

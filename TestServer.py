@@ -157,7 +157,7 @@ class SEHandler(object):
         artists = {
             'Coldplay':ArtistSE(artist = self.getArtist(artist), streamable = 
                 True, listeners = 1000, plays = 1000, tags = ['one','two'], 
-                similar = [], bio = ArtistBio(summary = '', content = 
+                similar = [], bio = ArtistBio(content = '', summary = 
                 """Coldplay is a British <a 
                 href="http://www.last.fm/tag/alternative%20rock" 
                 class="bbcode_tag" rel="tag">alternative rock</a> band, formed 
@@ -246,9 +246,8 @@ class SEHandler(object):
         Parameters:
         - user
         """
-        ret = UserData(user = User(name = user, session_key = 'woot', money = 
-            3848), trades = [], stocks = 
-            [self.getArtistSE(Artist(name = 'Coldplay')), 
+        ret = UserData(user = User(name = user, points = 242), trades = [], 
+            stocks = [self.getArtistSE(Artist(name = 'Coldplay')), 
             self.getArtistSE(Artist(name ='The Killers')), 
             self.getArtistSE(Artist(name = 'Hanz Zimmer'))],             
             trophies = [], league = League(name = 'bronze'))
