@@ -186,19 +186,11 @@
                                     <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
                                     <span class="rankItem-title">{{recommended_artist_SE.artist.name}}</span>
                                 </h4>
-                                {% if forloop.counter == 1 %}
-                                    <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.artist.imgurls|get_image:'mega'}}');">
-                                        <div class="rankItem-imageCrop-wrap">
-                                            <img src="{{recommended_artist_SE.artist.imgurls|get_image:'mega'}}">
-                                        </div>
+                                <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                    <div class="rankItem-imageCrop-wrap">
+                                        <img src="{{recommended_artist_SE.artist.imgurls|get_image:'mega'}}">
                                     </div>
-                                {% else %}
-                                    <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.artist.imgurls|get_image:'large'}}');">
-                                        <div class="rankItem-imageCrop-wrap">
-                                            <img src="{{recommended_artist_SE.artist.imgurls|get_image:'large'}}">
-                                        </div>
-                                    </div>
-                                {% endif %}
+                                </div>
                             </a>
                         </div>
                         <p class="rankItem-bar">
