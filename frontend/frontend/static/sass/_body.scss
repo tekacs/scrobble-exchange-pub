@@ -60,9 +60,9 @@ body {
             height: $portfolio-img-height;
             overflow: hidden;
             float: left;
-            
+
             margin: 0 24px 15px 0px;
-            
+
             div.text-over-image {
                 position: absolute;
                 span {
@@ -72,24 +72,24 @@ body {
                 }
                 bottom: 0;
                 left: 0;
-                span {                  
-                    &.primary {                     
-                        background-color: #333; 
+                span {
+                    &.primary {
+                        background-color: #333;
                     }
                     &.secondary{
                         bottom: 0;
                         left: 0;
                         background-color: #71b7e6;
-                    }                   
+                    }
 
-                }       
-            }   
-        }  
+                }
+            }
+        }
 
         div.artist-img {
             width: 140px;
             height: 140px;
-        } 
+        }
     }
 
     .sidebar {
@@ -99,14 +99,14 @@ body {
                 color: $mainBarRed;
                 font-weight: bold;
                 font-size: 20px;
-                
-                &:first-child {                    
+
+                &:first-child {
                     margin-bottom: 5px;
-                    margin-top: 0;    
+                    margin-top: 0;
                 }
             }
 
-            
+
         }
 
         p.sidebar-price {
@@ -137,9 +137,9 @@ body {
     }
 
 
-    /* 
+    /*
        Begin lists shown on artists page - style taken from Last.fm charts page:
-       http://www.last.fm/charts 
+       http://www.last.fm/charts
        TODO: remove redundant attributes, combine to reduce code, extract to seperate scss file
     */
 
@@ -153,7 +153,7 @@ body {
         ol.top-list {
             list-style-type: none;
             margin-left: 0;
-            
+
             li.rankItem {
                 padding-bottom: 10px;
                 padding-top: 10px;
@@ -172,7 +172,7 @@ body {
                 }
 
                 &:hover {
-                    background: #d1e4ef;    
+                    background: #d1e4ef;
                 }
 
                 .rm {
@@ -210,7 +210,7 @@ body {
                 .rankItem-wrap2,
                 .rankItem-bar {
                     width: auto;
-                }                
+                }
             }
 
             .rankItem-blockLink:hover,
@@ -233,7 +233,7 @@ body {
             .rankItem-position {
                 position: absolute;
                 left: -52px;
-                width: 50px;    
+                width: 50px;
                 padding: 0 5px;
                 text-align: center;
                 color: #fff;
@@ -269,10 +269,10 @@ body {
 
                 // We want a large first-child image if we're not in the sidebar
                 &:not(.sidebar-item) {
-                    .rankItem-image, 
+                    .rankItem-image,
                     .rankItem-imageCrop {
                         width: 238px;
-                        height: 235px; 
+                        height: 235px;
                         z-index: -1;
                     }
 
@@ -288,7 +288,7 @@ body {
 
                     .rankItem-wrap {
                         padding-top: 163px;
-                        z-index: 2;    
+                        z-index: 2;
                     }
 
                     .rankItem-title {
@@ -297,15 +297,15 @@ body {
                         padding: 0.285714em 10px 0 10px;
                         top: 0;
                         margin-bottom: 0.142857em;
-                    }    
+                    }
                 }
-                
+
             }
 
             .rankItem-bar {
                 clear: both;
                 position: relative;
-                padding-left: 10em;    
+                padding-left: 10em;
                 font-size: 16px;
                 margin-bottom: 0;
 
@@ -336,14 +336,14 @@ body {
                 .rankItem-position,
                 .rankItem-bar-percentage span {
                     background: #3ec6ff;
-                }    
+                }
             }
 
             // Specific styles for the list in the sidebar
             &.sidebar-list {
                 .rankItem-wrap {
                     margin-left: 0;
-                } 
+                }
 
                 .rankItem-position {
                     display: none;
@@ -382,7 +382,7 @@ body {
                 }
             }
 
-        }    
+        }
     }
 
 }
