@@ -1,99 +1,141 @@
-import warnings
+# -*- coding: utf-8 -*-
+"""A somewhat generic set of (meta)classes to set up a map to a REST API.
+
+@todo: Add a way to create input/request transformers as well as response ones.
+(notably to allow users to pass params as True/False in place of 1/0, etc.)
+
+@todo: There remain some last.fm-specific conventions in here, which could be
+factored out with relatively little difficulty.
+"""
+
+__author__ = 'Amar Sood (tekacs)'
+
+import pprint
 from hashlib import md5 as _md5
 from functools import wraps as _wraps
 
 import requests
-import types
 
-__all__ = ['Server']
+__all__ = ['APIMeta']
 
 class APIClient(object):
+    """Provides ``classmethod`` network services to ``APIObject``s.
+
+    @todo: This is substantially more tied-in to last.fm-specifics (signatures!)
+            than I would like. :/ Fix this.
+    """
     _base_endpoint = 'http://ws.audioscrobbler.com/2.0/'
     _base_params = {'format': 'json'}
 
-    def __init__(self, api_key, api_secret=None):
-        """The basis for a last.fm API server connection:
-            api_key (required) :: needed to perform any operations on the API.
-            api_secret :: required to perform any authenticated operations on the API
-        """
-        self._base_params.update(api_key=api_key)
-        if not api_secret is None:
-            self._base_params['api_secret'] = api_secret
-
-    @property
-    def api_key(self):
-        return self._base_params['api_key']
-
-    @property
-    def api_secret(self):
-        try:
-            return self._base_params['api_secret']
-        except KeyError:
-            raise AttributeError('api_secret')
-
-    @api_secret.setter
-    def api_secret(self, value):
-        self._base_params['api_secret'] = value
-
-    def _sign(self, params):
+    @classmethod
+    def _sign(cls, params):
+        secret = params.pop('api_secret')
         sig = ''
         for k in sorted(params.iterkeys()):
             if k not in ('format', 'callback'):
                 sig += k + str(params[k])
+        sig += secret
         params['api_sig'] = _md5(sig).hexdigest()
 
-    def read(self, namespace, method, **params):
-        params.update(self._base_params)
-        return requests.get(self._base_endpoint, params=params).json()
+    @classmethod
+    def request(cls, method, http_method, sign=False, **params):
+        request_kind = getattr(requests, http_method)
+        params.update(cls._base_params)
+        params.update(method=method)
+        if params.pop('_debug', False):
+            pprint.pprint(locals())
+        if sign:
+            cls._sign(params)
+        r = request_kind(cls._base_endpoint, params=params).json()
+        return r
 
-    def write(self, namespace, method, **params):
-        params.update(self._base_params)
-        self._sign(params)
-        return requests.post(self._base_endpoint, params=params).json()
-
-class AuthClient(object):
-    def __init__(self, user, session_key=None):
-        self.user = user
-        self.session_key = session_key
+class APIError(Exception):
+    pass
 
 class APIMeta(type):
-    """Define all possible methods on the class at creation-time."""
+    """A metaclass base for API objects. Provides:
+
+    - Methods for all API methods listed in ``_methods['get']`` and
+        ``_methods['post']`` on the class being instantiated, with the case of
+        the generated methods converted to ``underscore_case`` from
+        ``camelCase``.
+    - The default transformer for JSON data returned for the API that passes
+        validation and isn't an error, but for which a transformer has not been
+        written.
+    - An error handler to convert API errors to Python Exceptions.
+    """
+
     def __new__(mcls, name, bases, attrs):
-        cls = type.__new__(mcls, name, bases, attrs)
-        local_getattr = types.UnboundMethodType(cls, mcls._get_attr)
-        for method in attrs['_methods']:
-            setattr(cls, mcls._camelcase_to_underscores(method), local_getattr)
-        return cls
+        """See class docstring."""
+        try:
+            for http_method in ('get', 'post'):
+                for method in attrs['_methods'][http_method]:
+                    ac = classmethod(mcls._api_call_maker(
+                        method,
+                        http_method,
+                        attrs)
+                    )
+                    attrs[mcls._camelcase_to_underscores(method)] = ac
+        except KeyError:
+            raise SyntaxError('''Incorrectly derived API class!
+            You must define _methods[\'get\'] and _methods[\'post\'].''')
+        return type.__new__(mcls, name, bases, attrs)
+
+    @classmethod
+    def _api_call_maker(mcls, method, http_method, attrs):
+        """This is a kludge to get around Python closure/scoping rules. :/"""
+        transformer = attrs.get(
+            mcls._camelcase_to_underscores(method),
+            mcls.default_transformer
+        )
+        def api_call(cls, dictargs=(), **kwargs):
+            kwargs.update(dictargs)
+            json = APIClient.request(
+                cls.__name__.lower() + '.' + method,
+                http_method,
+                http_method == 'post',
+                **kwargs
+            )
+            if 'error' in json:
+                return mcls.error_handler(cls, json)
+            else:
+                return transformer(json)
+        return api_call
 
     @staticmethod
     def _camelcase_to_underscores(name):
-        return ''.join(['_' + char.lower() if char.isupper() else char for char in name])
+        """Convert a camelCase string to underscore_case.
+
+        4.4us timeit on 'getTrackInfo'
+        """
+        return ''.join('_' + char.lower() if char.isupper() else char
+            for char in name)
 
     @staticmethod
-    def _get_attr(self, method, type='read', **kwargs):
-        def _default_transformer(self, json_dict):
-            json_dict['body_text'] = json_dict.pop('#text')
-            return type(method, (APIResponse,), json_dict)
-        json_dict = getattr(self._server, type)(namespace=self._name, **kwargs)
-        trans = _default_transformer
-        if method in self._transformers: # robots in disguise!
-            trans = self._transformers[method]
-        return trans(json_dict)
+    def _underscores_to_camelcase(name):
+        """Convert an underscore_case string to camelCase.
 
-class APIObject(object):
-    pass
+        8.7us timeit on 'get_track_info'
+        """
+        name = list(name)
+        return ''.join(name.pop(i+1).upper() if name[i] == '_' else name[i]
+            for i in range(len(name)) if i < len(name))
 
-def transformer(cls, type='read'):
-    def decorator(f):
-        if not f.func_name in cls._methods:
-            warnings.warn('Tried to define transformer ' + f.func_name + ' - not in _methods!')
-        cls._transformers[f.func_name] = f
+    @staticmethod
+    def default_transformer(json):
+        """The default transformer for data received from the API.
 
-        return f
-    return decorator
+        By default this uses the dotmagic class defined later in this file.
+        """
+        return json
 
-class APIResponse(object):
-    pass
+    @staticmethod
+    def error_handler(cls, json):
+        """Convert API errors (from JSON) into Python Exceptions."""
+        errors = cls._errors
+        kind = int(json.pop('error'))
+        message = "\n".join((json.pop('message'), pprint.pformat(json)))
+        raise errors[kind](message)
 
 # And now begins the magic...
 # Beware of Python(ism)s
@@ -182,6 +224,14 @@ class dotmagic(object):
 
     __getattr__ = __getval
     __getitem__ = __getval
+
+    def __dir__(self):
+        target = self.__target
+
+        if callable(getattr(target, 'keys', None)):
+            return target.keys()
+
+        return dir(target)
 
     def __call__(self):
         """Gets the target value without recursively wrapping."""
