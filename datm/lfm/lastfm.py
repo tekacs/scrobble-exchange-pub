@@ -129,6 +129,12 @@ class LastFMAPIObject(object):
         29: RateLimitError
     })
 
+    @classmethod
+    def doc(cls, name):
+        import webbrowser
+        method = cls.__name__.lower() + '.' + name
+        webbrowser.open('http://www.last.fm/api/show/%s' % method)
+
 class RequestBuilder(object):
     """Aids in the construction of parameter dictionaries for API requests."""
     def __init__(self, api_key, api_secret=None, user=None, session_key=None):
