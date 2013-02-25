@@ -30,11 +30,9 @@ class APIClient(object):
     @classmethod
     def _sign(cls, params):
         secret = params.pop('api_secret')
-        sig = ''
-        for k in sorted(params.iterkeys()):
-            if k not in ('format', 'callback'):
-                sig += k + str(params[k])
-        sig += secret
+        sig = ''.join(k + str(params[k])
+            for k in sorted(params.iterkeys())
+            if k not in ('format', 'callback')) + secret
         params['api_sig'] = _md5(sig).hexdigest()
 
     @classmethod
