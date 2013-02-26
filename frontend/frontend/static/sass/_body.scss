@@ -136,6 +136,15 @@ body {
         -moz-box-shadow: 1px 0 5px rgba(0, 0, 0, .5);
     }
 
+    div.search-elements {
+        margin-bottom: 30px !important;
+
+        input {
+            height: 50px;
+            font-size: ms(1);
+        }
+    }
+
 
     /*
        Begin lists shown on artists page - style taken from Last.fm charts page:

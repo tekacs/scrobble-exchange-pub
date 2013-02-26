@@ -20,6 +20,8 @@
      for a workaround, use a 1x1 transparent gif */
 
   background-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7) !important;
+
+  margin-bottom: 1px !important;
 }
 .tt-hint {
   position: absolute !important;
@@ -29,6 +31,11 @@
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
   box-shadow: none !important;
+
+  // with: gives problems with double rendering and ghosting
+  // without: no hints visible
+  // width: 500px !important;
+  // color: #999 !important;
 }
 .tt-dropdown-menu,
 .tt-suggestions,
@@ -43,14 +50,11 @@
   left: 0;
   z-index: 100;
 
-  width: 500px;
+  width: 495px;
   padding: 8px 0;
   background-color: #fff;
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
   -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
      -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
           box-shadow: 0 5px 10px rgba(0,0,0,.2);
@@ -67,9 +71,9 @@
   display: block;
   white-space: nowrap;
   cursor: pointer;
-  padding: 3px 20px;
-  font-size: 18px;
-  line-height: 24px;
+  padding: 0 0 8px 0;
+
+  background-color: #eee;
 
   &.tt-is-under-cursor {
     color: #fff;
@@ -78,6 +82,8 @@
 
   p {
     margin: 0;
+    font-size: 18px;
+    line-height: 24px;
   }
 }
 .tt-suggestion * {
@@ -93,5 +99,38 @@
   left: auto;
   right: 0;
 }
+
+
+
+ol.tt-suggestions {
+  li.tt-suggestion {
+
+    &:first-child:not(.visited) {
+      @extend .tt-suggestion.tt-is-under-cursor;
+    }
+
+    & + .tt-suggestion {
+      border-top: 1px solid #ccc;
+    }
+
+    .artist-image {
+      height: 70px;
+      overflow: hidden;
+      background-size: cover;
+      background-position: 50% 35%;
+      //border: 1px solid #eee;
+    }
+
+    .artist-name,
+    .artist-price {
+      font-size: ms(1);
+      margin: 5px 20px 0 20px;
+    }
+  }
+}
+
+
+
+
 
 
