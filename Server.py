@@ -121,7 +121,7 @@ class SEHandler(object):
                                             points=a.points, ownedby=u.owns(a))
             
             if (u.owns(a)):
-                ret.price = a.price * 0.97
+                ret.price = int(a.price * 0.97)
             else:
                 ret.price = a.price
             
@@ -169,8 +169,7 @@ class SEHandler(object):
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
             
-            time_now = datetime.now()
-            time_utc = time.mktime(time_now.timetuple()) - time.timezone
+            time_utc = time.mktime(datetime.utcnow().timetuple())
             time_utc_old = time_utc - n*24*60*60
             
             ret = ArtistHistory()
@@ -349,7 +348,7 @@ class SEHandler(object):
             u = datm.user(_config, user.name)
             
             if (u.owns(a)):
-                price = a.price * 0.97
+                price = int(a.price * 0.97)
             else:
                 price = a.price
            
@@ -379,8 +378,7 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             
             # Calculating the elephant
-            time_now = datetime.now()
-            time_utc = time.mktime(time_now.timetuple()) - time.timezone
+            time_utc = time.mktime(datetime.utcnow().timetuple())
 
             m = hmac.new(datm.auth.secret(_config))
             m.update(str(time_utc))
@@ -420,8 +418,7 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             
             # Calculating the elephant
-            time_now = datetime.now()
-            time_utc = time.mktime(time_now.timetuple()) - time.timezone
+            time_utc = time.mktime(datetime.utcnow().timetuple())
 
             m = hmac.new(datm.auth.secret(_config))
             m.update(str(time_utc))
