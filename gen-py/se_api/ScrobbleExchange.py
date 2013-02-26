@@ -24,12 +24,11 @@ class Iface(object):
     """
     pass
 
-  def login(self, username, token):
+  def login(self, token):
     """
     If successful, returns the AuthUser with the user session token
 
     Parameters:
-     - username
      - token
     """
     pass
@@ -251,21 +250,19 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "apikey failed: unknown result");
 
-  def login(self, username, token):
+  def login(self, token):
     """
     If successful, returns the AuthUser with the user session token
 
     Parameters:
-     - username
      - token
     """
-    self.send_login(username, token)
+    self.send_login(token)
     return self.recv_login()
 
-  def send_login(self, username, token):
+  def send_login(self, token):
     self._oprot.writeMessageBegin('login', TMessageType.CALL, self._seqid)
     args = login_args()
-    args.username = username
     args.token = token
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
@@ -1055,7 +1052,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = login_result()
     try:
-      result.success = self._handler.login(args.username, args.token)
+      result.success = self._handler.login(args.token)
     except TransientError as t:
       result.t = t
     except AuthenticationError as a:
@@ -1502,18 +1499,15 @@ class apikey_result(object):
 class login_args(object):
   """
   Attributes:
-   - username
    - token
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'username', None, None, ), # 1
-    (2, TType.STRING, 'token', None, None, ), # 2
+    (1, TType.STRING, 'token', None, None, ), # 1
   )
 
-  def __init__(self, username=None, token=None,):
-    self.username = username
+  def __init__(self, token=None,):
     self.token = token
 
   def read(self, iprot):
@@ -1526,11 +1520,6 @@ class login_args(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.STRING:
-          self.username = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
         if ftype == TType.STRING:
           self.token = iprot.readString();
         else:
@@ -1545,20 +1534,14 @@ class login_args(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('login_args')
-    if self.username is not None:
-      oprot.writeFieldBegin('username', TType.STRING, 1)
-      oprot.writeString(self.username)
-      oprot.writeFieldEnd()
     if self.token is not None:
-      oprot.writeFieldBegin('token', TType.STRING, 2)
+      oprot.writeFieldBegin('token', TType.STRING, 1)
       oprot.writeString(self.token)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.username is None:
-      raise TProtocol.TProtocolException(message='Required field username is unset!')
     if self.token is None:
       raise TProtocol.TProtocolException(message='Required field token is unset!')
     return

@@ -161,9 +161,9 @@ service ScrobbleExchange {
     string apikey (),
     
     /** If successful, returns the AuthUser with the user session token */
-    AuthUser login(1: required string username, 2: required string token) 
-throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4:  
-ProgrammingError p, 5: ServiceError s),
+    AuthUser login(1: required string token) throws (1: TransientError t, 2: 
+AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: ServiceError 
+s),
     
     # Data retrieval
     # Artists
