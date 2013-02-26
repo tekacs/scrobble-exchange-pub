@@ -20,8 +20,6 @@ from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 # End of thrift
 
-
-
 def home(request):
     
     try:
@@ -105,17 +103,54 @@ def artists(request):
         print '%s' % (tx.message)
 
 def leaderboards(request):
-    return render_to_response('leaderboards.html',{}, 
-                                context_instance=RequestContext(request))
+    userleaderboard = {}
+    return render_to_response('leaderboards.html',{'leaderboard': 
+           userleaderboard}, context_instance=RequestContext(request))
 
+@json_response
 def get_leaderboard(request):
-    pass
-
-def search(request):
-    pass
-
-def auto_complete(request):
-    pass
+    
+    try:
+        # Connect to the API server
+        transport = TSocket.TSocket('localhost', 9090)
+        transport = TTransport.TBufferedTransport(transport)
+        protocol = TBinaryProtocol.TBinaryProtocol(transport)
+        client = ScrobbleExchange.Client(protocol)
+        transport.open()
+        # End
+    
+        league_id = request.GET.get('league_id','default_league')
+        time_range = request.GET.get('time_range', 'default_time_range')
+        
+        # none of the below values make any difference with dummy data 
+        board = client.getTopUsers(n=3, league = league_id, time_range = 70)
+        
+        aadata = []
+        for i in range(len(board)):
+            aa = {
+                '0': str(i+1),
+                '1': '<a hred = "#"><img src=\"http://lorempixel.com/48/48/\">
+                      neil-s</a>',
+                '2': str(board[i].points)
+                'DT_RowClass': 'place-'+str(i+1)
+            }
+            
+            aadata.append(aa)
+        
+        leaderboard = {
+            'sEcho': 1,
+            'iTotalRecords': '50',
+            'iTotalDisplayRecords': '50',
+            'aaData': aadata
+        }
+    
+        # Close
+        transport.close()
+        
+        return leaderboard
+        
+    except Thrift.TException, tx:
+        print '%s' % (tx.message)
 
 def artist_single(request, artistname):
     
@@ -143,35 +178,92 @@ def artist_single(request, artistname):
         artist_sse = {'artist': artist, 'ownedby': artist_se.ownedby, 
                     'price': artist_se.price}
         
+        # Close
+        transport.close()
+        
         return render_to_response('artist_single.html', {
             'artist_SE':artist_sse}, context_instance=RequestContext(request))
     
     except Thrift.TException, tx:
         print '%s' % (tx.message)
+ 
+
+@json_response
+def auto_complete(request):
+    
+    try:
+        # Connect to the API server
+        transport = TSocket.TSocket('localhost', 9090)
+        transport = TTransport.TBufferedTransport(transport)
+        protocol = TBinaryProtocol.TBinaryProtocol(transport)
+        client = ScrobbleExchange.Client(protocol)
+        transport.open()
+        # End
+        
+        partial_text = request.GET.get('q')
+        
+        #returns a list of artist objects
+        #i'm not sure this is what you want to be sending, or the format you 
+        #want to send it in
+        results = client.searchArtist(partial_text, n=5, page=1)
+
+        # Close
+        transport.close()
+        
+        return results
+    
+    except Thrift.TException, tx:
+        print '%s' % (tx.message)
+
+def search(request):
+    
+    try:
+        # Connect to the API server
+        transport = TSocket.TSocket('localhost', 9090)
+        transport = TTransport.TBufferedTransport(transport)
+        protocol = TBinaryProtocol.TBinaryProtocol(transport)
+        client = ScrobbleExchange.Client(protocol)
+        transport.open()
+        # End
+    
+        results = {}
+        if request.method == 'POST': # If the form has been submitted...
+            form = ArtistSearchForm(request.POST) # A form bound to thePOSTdata
+            if form.is_valid(): # All validation rules pass
+                results = client.searchArtist(form.cleaned_data['q'])
+                # return render_to_response(request, 'search_page.html', {
+                    # 'form': form, 'results': results}, 
+                    # context_instance=RequestContext(request))
+        else:
+            form = ArtistSearchForm() # An unbound form
+        
+        # Close
+        transport.close()
+        
+        return render_to_response('search_results.html', {
+            'form': form, 'results': results}, 
+                                    context_instance=RequestContext(request))
+    
+    except Thrift.TException, tx:
+        print '%s' % (tx.message) 
     
 ############ Buy/Sell ############
 @json_response
 def price(request, artist_id=None):
     print 'entered price function correctly'
-    # artist_SE = client.getArtistSE(artist = se_api.Artist(mbid = artist_id), user = request.user)
-    artist_price_guarantee = client.getGuarantee(artist = se_api.Artist(mbid = artist_id), user = request.user)
+    # artist_SE = client.getArtistSE(artist = se_api.Artist(mbid = artist_id), 
+user = request.user)
+    artist_price_guarantee = client.getGuarantee(artist = se_api.Artist(mbid = 
+artist_id), user = request.user)
     return artist_price_guarantee
 
 
 @json_response
+@require_POST
 def sell(request, artist=None, artist_id=None, price=None):
-    if (request.GET or (artist==None and artist_id==None)):
-        #marketprice = se_api.get_sell_price(artist)
-        marketprice = 40
-        return {'marketprice': 40}
-        #return render_to_response('sell.html', {'marketprice': 
-#marketprice})
-    elif (request.POST):
-        pass
-        #TODO: Authenticate
-        # if 'user' in request.session:
-        #     se_api.create_sell_orders(server=server, 
-        #         user=request.session['user'], price=price)
+    #TODO: Remind Joe to check out 
+    https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
+    pass
 
 def buy_search(request):
     #TODO
@@ -193,3 +285,6 @@ def __portfolio(user=None):
 def __authenticated(request):
     #if request.session['userapitoken'] is not None:
     return {}
+
+class ArtistSearchForm(forms.Form):
+    q = forms.CharField(max_length=100, label='Query: ')
