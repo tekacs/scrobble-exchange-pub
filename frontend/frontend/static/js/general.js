@@ -26,16 +26,22 @@ window.SE.Search = {
 };
 
 jQuery(document).ready(function($) {
-    $('.typeahead-search').typeahead({
-        name: 'artists',
-        remote: '../static/js/test_typeahead.json?1231awdw2aadAA23%QUERY',
-        limit: 3,
-        template: [
-            '<div class="artist-image" style="background-image:url(\'{{img}}\')"></div>' +
-            '<p class="artist-name" data-url="{{url}}">{{value}}</p>'
-        ],
-        engine: window.Hogan
+
+    // Need each to fix bug in 0.8.1: https://github.com/twitter/typeahead.js/issues/42#issuecomment-14028701
+    $('.typeahead-search').each(function() {
+        $(this).typeahead({
+            name: 'artists',
+            remote: '../static/js/test_typeahead.json?1231awdw2aadAA23%QUERY',
+            limit: 3,
+            template: [
+                '<div class="artist-image" style="background-image:url(\'{{img}}\')"></div>' +
+                '<p class="artist-name" data-url="{{url}}">{{value}}</p>'
+            ],
+            engine: window.Hogan
+        });
     });
+
+
 
     // Add more link below all suggestions
     $('.typeahead-search').on('keydown', function(e){
