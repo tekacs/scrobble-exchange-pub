@@ -31,7 +31,10 @@ urlpatterns = patterns('',
     url(r'^leaderboards/', 'frontend.views.leaderboards', name='leaderboards'),
 
     url(r'^sell/', 'frontend.views.sell', name='sell'),
-    url(r'^price/(?P<artist_id>[0-9A-Fa-f-]{36})/$', 'frontend.views.price', name='price'),
+    url(r'^buy/', 'frontend.views.buy', name='buy'),
+
+    url(r'^price/guarantee/', 'frontend.views.guaranteed_price', name='guaranteed_price'),
+    url(r'^price/', 'frontend.views.price', name='price'),
 
     url(r'^lastfmauth/', include('lastfmauth.urls')),
     

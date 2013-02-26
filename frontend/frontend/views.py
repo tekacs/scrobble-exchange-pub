@@ -297,21 +297,43 @@ def search(request):
 
 @json_response
 def price(request, artist_id=None):
-    print 'entered price function correctly'
     # artist_SE = client.getArtistSE(artist = se_api.Artist(mbid = artist_id), user = request.user)
+    artist_SE = {
+        'artist': {
+            'name': 'Coldplay',
+            'imgurls': {
+                'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/75646980\/Coldplay+PNG.png',
+                'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/75646980.png',
+                'large': 'http://userserve-ak.last.fm/serve/126/75646980.png',
+                'medium': 'http://userserve-ak.last.fm/serve/64/75646980.png',
+                'small': 'http://userserve-ak.last.fm/serve/34/75646980.png'
+            }
+        },
+        'price': 2542,
+        'points': 242
+    }
+    return artist_SE
+
+@json_response
+def guaranteed_price(request):
+    artist_id = request.GET.get('artist_id')
     artist_price_guarantee = client.getGuarantee(artist = se_api.Artist(mbid = artist_id), user = request.user)
     return artist_price_guarantee
 
+@json_response
+@require_POST
+def sell(request):
+    #TODO: Remind Joe to check out https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
+    guarantee = request.POST.get('guarantee')  
+    success = client.sell(guarantee=se_api.Guarantee(guarantee), user=se_api.AuthUser(request.user))
+    return success;
 
 @json_response
 @require_POST
-def sell(request, artist=None, artist_id=None, price=None):
-    #TODO: Remind Joe to check out https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
-    pass
-
-def buy(request, artist=None, artist_id=None, price=None):
-    #TODO
-    pass
+def buy(request):
+    guarantee = request.POST.get('guarantee')  
+    success = client.buy(guarantee=se_api.Guarantee(guarantee), user=se_api.AuthUser(request.user))
+    return success;
 
 
 ############ Helper Functions ############
