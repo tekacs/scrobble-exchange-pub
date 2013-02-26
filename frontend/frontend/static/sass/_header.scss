@@ -1,5 +1,5 @@
 header {
-    
+
     display: block;
     background: $mainBarRed;
     background-image: $headerSpriteUrl;
@@ -49,18 +49,49 @@ header {
 
         }
 
-        div.header-promo {
+        div.header-promo,
+        div.header-search {
             p {
                 font-size: 11px;
-                line-height: 23px;    
+                line-height: 23px;
+            }
+            margin-left: 15px;
+        }
+
+        div.header-promo {
+            float: left;
+            width: 50%;
+            p {
                 color: #ddd;
                 font-weight: bold;
             }
-            clear: left;
-            margin-left: 15px;    
-            
         }
-        
+
+        div.header-search {
+            width: 300px;
+            float: right;
+            margin-right: 15px;
+            form.search-form {
+
+                input[type="text"] {
+                    height: 23px;
+                }
+            }
+
+            p {
+                color: #222;
+            }
+
+            .tt-is-under-cursor p,
+            .tt-suggestion:first-child:not(.visited) p {
+                color: #fff;
+            }
+
+            .tt-dropdown-menu {
+                width: 300px;
+            }
+        }
+
     }
-    
+
 }
