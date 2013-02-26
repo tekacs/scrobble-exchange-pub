@@ -12,7 +12,7 @@ def memoised_property(f):
     def wrapper(self):
         v = getattr(self, name, None)
         if v is None:
-            setattr(self, name, f(self))
-        else:
-            return v
+            v = f(self)
+            setattr(self, name, v)
+        return v
     return wrapper
