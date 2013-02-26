@@ -105,6 +105,20 @@
 ol.tt-suggestions {
   li.tt-suggestion {
 
+    &.more-link {
+      padding: 15px 0 20px 0;
+
+      &:not(.tt-is-under-cursor){
+        background-color: #fff;
+        color: #222;
+      }
+
+      p {
+        font-weight: bold;
+      }
+
+    }
+
     &:first-child:not(.visited) {
       @extend .tt-suggestion.tt-is-under-cursor;
     }
@@ -118,7 +132,6 @@ ol.tt-suggestions {
       overflow: hidden;
       background-size: cover;
       background-position: 50% 35%;
-      //border: 1px solid #eee;
     }
 
     .artist-name,

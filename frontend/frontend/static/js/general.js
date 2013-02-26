@@ -1,11 +1,35 @@
 // Define global object to contain all variables/methods
 var SE = SE || {};
 
+window.SE.Search = {
+    pollAddMoreLinkTimeoutSet: false,
+    getMoreLink: function(query) {
+        return '<li class="tt-suggestion more-link" data-value="' + query + '"><p class="artist-name" data-url="/search/?q=' + query + '">See more results for ' + query + '</p></li>';
+    },
+    pollAddMoreLink: function(context) {
+
+        var parent = $($(context).parents().first());
+
+        if (parent.find('.tt-suggestion').length > 0){
+
+            if (parent.find('.more-link').length === 0){
+                parent.find('ol.tt-suggestions').append(window.SE.Search.getMoreLink($(context).val()));
+            }
+
+            window.clearTimeout(window.SE.Search.pollAddMoreLink);
+            window.SE.Search.pollAddMoreLinkTimeoutSet = false;
+
+        } else {
+            window.setTimeout(window.SE.Search.pollAddMoreLink, 50, context);
+        }
+    }
+};
+
 jQuery(document).ready(function($) {
     $('.typeahead-search').typeahead({
         name: 'artists',
         remote: '../static/js/test_typeahead.json?1231awdw2aadAA23%QUERY',
-        limit: 5,
+        limit: 3,
         template: [
             '<div class="artist-image" style="background-image:url(\'{{img}}\')"></div>' +
             '<p class="artist-name" data-url="{{url}}">{{value}}</p>'
@@ -13,31 +37,32 @@ jQuery(document).ready(function($) {
         engine: window.Hogan
     });
 
-    // If we have suggestions, submitting the form takes us to the first
-    // Otherwise we submit normally and go to the search results page
-    $('.search-form').on('submit', function(e){
-        var url, suggestions;
-        suggestions = $(this).find('.tt-suggestion');
-        window.console.log(suggestions);
-        if (suggestions.length > 0) {
-            url = $(suggestions[0]).find('p.artist-name').data('url');
-            window.location.href = url;
-            e.preventDefault();
-            return;
+    // Add more link below all suggestions
+    $('.typeahead-search').on('keydown', function(e){
+        if (!window.SE.Search.pollAddMoreLinkTimeoutSet){
+            window.SE.Search.pollAddMoreLinkTimeoutSet = true;
+            window.setTimeout(window.SE.Search.pollAddMoreLink, 50, this);
         }
-
     });
 
-    // TODO: fix direct search on enter key
-    // WIP
-    // $('.typeahead-search').on('keydown', function(e){
-    //     // enter key pressed
-    //     if (e.which === 13) {
-    //         e.preventDefault();
-    //         $(this).parents('form').first().submit();
+    $('.typeahead-search').on('keydown', function(e){
+        // enter key pressed, submit
+        if (e.which === 13) {
+            $(this).parents('form').first().submit();
+        }
+    });
 
-    //     }
-    // });
+    // Change lucky status to false when on more items link
+    $('.typeahead-search').on('keyup', function(e){
+        var parent = $($(this).parents().first());
+        var selectedItem = parent.find('.tt-is-under-cursor');
+
+        if ($(selectedItem).hasClass('more-link')){
+            $(parent).parents().find('.lucky-hidden').val('false');
+        } else {
+            $(parent).parents().find('.lucky-hidden').val('true');
+        }
+    });
 
     // Clicking an artist name takes us to their page
     $(document).on('click', '.tt-suggestion', function(e){
