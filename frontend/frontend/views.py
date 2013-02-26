@@ -161,7 +161,6 @@ def artists(request):
         'recommended_artists': recommended_artists
     })
 
-
 ############ Leaderboards ############
 '''By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX'''
 def leaderboards(request):
