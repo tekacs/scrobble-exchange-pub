@@ -254,15 +254,14 @@ class SEHandler(object):
 
     def searchArtist(self, text, n, page):
         
-        artists = ['Daft Punk', 'Gorillaz', 'Flight of the Conchords', 'The 
-Killers', 'Hans Zimmer', 'A random band with a missing image and a long name!'\
+        artists = ['Daft Punk', 'Gorillaz', 'Flight of the Conchords', 'The '\
+'Killers', 'Hans Zimmer', 'A random band with a missing image and a long name!'\
 ' (and punctuation)']
 
         results = [a for a in artists if text in a]
         ret = [self.getArtist(Artist(mbid = '', name = a)) for a in results]
-        
+       
         return ret
-        
 
     def getSETop(self, n, trange):
         """
