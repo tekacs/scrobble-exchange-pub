@@ -108,6 +108,15 @@ def leaderboards(request):
     return render_to_response('leaderboards.html',{}, 
                                 context_instance=RequestContext(request))
 
+def get_leaderboard(request):
+    pass
+
+def search(request):
+    pass
+
+def auto_complete(request):
+    pass
+
 def artist_single(request, artistname):
     
     try:
@@ -141,6 +150,13 @@ def artist_single(request, artistname):
         print '%s' % (tx.message)
     
 ############ Buy/Sell ############
+@json_response
+def price(request, artist_id=None):
+    print 'entered price function correctly'
+    # artist_SE = client.getArtistSE(artist = se_api.Artist(mbid = artist_id), user = request.user)
+    artist_price_guarantee = client.getGuarantee(artist = se_api.Artist(mbid = artist_id), user = request.user)
+    return artist_price_guarantee
+
 
 @json_response
 def sell(request, artist=None, artist_id=None, price=None):
