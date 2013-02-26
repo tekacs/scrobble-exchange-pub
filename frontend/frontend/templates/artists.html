@@ -18,12 +18,14 @@
 
 {% block main %}
     <div class="row collapse">
-        <div class="eighteen mobile-three columns">
+        <form action="/search" method="GET">
+            <div class="eighteen mobile-three columns">
                 <input name="q" type="text" class="typeahead-search" placeholder="Search for an artist">
-        </div>
-        <div class="four mobile-one columns end">
-            <button class="button expand postfix">Search</button>
-        </div>
+            </div>
+            <div class="four mobile-one columns end">
+                <input type="submit" class="button expand postfix" value="Search"></input>
+            </div>
+        </form>
     </div>
     <div class="row">
         <div class="eleven columns rank-list">
