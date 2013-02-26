@@ -1,6 +1,6 @@
 window.SE.Leaderboards = {
     options: {
-        'sAjaxSource': '../static/js/test_data_leaderboards2.json',
+        'sAjaxSource': '/leaderboards/get/?league_id=1&time_range=0',
         "aoColumns" : [ {sTitle : "Rank"}, {sTitle : "User"}, {sTitle : "Score"}],
         'bDeferRender': true,
         'sDom': '<"H"fr>t<"F"iS>',
@@ -114,19 +114,15 @@ $(document).ready(function() {
         switch(timespan){
             case(0):
                 name = 'All Time';
-                sourceData = '../static/js/test_data_leaderboards2.json';
                 break;
             case(1):
                 name = 'Last Month';
-                sourceData = '../static/js/test_data_leaderboards.json';
                 break;
             case(2):
                 name = 'Last Week';
-                sourceData = '../static/js/test_data_leaderboards.json';
                 break;
             case(3):
                 name = 'Last 24 Hours';
-                sourceData = '../static/js/test_data_leaderboards.json';
                 break;
         }
 
@@ -134,7 +130,11 @@ $(document).ready(function() {
         $(this).addClass('selected');
         $('span.leaderboards-time').text(name);
 
-        var newSources = [sourceData, sourceData, sourceData];
+        var newSources = [];
+        newSources[0] = '/leaderboards/get/?league_id=1&time_range=' + timespan;
+        newSources[1] = '/leaderboards/get/?league_id=2&time_range=' + timespan;
+        newSources[2] = '/leaderboards/get/?league_id=3&time_range=' + timespan;
+
         window.SE.Leaderboards.switchAllDataSources(newSources);
 
     });

@@ -25,13 +25,13 @@ def home(request):
                 }
             },
             'price': 2500
-        }, 
-        {  
+        },
+        {
             'artist': {
                 'name': 'Daft Punk',
                 'imgurls': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/4183432\/Daft+Punk+daftpunk_1.jpg',
-                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'    
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'
                     # in real data, get all available image urls
                 }
             },
@@ -42,7 +42,7 @@ def home(request):
                 'name': 'Gorillaz',
                 'imgurls': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/_\/411274\/Gorillaz.jpg',
-                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/411274.jpg'    
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/411274.jpg'
                     # in real data, get all available image urls
                 }
             },
@@ -51,7 +51,7 @@ def home(request):
         {
             'artist': {
                 'name': 'A random band with a missing image and a long name! (and punctuation)',
-                'imgurls': {   
+                'imgurls': {
                     # in real data, get all available image urls
                 }
             },
@@ -83,7 +83,7 @@ def artists(request):
                     'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/75646980.png',
                     'large': 'http://userserve-ak.last.fm/serve/126/75646980.png',
                     'medium': 'http://userserve-ak.last.fm/serve/64/75646980.png',
-                    'small': 'http://userserve-ak.last.fm/serve/34/75646980.png'                    
+                    'small': 'http://userserve-ak.last.fm/serve/34/75646980.png'
                 }
             },
             'price': 2542,
@@ -102,8 +102,8 @@ def artists(request):
             },
             'price': 2401,
             'points': 309
-        },        
-        {  
+        },
+        {
             'artist': {
                 'name': 'Daft Punk',
                 'imgurls': {
@@ -117,7 +117,7 @@ def artists(request):
             'price': 2200,
             'points': 420
         },
-        {  
+        {
             'artist': {
                 'name': 'The Killers',
                 'imgurls': {
@@ -131,7 +131,7 @@ def artists(request):
             'price': 1920,
             'points': 523
         },
-        {  
+        {
             'artist': {
                 'name': 'Hans Zimmer',
                 'imgurls': {
@@ -154,9 +154,9 @@ def artists(request):
     random.shuffle(recommended_artists)
 
     return render_to_response('artists.html', {
-        'artistlist': artistlist, 
-        'top_SE_artists': top_SE_artists, 
-        'top_LFM_artists': reversed(top_SE_artists), 
+        'artistlist': artistlist,
+        'top_SE_artists': top_SE_artists,
+        'top_LFM_artists': reversed(top_SE_artists),
         'rising_SE_artists': rising_SE_artists,
         'recommended_artists': recommended_artists
     })
@@ -174,58 +174,70 @@ def get_leaderboard(request):
     league_id = request.GET.get('league_id','default_league')
     time_range = request.GET.get('time_range', 'default_time_range')
     # leaderboard = client.getTopUsers(RESULTS_PER_PAGE, league_id, time_range)
+
+    # Data must be in this format to work with jQuery datatables library, need to craft json into this format
     leaderboard = {
-        '1': {
-            'user': 'neil-s',
-            'score': '20'
+        "sEcho": 1,
+        "iTotalRecords": "50",
+        "iTotalDisplayRecords": "50",
+        "aaData":[
+            {
+                "0": "1",
+                "1": "<a href=\"#\"><img src=\"http://lorempixel.com/48/48/\"> neil-s</a>",
+                "2": "70",
+                "DT_RowClass": "place-1"
+            },
+            {
+                "0": "2",
+                "1": "<a href=\"#\"><img src=\"http://lorempixel.com/48/48/\"> joebateson</a>",
+                "2": "40",
+                "DT_RowClass": "place-2 me"
+            },
+            {
+                "0": "3",
+                "1": "<a href=\"#\"><img src=\"http://lorempixel.com/48/48/\"> rand</a>",
+                "2": "20",
+                "DT_RowClass": "place-3"
             }
-        ,
-        '2': {
-            'user': 'joe',
-            'score': '40'
-        },
-        '3': {
-            'user': 'rand',
-            'score': '70'
-        }
+        ]
     }
     return leaderboard
 
 
 ############ Artist stuff ############
 def artist_single(request, artistname):
-    example_bio = """Coldplay is a British <a 
-    href="http://www.last.fm/tag/alternative%20rock" 
-    class="bbcode_tag" rel="tag">alternative rock</a> band, formed 
-    in London, United Kingdom in 1997. The band comprises vocalist 
-    and pianist <a href="http://www.last.fm/music/Chris+Martin" 
-    class="bbcode_artist">Chris Martin</a>, lead guitarist <a 
-    href="http://www.last.fm/music/Jonny+Buckland" 
-    class="bbcode_artist">Jonny Buckland</a>, bassist <a 
-    href="http://www.last.fm/music/Guy+Berryman" 
-    class="bbcode_artist">Guy Berryman</a>, and drummer <a 
-    href="http://www.last.fm/music/Will+Champion" 
-    class="bbcode_artist">Will Champion</a>. Having released four 
-    successful albums, (all of which debuted at #1 on the UK album 
-    chart) Coldplay have also achieved great success with their 
-    singles, such as <a title="Coldplay &ndash; Yellow" 
-    href="http://www.last.fm/music/Coldplay/_/Yellow" 
-    class="bbcode_track">Yellow</a>, <a title="Coldplay &ndash; 
-    Speed of Sound" 
-    href="http://www.last.fm/music/Coldplay/_/Speed+of+Sound" 
-    class="bbcode_track" >Speed of Sound</a>, the Grammy-winning <a 
-    title="Coldplay &ndash; Clocks" 
-    href="http://www.last.fm/music/Coldplay/_/Clocks" 
-    class="bbcode_track">Clocks</a> and the US and UK #1 single <a 
-    title="Coldplay &ndash; Viva la Vida" 
-    href="http://www.last.fm/music/Coldplay/_/Viva+la+Vida" 
-    class="bbcode_track">Viva la Vida</a>. Frontman Chris Martin 
-    credits 1980s Norwegian pop band <a 
-    href="http://www.last.fm/music/a-ha" 
-    class="bbcode_artist">a-ha</a> for inspiring him to form his 
+    example_bio = """Coldplay is a British <a
+    href="http://www.last.fm/tag/alternative%20rock"
+    class="bbcode_tag" rel="tag">alternative rock</a> band, formed
+    in London, United Kingdom in 1997. The band comprises vocalist
+    and pianist <a href="http://www.last.fm/music/Chris+Martin"
+    class="bbcode_artist">Chris Martin</a>, lead guitarist <a
+    href="http://www.last.fm/music/Jonny+Buckland"
+    class="bbcode_artist">Jonny Buckland</a>, bassist <a
+    href="http://www.last.fm/music/Guy+Berryman"
+    class="bbcode_artist">Guy Berryman</a>, and drummer <a
+    href="http://www.last.fm/music/Will+Champion"
+    class="bbcode_artist">Will Champion</a>. Having released four
+    successful albums, (all of which debuted at #1 on the UK album
+    chart) Coldplay have also achieved great success with their
+    singles, such as <a title="Coldplay &ndash; Yellow"
+    href="http://www.last.fm/music/Coldplay/_/Yellow"
+    class="bbcode_track">Yellow</a>, <a title="Coldplay &ndash;
+    Speed of Sound"
+    href="http://www.last.fm/music/Coldplay/_/Speed+of+Sound"
+    class="bbcode_track" >Speed of Sound</a>, the Grammy-winning <a
+    title="Coldplay &ndash; Clocks"
+    href="http://www.last.fm/music/Coldplay/_/Clocks"
+    class="bbcode_track">Clocks</a> and the US and UK #1 single <a
+    title="Coldplay &ndash; Viva la Vida"
+    href="http://www.last.fm/music/Coldplay/_/Viva+la+Vida"
+    class="bbcode_track">Viva la Vida</a>. Frontman Chris Martin
+    credits 1980s Norwegian pop band <a
+    href="http://www.last.fm/music/a-ha"
+    class="bbcode_artist">a-ha</a> for inspiring him to form his
     own band."""
     artist = type('Artist', (), {
-        'name': artistname, 
+        'name': artistname,
         'bio': {
             'summary': example_bio
         },
@@ -235,14 +247,14 @@ def artist_single(request, artistname):
                 'current_price': 2200,
                 'imgurls': {
                     'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/4183432\/Daft+Punk+daftpunk_1.jpg',
-                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'    
+                    'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/4183432.jpg'
                     # in real data, get all available image urls
                 }
             },
             {
                 'name': 'A random band with a missing image and a long name! (and punctuation)',
                 'current_price': 100,
-                'imgurls': {   
+                'imgurls': {
                     # in real data, get all available image urls
                 }
             }
@@ -253,7 +265,7 @@ def artist_single(request, artistname):
         'ownedby': artist.name != 'Nickelback',
         'price': 2300,
         })();
-    
+
     return render_to_response('artist_single.html', {'artist_SE': artist_SE}, context_instance=RequestContext(request))
 
 
