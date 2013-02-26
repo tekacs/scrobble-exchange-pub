@@ -21,6 +21,7 @@ urlpatterns = patterns('',
 
     url(r'^$', 'frontend.views.home', name='home'),
     url(r'^artists/', 'frontend.views.artists', name='artists'),
+    url(r'^leaderboards/get', 'frontend.views.get_leaderboard', name='get_leaderboard'),
     url(r'^leaderboards/', 'frontend.views.leaderboards', name='leaderboards'),
     url(r'^sell/', 'frontend.views.sell', name='sell'),
     url(r'^lastfmauth/', include('lastfmauth.urls')),

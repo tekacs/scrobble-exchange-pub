@@ -1,10 +1,14 @@
 from django.template import RequestContext, loader
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
+from django.views.decorators.http import require_POST
+
 import models
 from utils import json_response
 
 import random
+
+RESULTS_PER_PAGE = 10;
 
 def home(request):
     # Dummy artist data
@@ -156,8 +160,34 @@ def artists(request):
         'recommended_artists': recommended_artists
     })
 
+'''By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX'''
 def leaderboards(request):
-    return render_to_response('leaderboards.html',{}, context_instance=RequestContext(request))
+    # leaderboard = client.getNearUsers(request.user)
+    userleaderboard = {}
+    return render_to_response('leaderboards.html',{'leaderboard': userleaderboard}, context_instance=RequestContext(request))
+
+'''See http://localhost:8000/leaderboards/get/?league_id=1&time_range=3 for example'''
+@json_response
+def get_leaderboard(request):
+    league_id = request.GET.get('league_id','default_league')
+    time_range = request.GET.get('time_range', 'default_time_range')
+    # leaderboard = client.getTopUsers(RESULTS_PER_PAGE, league_id, time_range)
+    leaderboard = {
+        '1': {
+            'user': 'neil-s',
+            'score': '20'
+            }
+        ,
+        '2': {
+            'user': 'joe',
+            'score': '40'
+        },
+        '3': {
+            'user': 'rand',
+            'score': '70'
+        }
+    }
+    return leaderboard
 
 def artist_single(request, artistname):
     example_bio = """Coldplay is a British <a 
@@ -233,15 +263,14 @@ def price(request, artist_id=None):
 
 
 @json_response
-@require_POST()
+@require_POST
 def sell(request, artist=None, artist_id=None, price=None):
     #TODO: Remind Joe to check out https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
-    
+    pass
 
 def buy(request, artist=None, artist_id=None, price=None):
     #TODO
     pass
-
 ############ Helper Functions ############
 
 def __portfolio(user=None):
