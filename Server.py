@@ -48,8 +48,10 @@ class SEHandler(object):
             try:
                 user = datm.user(_config, username)
                 sessiontoken = user.getSession(_config, token)
-        
-                return stoken
+                
+                ret = AuthUser(name = User(name = user.name),
+                                                    session_key = sessiontoken)
+                return ret
             except InvalidAuthorisationException:
                 raise LoginException(LoginCode.AUTH, 'User not authenticated')
 
@@ -119,9 +121,9 @@ class SEHandler(object):
                                         points = a.points, ownedby = u.owns(a))
             
             if (u.owns(a)):
-                ret.price = a.local_price * 0.97
+                ret.price = a.price * 0.97
             else:
-                ret.price = a.local_price
+                ret.price = a.price
             
             return ret
 
@@ -298,10 +300,9 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             u = datm.user(_config, user.name, user.session_key)
             
-            return AuthUser(name = user.name, session_key = user.session_key, 
-                                                                money = u.money)
+            return AuthUser(name = User(name = user.name, points = u.points), 
+                            session_key = user.session_key, money = u.money)
 
-    
     def getTopUsers(self, n, league):
         """
         Returns the n top users by decreasing value in the given league.
@@ -348,9 +349,9 @@ class SEHandler(object):
             u = datm.user(_config, user.name)
             
             if (u.owns(a)):
-                price = a.local_price * 0.97
+                price = a.price * 0.97
             else:
-                price = a.local_price
+                price = a.price
            
             # Calculating the elephant
             time_now = datetime.now()
