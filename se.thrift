@@ -125,51 +125,30 @@ struct Guarantee {
 }
 
 ## Exceptions
-# These really need to be filled out with all of the actual errors that could 
-# occur.
 
-enum LoginCode {
-    AUTH = 1,
-    ACC = 2,
-    CONN = 3,
+/** Transient errors, which may disappear on a retry **/
+exception TransientError {
+    1: required string message
 }
 
-exception LoginException {
-    1: required LoginCode code
-    2: required string message
+/** Authentication-related errors, such as needing to reauthenticate **/
+exception AuthenticationError {
+    1: required string message
 }
 
-enum SearchCode {
-    NONE = 1,
-    CONN = 2,
-    ARG = 3
+/** Data errors, meaning invalid data was passed to the API **/
+exception DataError {
+    1: required string message
 }
 
-exception SearchException {
-    1: required SearchCode code
-    2: required string message
+/** Programming errors, meaning something is wrong in the application **/
+exception ProgrammingError {
+    1: required string message
 }
 
-enum TransactionCode {
-    NONE = 1,
-    CONN = 2,
-    ARG = 3,
-    TIME = 4
-}
-
-exception TransactionException {
-    1: required TransactionCode code
-    2: required string message
-}
-
-enum UserCode {
-    NONE = 1,
-    CONN = 2
-}
-
-exception UserException {
-    1: required UserCode code
-    2: required string message
+/** Service errors, issues with connections that shouldn't be retried **/
+exception ServiceError{
+    1: required string message
 }
 
 ## Service definition
@@ -183,88 +162,101 @@ service ScrobbleExchange {
     
     /** If successful, returns the AuthUser with the user session token */
     AuthUser login(1: required string username, 2: required string token) 
-throws (1: LoginException lexp),
+throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4:  
+ProgrammingError p, 5: ServiceError s),
     
     # Data retrieval
     # Artists
     
     /** Returns basic artist info. If either the artist or the mbid is unknown, 
         then the empty string should be sent. */
-    Artist getArtist (1: required Artist artist) throws (1: SearchException 
-searchexp),
+    Artist getArtist (1: required Artist artist) throws (1: TransientError t, 2: 
+AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: ServiceError 
+s),
     
     /** Returns only MBID and name. If either artist or mbid are unknown, then 
         the empty string should be sent */
-    Artist getLightArtist (1: required Artist artist) throws (1: 
-SearchException searchexp),
+    Artist getLightArtist (1: required Artist artist) throws (1: TransientError 
+t, 2:AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
+ServiceError s),
     
     /** Returns the data from our db. If the artist isn't there, the data gets 
         on-demand pulled. If either artist or mbid are unknown, then the empty 
         string should be sent. User sets the `ownedby' bool, by default it 
         should be an empty string the name */
     ArtistSE getArtistSE (1: required Artist artist, 2: required User user) 
-throws (1: SearchException searchexp),
+throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d,4: 
+ProgrammingError p, 5: ServiceError s),
     
     /** Returns the artist info from last.fm for the artist. If either artist 
         or mbid are unknown, then the empty string should be sent. */
-    ArtistLFM getArtistLFM (1: required Artist artist) throws (1:SearchException 
-searchexp),
+    ArtistLFM getArtistLFM (1: required Artist artist) throws (1: TransientError 
+t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
+ServiceError s),
 
     /** Returns a list of tuples of the price of the artist the past n days. 
         For new artists the empty list is returned. */
     ArtistHistory getArtistHistory (1: required Artist artist, 2: required i32 
-n) throws (1: SearchException searchexp),
+n) throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
+ProgrammingError p, 5: ServiceError s),
     
     /** returns a list of possible artists from a partial string. Ordered by 
         decreasing relevance. List size is limited to 5 elements. */
     list<Artist> searchArtist (1: required string text) throws (1: 
-SearchException searchexp),
+TransientError t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError 
+p, 5: ServiceError s),
     
     /** Returns a list of the n top SE artists by decreasing value. */
-    list<Artist> getSETop (1: required i32 n),
+    list<Artist> getSETop (1: required i32 n) throws (1: TransientError t, 2: 
+AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: ServiceError 
+s),
     
     /** Returns a list of the n top last.fm artists by decreasing value. */
-    list<Artist> getLFMTop (1: required i32 n),
+    list<Artist> getLFMTop (1: required i32 n) throws (1: TransientError t, 2: 
+AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: ServiceError 
+s),
     
     /** Returns a list of the n most traded artists by decreasing value. */
-    list<Artist> getTradedArtists (1: required i32 n),
+    list<Artist> getTradedArtists (1: required i32 n) throws (1: TransientError 
+t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
+ServiceError s),
     
     /** Returns a list of the n most recent trades */
-    list<Artist> getRecentTrades (1: required i32 n)
+    list<Artist> getRecentTrades (1: required i32 n) throws (1: TransientError 
+t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
+ServiceError s),
     
     # User
    
     /** Returns extended user data for the current user. */
-    UserData getUserData (1: required string user) throws (1: UserException 
-uexp),
+    UserData getUserData (1: required string user) throws (1: DataError d),
     
     /** Returns the current user with money. Requires AuthUser to auth */
-   AuthUser getUserMoney (1: required AuthUser user) throws (1: UserException 
-uexp),
+   AuthUser getUserMoney (1: required AuthUser user) throws (1: DataError d),
     
     /** Returns the n top users by decreasing value in the given league. */
     UserLeaderboard getTopUsers (1: required i32 n, 2: required League league) 
-throws (1: UserException uexp),
+throws (1: DataError d),
     
     /** Returns a list of 10 users with 4 above and 5 below in the leaderboard 
         compared to the user provided, including the user's position. */
     UserLeaderboard getNearUsers (1: required string user) throws (1: 
-UserException uexp),
+DataError d),
     
     # Data Modification
     
     /** Returns the guarantee token (elephant) to the front end */
     Guarantee getGuarantee (1: required Artist artist, 2: required AuthUser 
-user) throws (1: TransactionException transexp),
+user) throws (1: DataError d, 2: TransientError t),
     
     /** Buys artist for user, and returns a bool as to whether it was 
         successful or not */
     bool buy (1: required Guarantee guarantee, 2: required AuthUser 
-user) throws (1: TransactionException transexp),
+user) throws (1: DataError d, 2: TransientError t),
     
     /** Sells artist for user, and returns a bool as to whether it was 
         successful or not */
     bool sell (1: required Guarantee guarantee, 2: required AuthUser 
-user) throws (1: TransactionException transexp)
+user) throws (1: DataError d, 2: TransientError t)
    
 }

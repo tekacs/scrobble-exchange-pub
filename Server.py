@@ -12,6 +12,8 @@ from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 from thrift.server import TServer
 
+from functools import wraps as _wraps
+
 import datm
 import config
 
@@ -24,8 +26,29 @@ lastfm_config = {
 }
 
 db_args = {
-    'url': 'sqlite:///:memory:'
+    'url': 'sqlite:///:memory:',
+    'pool_size': None,
+    'max_overflow': None
 }
+
+from functools import wraps as _wraps
+
+def rethrow(f):
+    exceptions = {
+        datm.TransientError: TransientError,
+        datm.AuthenticationError: AuthenticationError,
+        datm.DataError: DataError,
+        datm.ProgrammingError: ProgrammingError,
+        datm.ServiceError: ServiceError
+    }
+    @_wraps(f)
+    def inner(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except tuple(exceptions.keys()) as e:
+            raise exceptions[e](e.message)
+    
+    return inner
 
 class SEHandler(object):
     _config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args)
@@ -35,7 +58,8 @@ class SEHandler(object):
         Returns the SE API key for sending to last.fm
         """
         return config.lastfmcred['api_key']
-
+    
+    @rethrow
     def login(self, username, token):
         """
         If successful, returns the AuthUser with the user session token
@@ -52,9 +76,10 @@ class SEHandler(object):
                 ret = AuthUser(name=User(name=user.name),
                                session_key=sessiontoken)
                 return ret
-            except InvalidAuthorisationException:
-                raise LoginException(LoginCode.AUTH, 'User not authenticated')
-
+            except datm.InvalidAuthorisationException:
+                raise AuthenticationError('User not authenticated')
+    
+    @rethrow
     def getArtist(self, artist):
         """
         Returns basic artist info. If either the artist or the mbid is unknown,
@@ -69,12 +94,13 @@ class SEHandler(object):
             elif not artist.name:
                 a = datm.artist(_config, name=artist.name)
             else:
-                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
+                raise DataError('Incorrect artist data')
                 
             ret = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
         
             return ret
-
+    
+    @rethrow
     def getLightArtist(self, artist):
         """
         Returns only MBID and name. If either artist or mbid are unknown, 
@@ -89,12 +115,13 @@ class SEHandler(object):
             elif not artist.name:
                 a = datm.artist(_config, name=artist.name)
             else:
-                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
+                raise DataError('Incorrect artist data')
             
             ret = Artist(mbid = a.mbid, name=a.name)
         
             return ret
-
+    
+    @rethrow
     def getArtistSE(self, artist, user):
         """
         Returns the data from our db. If the artist isn't there, the data 
@@ -112,7 +139,7 @@ class SEHandler(object):
             elif not artist.name:
                 a = datm.artist(_config, name=artist.name, user=user)
             else:
-                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
+                raise DataError('Incorrect artist data')
             
             u = datm.user(_config, user.name)
             
@@ -126,7 +153,8 @@ class SEHandler(object):
                 ret.price = a.price
             
             return ret
-
+    
+    @rethrow
     def getArtistLFM(self, artist):
         """
         Returns the artist info from last.fm for the artist. If either artist
@@ -141,7 +169,7 @@ class SEHandler(object):
             elif not artist.name:
                 a = datm.artist(_config, name=artist.name)
             else:
-                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
+                raise DataError('Incorrect artist data')
 
             b = ArtistBio(summary=a.summary, content=a.content)       
             
@@ -151,7 +179,8 @@ class SEHandler(object):
                             tags=a.tags, similar=a.similar, bio=b)
             
             return ret
-
+    
+    @rethrow
     def getArtistHistory(self, artist, n):
         """
         Returns a list of tuples of the price of the artist the past n days.
@@ -167,7 +196,7 @@ class SEHandler(object):
             elif not artist.name:
                 a = datm.artist(_config, name=artist.name)
             else:
-                raise SearchException(SearchCode.ARG, 'Incorrect artist data')
+                raise DataError('Incorrect artist data')
             
             time_utc = time.mktime(datetime.utcnow().timetuple())
             time_utc_old = time_utc - n*24*60*60
@@ -176,7 +205,8 @@ class SEHandler(object):
             ret.histvalue = a.history(_config, after=time_utc_old)
             
             return ret
-
+    
+    @rethrow
     def searchArtist(self, text):
         """
         returns a list of possible artists from a partial string. Ordered by
@@ -192,7 +222,8 @@ class SEHandler(object):
                                                                     a in alist]
             
             return ret
-
+    
+    @rethrow
     def getSETop(self, n):
         """
         Returns a list of the n top SE artists by decreasing value.
@@ -208,6 +239,7 @@ class SEHandler(object):
 
             return ret
     
+    @rethrow
     def getLFMTop(self, n):
         """
         Returns a list of the n top last.fm artists by decreasing value.
@@ -222,7 +254,8 @@ class SEHandler(object):
                                                                     a in alist]
             
             return ret
-
+    
+    @rethrow
     def getTradedArtists(self, n):
         """
         Returns a list of the n most traded artists by decreasing value.
@@ -238,6 +271,7 @@ class SEHandler(object):
 
             return ret
     
+    @rethrow
     def getRecentTrades(self, n):
         """
         Returns a list of the n most recent trades
@@ -252,7 +286,8 @@ class SEHandler(object):
                                                                     t in tlist]
             
             return ret
-
+    
+    @rethrow
     def getUserData(self, user):
         """
         Returns extended user data for the current user.
@@ -342,8 +377,7 @@ class SEHandler(object):
             elif not artist.name:
                 a = datm.artist(_config, name=artist.name, user=user)
             else:
-                raise TransactionException(TransactionCode.ARG, 'Incorrect \
-                                                                artist data')
+                raise DataError('Incorrect artist data')
             
             u = datm.user(_config, user.name)
             
@@ -387,13 +421,11 @@ class SEHandler(object):
             
             #authenticate the elephant
             if guarantee.elephant != el:
-                raise TransactionException(code=TransactionCode.ARG,
-                                           message='Incorrect Elephant')
+                raise DataError('Incorrect elephant')
             
             #check for 15s time (with some leeway)
             if (time_utc - guarantee.time) > 17:
-                raise TransactionException(code=TransactionCode.TIME,
-                                           message='Too late')
+                raise TransientError('Too late')
             
             u = datm.user(_config, user=user.name)
             a = datm.artist(_config, mbid=guarantee.artist.mbid)
@@ -402,8 +434,7 @@ class SEHandler(object):
                 t = datm.trade.buy(_config, user=u, artist=a,
                                    price=guarantee.price)
             except NoStockRemainingException:
-                raise TransactionException(code=TransactionCode.NUM,
-                                           message='No stock remaining')
+                raise TransientError('No stock remaining')
         
 
     def sell(self, guarantee, user):
@@ -427,13 +458,11 @@ class SEHandler(object):
             
             #authenticate the elephant
             if guarantee.elephant != el:
-                raise TransactionException(code=TransactionCode.ARG,
-                                           message='Incorrect Elephant')
+                raise DataError('Incorrect Elephant')
             
             #check for 15s time (with some leeway)
             if (time_utc - guarantee.time) > 17:
-                raise TransactionException(code=TransactionCode.TIME,
-                                           message='Too late')
+                raise TransientError('Too late')
             
             u = datm.user(_config, user=user.name)
             a = datm.artist(_config, mbid=guarantee.artist.mbid)
@@ -442,11 +471,7 @@ class SEHandler(object):
                 t = datm.trade.sell(_config, user=u, artist=a,
                                     price=guarantee.price)
             except StockNotOwnedException:
-                raise TransactionException(code=TransactionCode.NONE,
-                                           message='User cannot sell')
-        
-
-
+                raise TransientError('User cannot sell')
 
 processor = ScrobbleExchange.Processor(SEHandler())
 transport = TSocket.TServerSocket(port=9090)

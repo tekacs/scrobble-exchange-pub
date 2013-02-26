@@ -16,74 +16,6 @@ except:
   fastbinary = None
 
 
-class LoginCode(object):
-  AUTH = 1
-  ACC = 2
-  CONN = 3
-
-  _VALUES_TO_NAMES = {
-    1: "AUTH",
-    2: "ACC",
-    3: "CONN",
-  }
-
-  _NAMES_TO_VALUES = {
-    "AUTH": 1,
-    "ACC": 2,
-    "CONN": 3,
-  }
-
-class SearchCode(object):
-  NONE = 1
-  CONN = 2
-  ARG = 3
-
-  _VALUES_TO_NAMES = {
-    1: "NONE",
-    2: "CONN",
-    3: "ARG",
-  }
-
-  _NAMES_TO_VALUES = {
-    "NONE": 1,
-    "CONN": 2,
-    "ARG": 3,
-  }
-
-class TransactionCode(object):
-  NONE = 1
-  CONN = 2
-  ARG = 3
-  TIME = 4
-
-  _VALUES_TO_NAMES = {
-    1: "NONE",
-    2: "CONN",
-    3: "ARG",
-    4: "TIME",
-  }
-
-  _NAMES_TO_VALUES = {
-    "NONE": 1,
-    "CONN": 2,
-    "ARG": 3,
-    "TIME": 4,
-  }
-
-class UserCode(object):
-  NONE = 1
-  CONN = 2
-
-  _VALUES_TO_NAMES = {
-    1: "NONE",
-    2: "CONN",
-  }
-
-  _NAMES_TO_VALUES = {
-    "NONE": 1,
-    "CONN": 2,
-  }
-
 
 class Artist(object):
   """
@@ -1415,21 +1347,20 @@ class Guarantee(object):
   def __ne__(self, other):
     return not (self == other)
 
-class LoginException(TException):
+class TransientError(TException):
   """
+  Transient errors, which may disappear on a retry *
+
   Attributes:
-   - code
    - message
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'code', None, None, ), # 1
-    (2, TType.STRING, 'message', None, None, ), # 2
+    (1, TType.STRING, 'message', None, None, ), # 1
   )
 
-  def __init__(self, code=None, message=None,):
-    self.code = code
+  def __init__(self, message=None,):
     self.message = message
 
   def read(self, iprot):
@@ -1442,11 +1373,6 @@ class LoginException(TException):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.code = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
         if ftype == TType.STRING:
           self.message = iprot.readString();
         else:
@@ -1460,21 +1386,15 @@ class LoginException(TException):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('LoginException')
-    if self.code is not None:
-      oprot.writeFieldBegin('code', TType.I32, 1)
-      oprot.writeI32(self.code)
-      oprot.writeFieldEnd()
+    oprot.writeStructBegin('TransientError')
     if self.message is not None:
-      oprot.writeFieldBegin('message', TType.STRING, 2)
+      oprot.writeFieldBegin('message', TType.STRING, 1)
       oprot.writeString(self.message)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.code is None:
-      raise TProtocol.TProtocolException(message='Required field code is unset!')
     if self.message is None:
       raise TProtocol.TProtocolException(message='Required field message is unset!')
     return
@@ -1494,21 +1414,20 @@ class LoginException(TException):
   def __ne__(self, other):
     return not (self == other)
 
-class SearchException(TException):
+class AuthenticationError(TException):
   """
+  Authentication-related errors, such as needing to reauthenticate *
+
   Attributes:
-   - code
    - message
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'code', None, None, ), # 1
-    (2, TType.STRING, 'message', None, None, ), # 2
+    (1, TType.STRING, 'message', None, None, ), # 1
   )
 
-  def __init__(self, code=None, message=None,):
-    self.code = code
+  def __init__(self, message=None,):
     self.message = message
 
   def read(self, iprot):
@@ -1521,11 +1440,6 @@ class SearchException(TException):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.code = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
         if ftype == TType.STRING:
           self.message = iprot.readString();
         else:
@@ -1539,21 +1453,15 @@ class SearchException(TException):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('SearchException')
-    if self.code is not None:
-      oprot.writeFieldBegin('code', TType.I32, 1)
-      oprot.writeI32(self.code)
-      oprot.writeFieldEnd()
+    oprot.writeStructBegin('AuthenticationError')
     if self.message is not None:
-      oprot.writeFieldBegin('message', TType.STRING, 2)
+      oprot.writeFieldBegin('message', TType.STRING, 1)
       oprot.writeString(self.message)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.code is None:
-      raise TProtocol.TProtocolException(message='Required field code is unset!')
     if self.message is None:
       raise TProtocol.TProtocolException(message='Required field message is unset!')
     return
@@ -1573,21 +1481,20 @@ class SearchException(TException):
   def __ne__(self, other):
     return not (self == other)
 
-class TransactionException(TException):
+class DataError(TException):
   """
+  Data errors, meaning invalid data was passed to the API *
+
   Attributes:
-   - code
    - message
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'code', None, None, ), # 1
-    (2, TType.STRING, 'message', None, None, ), # 2
+    (1, TType.STRING, 'message', None, None, ), # 1
   )
 
-  def __init__(self, code=None, message=None,):
-    self.code = code
+  def __init__(self, message=None,):
     self.message = message
 
   def read(self, iprot):
@@ -1600,11 +1507,6 @@ class TransactionException(TException):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.code = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
         if ftype == TType.STRING:
           self.message = iprot.readString();
         else:
@@ -1618,21 +1520,15 @@ class TransactionException(TException):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('TransactionException')
-    if self.code is not None:
-      oprot.writeFieldBegin('code', TType.I32, 1)
-      oprot.writeI32(self.code)
-      oprot.writeFieldEnd()
+    oprot.writeStructBegin('DataError')
     if self.message is not None:
-      oprot.writeFieldBegin('message', TType.STRING, 2)
+      oprot.writeFieldBegin('message', TType.STRING, 1)
       oprot.writeString(self.message)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.code is None:
-      raise TProtocol.TProtocolException(message='Required field code is unset!')
     if self.message is None:
       raise TProtocol.TProtocolException(message='Required field message is unset!')
     return
@@ -1652,21 +1548,20 @@ class TransactionException(TException):
   def __ne__(self, other):
     return not (self == other)
 
-class UserException(TException):
+class ProgrammingError(TException):
   """
+  Programming errors, meaning something is wrong in the application *
+
   Attributes:
-   - code
    - message
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'code', None, None, ), # 1
-    (2, TType.STRING, 'message', None, None, ), # 2
+    (1, TType.STRING, 'message', None, None, ), # 1
   )
 
-  def __init__(self, code=None, message=None,):
-    self.code = code
+  def __init__(self, message=None,):
     self.message = message
 
   def read(self, iprot):
@@ -1679,11 +1574,6 @@ class UserException(TException):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.code = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
         if ftype == TType.STRING:
           self.message = iprot.readString();
         else:
@@ -1697,21 +1587,82 @@ class UserException(TException):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('UserException')
-    if self.code is not None:
-      oprot.writeFieldBegin('code', TType.I32, 1)
-      oprot.writeI32(self.code)
-      oprot.writeFieldEnd()
+    oprot.writeStructBegin('ProgrammingError')
     if self.message is not None:
-      oprot.writeFieldBegin('message', TType.STRING, 2)
+      oprot.writeFieldBegin('message', TType.STRING, 1)
       oprot.writeString(self.message)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.code is None:
-      raise TProtocol.TProtocolException(message='Required field code is unset!')
+    if self.message is None:
+      raise TProtocol.TProtocolException(message='Required field message is unset!')
+    return
+
+
+  def __str__(self):
+    return repr(self)
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ServiceError(TException):
+  """
+  Service errors, issues with connections that shouldn't be retried *
+
+  Attributes:
+   - message
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
+
+  def __init__(self, message=None,):
+    self.message = message
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ServiceError')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
     if self.message is None:
       raise TProtocol.TProtocolException(message='Required field message is unset!')
     return
