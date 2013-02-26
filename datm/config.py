@@ -6,6 +6,7 @@ from functools import wraps
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+import lfm
 from base import DATMObject
 from models.base import Base as DeclarativeBase
 
@@ -13,16 +14,16 @@ class DATMConfig(object):
     def __init__(self, lastfm=None, db_args=None):
         _lastfm = {}
         if lastfm is not None:
-#            try:
-#                api = Api(api_key=_lastfm['api_key'],
-#                            secret=_lastfm['secret'],
-#                            input_encoding='utf-8')
-#            except KeyError:
-#                raise TypeError(
-#                    'Argument lastfm must bear keys api_key, secret.'
-#                )
-#            self._lastfm = DATMLastFM(api)
-            pass
+            try:
+                request_builder = lfm.RequestBuilder(
+                    api_key=lastfm['api_key'],
+                    api_secret=lastfm['api_secret']
+                )
+            except KeyError:
+                raise TypeError(
+                    'Argument lastfm must bear keys api_key, secret.'
+                )
+            self._lastfm = DATMLastFM(request_builder)
 
         _db_args = {'pool_size': 20, 'max_overflow': 0}
         if db_args is not None:
@@ -34,6 +35,7 @@ class DATMConfig(object):
             engine = create_engine(url, **_db_args)
             SessionBase = sessionmaker(bind=engine)
             self._db = DATMDatabase(engine, SessionBase)
+
         self._sessions = threading.local()
 
     @property
@@ -53,8 +55,16 @@ class DATMConfig(object):
         return self._sessions.current_session
 
 class DATMLastFM(object):
-    def __init__(self):
-        pass
+    def __init__(self, request_builder):
+        self._request_builder = request_builder
+
+    @property
+    def request_builder(self):
+        return self._request_builder
+
+    @property
+    def rb(self):
+        return self._request_builder
 
 class DATMDatabase(object):
     def __init__(self, engine, SessionBase):
@@ -73,18 +83,11 @@ class DATMDatabase(object):
         DeclarativeBase.metadata.create_all(self._engine)
 
 def has_db(obj):
-    if isinstance(obj, DATMObject):
-        return obj.db_object is not None
-    if isinstance(obj, DATMConfig):
-        return obj.db is not None
-    return False
+    print obj
+    return obj.db is not None
 
 def has_lastfm(obj):
-    if isinstance(obj, DATMObject):
-        return obj.lastfm_object is not None
-    if isinstance(obj, DATMConfig):
-        return obj.lastfm is not None
-    return False
+    return obj.lastfm is not None
 
 def require_data_source(f):
     @wraps(f)
@@ -106,7 +109,7 @@ def require_lastfm(f):
 def require_db(f):
     @wraps(f)
     def inner(first, *args, **kwargs):
-        if has_db(first):
+        if not has_db(first):
             raise NoDatabaseException(f.func_name)
         return f(first, *args, **kwargs)
     return inner
@@ -114,12 +117,9 @@ def require_db(f):
 class NoDataSourceException(Exception):
     """Base for exceptions for insufficiently diverse data sources."""
     message = "Insufficiently diverse data sources to perform that operation!"
-    pass
 
 class NoLastFMException(Exception):
     message = "Can't perform that operation without access to the last.fm API!"
-    pass
 
 class NoDatabaseException(Exception):
     message = "Can't perform that operation without access to the SE database!"
-    pass

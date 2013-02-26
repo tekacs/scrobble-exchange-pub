@@ -1,12 +1,14 @@
-__author__ = 'amar'
+__author__ = 'Amar Sood (tekacs)'
 
 from sqlalchemy import func
 
+import lfm
 import models
 
-from util import db
+from util import db, lastfm
+from util.magic import memoised_property
 from base import DATMObject, datm_setup
-from config import require_data_source, require_lastfm, require_db
+from config import require_lastfm, require_db
 
 class User(DATMObject):
     """A last.fm and SE combined user."""
@@ -15,41 +17,49 @@ class User(DATMObject):
     def __init__(self, config, name, session_key=None):
         self._name = name
 
-        if config.lastfm is not None:
-            self.lastfm_object = config.lastfm.api.get_user(name)
+    @memoised_property
+    @require_db
+    def dbo(self):
+        return db.query(
+            self.config,
+            models.User
+        ).filter(models.User.name == self.name).one()
 
-        if config.db is not None:
-            self.db_object = db.query(config, models.User).filter(models.User.name == name).first()
+    @memoised_property
+    @require_lastfm
+    def lastfm_info(self):
+        return lfm.User.get_info(lastfm.params(self.config, user=self.name))
 
-    @property
-    @staticmethod
-    def count(config):
-        """The number of users currently registered."""
-        db.query(config, func.count(User.id)).scalar()
-
-    @property
+    @memoised_property
     def name(self):
         """The username of the user."""
         return self._name
 
+    @classmethod
+    @require_db
+    def count(config):
+        """The number of users currently registered."""
+        db.query(config, func.count(User.id)).scalar()
+
+    @require_db
     def authenticate(self, key):
         """Validate a user's session key against the database and auth."""
-        if self.db_object.session_key == key:
+        if self.dbo.session_key == key:
             self._data['session_key'] = key
 
-    @property
+    @memoised_property
     @require_lastfm
     def real_name(self):
         """The real-world name of the user."""
 #        self.lastfm_object.
 
-    @property
+    @memoised_property
     @require_lastfm
     def image(self):
         """The URL to the this user's image."""
         pass
 
-    @property
+    @memoised_property
     @require_lastfm
     def subscriber(self):
         """Whether this user is a subscriber."""

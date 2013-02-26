@@ -5,27 +5,37 @@ __author__ = 'amar'
 from functools import wraps
 
 class DATMObject(object):
-    # FIXME: This is a decidedly temporary affair.
-    #        It exists to throw a useful error if someone expects something
-    #           from DATM it doens't currently have.
-    def __getattr__(self, name):
-        raise NotImplementedError(name)
+    @property
+    def config(self):
+        return self._config
 
     @property
-    def lastfm_object(self):
-        return getattr(self, '_lastfm_object', None)
-
-    @lastfm_object.setter
-    def lastfm_object(self, value):
-        setattr(self, '_lastfm_object', value)
+    def session(self):
+        return self._session
 
     @property
-    def db_object(self):
-        return getattr(self, '_db_object', None)
+    def db(self):
+        """Return the most specific db object available.
 
-    @db_object.setter
-    def db_object(self, value):
-        setattr(self, '_db_object', value)
+        The exception approach catches missing ``_session``s as well as missing
+        ``db``s.
+        """
+        try:
+            return self._session.db
+        except AttributeError:
+            return self._config.db
+
+    @property
+    def lastfm(self):
+        """Return the most specific lastfm object available.
+
+        The exception approach catches missing ``_session``s as well as missing
+        ``lastfm``s.
+        """
+        try:
+            return self._session.db
+        except AttributeError:
+            return self._config.db
 
 def datm_setup(init):
     @wraps(init)
@@ -33,8 +43,11 @@ def datm_setup(init):
         self._config = config
         self._session = config.session
         return init(self, config, *args, **kwargs)
-    return init
+    return inner
+
+class NoDatabaseObjectException(Exception):
+    """The database object corresponding to the requested instance does not exist."""
+    message = "The database object corresponding to the requested instance does not exist."
 
 class UserIsLyingToYouException(Exception):
     """Exceptions where the user is falsely representing itself to the API."""
-    pass

@@ -13,6 +13,8 @@ from sparkles import Trophy
 from trading import Trade, StockNotOwnedException, NoStockRemainingException
 from user import User, InvalidAuthorisationException,\
 UserNotAuthenticatedException
+from lfm.lastfm import TransientError, AuthenticationError, DataError,\
+    ProgrammingError, ServiceError
 
 __all__ = [
     'Artist',
@@ -33,5 +35,11 @@ __all__ = [
     'StockNotOwnedException',
     'NoStockRemainingException',
     'InvalidAuthorisationException',
-    'UserNotAuthenticatedException'
+    'UserNotAuthenticatedException',
+
+    'TransientError',
+    'AuthenticationError',
+    'DataError',
+    'ProgrammingError',
+    'ServiceError'
 ]
