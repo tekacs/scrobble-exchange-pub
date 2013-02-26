@@ -82,7 +82,10 @@ window.SE.Leaderboards = {
             newOptions.sAjaxSource = newSources[i];
             $(window.SE.Leaderboards.leaderboards[i]).dataTable(newOptions);
         }
-        window.console.log('data switched for all');
+
+        // Restart handler to fix column problems after new data loaded
+        window.SE.Leaderboards.needFixing = [true, true, true];
+        $(window).on('hashchange', window.SE.Leaderboards.adjustColummnsHandler);
     }
 };
 
