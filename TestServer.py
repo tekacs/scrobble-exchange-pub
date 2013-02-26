@@ -146,7 +146,7 @@ class SEHandler(object):
         
         return artists[artist.name]
 
-    def getArtistLFM(self, artist):
+    def getArtistLFM(self, artist, user):
         """
         Returns the artist info from last.fm for the artist. If either artist
         or mbid are unknown, then the empty string should be sent.
