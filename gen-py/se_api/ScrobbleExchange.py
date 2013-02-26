@@ -115,14 +115,12 @@ class Iface(object):
     """
     pass
 
-  def getLFMTop(self, n, trange):
+  def getLFMTop(self, n):
     """
-    Returns a list of the n top last.fm artists by decreasing value. Trange
-    is the number of days the leaderboard is over
+    Returns a list of the n top last.fm artists by decreasing value.
 
     Parameters:
      - n
-     - trange
     """
     pass
 
@@ -165,7 +163,8 @@ class Iface(object):
   def getTopUsers(self, n, league, trange):
     """
     Returns the n top users by decreasing value in the given league. Trange
-    is the number of days the leaderboard is over
+    is the number of days the leaderboard is over, rounded to the nearest
+    day, week or month.
 
     Parameters:
      - n
@@ -614,23 +613,20 @@ class Client(Iface):
       raise result.s
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getSETop failed: unknown result");
 
-  def getLFMTop(self, n, trange):
+  def getLFMTop(self, n):
     """
-    Returns a list of the n top last.fm artists by decreasing value. Trange
-    is the number of days the leaderboard is over
+    Returns a list of the n top last.fm artists by decreasing value.
 
     Parameters:
      - n
-     - trange
     """
-    self.send_getLFMTop(n, trange)
+    self.send_getLFMTop(n)
     return self.recv_getLFMTop()
 
-  def send_getLFMTop(self, n, trange):
+  def send_getLFMTop(self, n):
     self._oprot.writeMessageBegin('getLFMTop', TMessageType.CALL, self._seqid)
     args = getLFMTop_args()
     args.n = n
-    args.trange = trange
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -814,7 +810,8 @@ class Client(Iface):
   def getTopUsers(self, n, league, trange):
     """
     Returns the n top users by decreasing value in the given league. Trange
-    is the number of days the leaderboard is over
+    is the number of days the leaderboard is over, rounded to the nearest
+    day, week or month.
 
     Parameters:
      - n
@@ -1234,7 +1231,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = getLFMTop_result()
     try:
-      result.success = self._handler.getLFMTop(args.n, args.trange)
+      result.success = self._handler.getLFMTop(args.n)
     except TransientError as t:
       result.t = t
     except AuthenticationError as a:
@@ -3123,18 +3120,15 @@ class getLFMTop_args(object):
   """
   Attributes:
    - n
-   - trange
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'n', None, None, ), # 1
-    (2, TType.I32, 'trange', None, None, ), # 2
   )
 
-  def __init__(self, n=None, trange=None,):
+  def __init__(self, n=None,):
     self.n = n
-    self.trange = trange
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -3148,11 +3142,6 @@ class getLFMTop_args(object):
       if fid == 1:
         if ftype == TType.I32:
           self.n = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.I32:
-          self.trange = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -3169,18 +3158,12 @@ class getLFMTop_args(object):
       oprot.writeFieldBegin('n', TType.I32, 1)
       oprot.writeI32(self.n)
       oprot.writeFieldEnd()
-    if self.trange is not None:
-      oprot.writeFieldBegin('trange', TType.I32, 2)
-      oprot.writeI32(self.trange)
-      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
     if self.n is None:
       raise TProtocol.TProtocolException(message='Required field n is unset!')
-    if self.trange is None:
-      raise TProtocol.TProtocolException(message='Required field trange is unset!')
     return
 
 

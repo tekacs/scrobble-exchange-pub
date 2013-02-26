@@ -215,11 +215,10 @@ DataError d, 4: ProgrammingError p, 5: ServiceError s),
 (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
 ProgrammingError p, 5: ServiceError s),
     
-    /** Returns a list of the n top last.fm artists by decreasing value. Trange 
-        is the number of days the leaderboard is over */
-    list<Artist> getLFMTop (1: required i32 n, 2: required i32 trange) throws 
-(1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
-ProgrammingError p, 5: ServiceError s),
+    /** Returns a list of the n top last.fm artists by decreasing value. */
+    list<Artist> getLFMTop (1: required i32 n) throws (1: TransientError t, 2: 
+AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: ServiceError 
+s),
     
     /** Returns a list of the n most traded artists by decreasing value. */
     list<Artist> getTradedArtists (1: required i32 n) throws (1: TransientError 
@@ -237,10 +236,11 @@ ServiceError s),
     UserData getUserData (1: required string user) throws (1: DataError d),
     
     /** Returns the current user with money. Requires AuthUser to auth */
-   AuthUser getUserMoney (1: required AuthUser user) throws (1: DataError d),
+    AuthUser getUserMoney (1: required AuthUser user) throws (1: DataError d),
     
     /** Returns the n top users by decreasing value in the given league. Trange 
-        is the number of days the leaderboard is over */
+        is the number of days the leaderboard is over, rounded to the nearest 
+        day, week or month. */
     UserLeaderboard getTopUsers (1: required i32 n, 2: required League league, 
 3: required i32 trange) throws (1: DataError d),
     

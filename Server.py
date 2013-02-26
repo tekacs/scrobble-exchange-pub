@@ -144,8 +144,17 @@ class SEHandler(object):
             u = datm.user(_config, user.name)
             
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
-            ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
+            
+            
+            try:
+                ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                                             points=a.points, ownedby=u.owns(a))
+            except NoDatabaseObjectException():
+                #a.no_remaining = mechanics.no_remaining
+                #a.points = mechanics.points
+                #a.price = mechanics.price
+                #ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
+                #                           points=a.points, ownedby=u.owns(a))
             
             if (u.owns(a)):
                 ret.price = int(a.price * 0.97)
@@ -168,19 +177,20 @@ class SEHandler(object):
         """
         with datm.DATMSession(_config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid=artist.mbid)
+                a = datm.artist(_config, mbid=artist.mbid,
+                                                session_key = user.session_key)
             elif not artist.name:
-                a = datm.artist(_config, name=artist.name)
+                a = datm.artist(_config, name=artist.name,
+                                                session_key = user.session_key)
             else:
                 raise DataError('Incorrect artist data')
 
             b = ArtistBio(summary=a.summary, content=a.content)       
-            
-            #TODO: figure out how to pass an authenticated user
+           
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             ret = ArtistLFM(artist=r, streamable=a.streamable,
                             listeners=a.listeners, plays=a.plays,
-                            tags=a.tags, bio=b)
+                            tags=a.tags, similar = a.similar, bio=b)
             
             return ret
     
@@ -206,7 +216,13 @@ class SEHandler(object):
             time_utc_old = time_utc - n*24*60*60
             
             ret = ArtistHistory()
-            ret.histvalue = a.history(_config, after=time_utc_old)
+            try:
+                ret.histvalue = a.history(_config, after=time_utc_old)
+            except NoDatabaseObjectException():
+                #a.no_remaining = mechanics.no_remaining
+                #a.points = mechanics.points
+                #a.price = mechanics.price
+                #ret.histvalue = a.history(_config, after=time_utc_old)
             
             return ret
     
@@ -221,7 +237,7 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(_config):
-            alist = datm.artist.search(_config, text, limit=n, page = page)
+            alist = datm.artist.search(_config, text, limit=n, page=page)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
@@ -251,10 +267,9 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def getLFMTop(self, n, trange):
+    def getLFMTop(self, n):
         """
-        Returns a list of the n top last.fm artists by decreasing value. Range
-        is the number of days the leaderboard is over
+        Returns a list of the n top last.fm artists by decreasing value.
 
         Parameters:
         - n
@@ -262,10 +277,7 @@ class SEHandler(object):
         """
         with datm.DATMSession(_config):
             
-            time_utc = time.mktime(datetime.utcnow().timetuple())
-            time_utc_old = time_utc - trange*24*60*60
-            
-            alist = datm.artist.popular(_config, limit=n, after=time_utc_old)
+            alist = datm.artist.popular(_config, limit=n)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
@@ -288,7 +300,7 @@ class SEHandler(object):
 
             return ret
     
-    @rethrow
+    @rethrow 
     def getRecentTrades(self, n):
         """
         Returns a list of the n most recent trades
@@ -336,6 +348,8 @@ class SEHandler(object):
                 a = Artist(mbid=t.Artist.mbid, name=t.Artist.name,
                            imgurls=t.Artist.images)
                 
+                #the assumption is that if the stock is listed, then it exists 
+                #in the DB and no databaseobjectexception would be thrown
                 ret.stocks.append(ArtistSE(artist=a, price=t.price, 
                                            numremaining=no_remaining))
             
@@ -356,19 +370,28 @@ class SEHandler(object):
 
     def getTopUsers(self, n, league, trange):
         """
-        Returns the n top users by decreasing value in the given league.
+        Returns the n top users by decreasing value in the given league. Trange 
+        is the number of days the leaderboard is over, rounded to the nearest 
+        day, week or month.
 
         Parameters:
         - n
         - league
+        - trange
         """
         with datm.DATMSession(_config):
             
-            time_utc = time.mktime(datetime.utcnow().timetuple())
-            time_utc_old = time_utc - trange*24*60*60
-            
-            ulist = datm.user.top(_config, limit=n, league=league.name,
-                                                        after = time_utc_old)
+            if trange == 1:
+                ulist = datm.user.top(_config, limit=n, league=league.name,
+                                        period='daily')
+            elif trange <= 7:
+                ulist = datm.user.top(_config, limit=n, league=league.name,
+                                        period='weekly')
+            elif trange <= 31:
+                ulist = datm.user.top(_config, limit=n, league=league.name,
+                                        period='monthly')
+            else:
+                raise DataError('Unusual time range selected')
             
             return UserLeaderboard(users=[User(name=u.name) for u in ulist])
 
@@ -409,8 +432,7 @@ class SEHandler(object):
                 price = a.price
            
             # Calculating the elephant
-            time_now = datetime.now()
-            time_utc = time.mktime(time_now.timetuple()) - time.timezone
+            time_utc = time.mktime(datetime.utcnow().timetuple())
 
             m = hmac.new(datm.auth.secret(_config))
             m.update(str(time_utc))
@@ -453,8 +475,8 @@ class SEHandler(object):
             a = datm.artist(_config, mbid=guarantee.artist.mbid)
             
             try:
-                t = datm.trade.buy(_config, user=u, artist=a,
-                                   price=guarantee.price)
+                t = datm.trade(_config, user=u, artist=a, price=guarantee.price)
+                t.buy()
             except NoStockRemainingException:
                 raise TransientError('No stock remaining')
         
@@ -490,8 +512,8 @@ class SEHandler(object):
             a = datm.artist(_config, mbid=guarantee.artist.mbid)
             
             try:
-                t = datm.trade.sell(_config, user=u, artist=a,
-                                    price=guarantee.price)
+                t = datm.trade(_config, user=u, artist=a, price=guarantee.price)
+                t.sell()
             except StockNotOwnedException:
                 raise TransientError('User cannot sell')
 
