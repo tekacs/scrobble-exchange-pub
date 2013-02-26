@@ -6,26 +6,6 @@ from utils import json_response
 
 import random
 
-## Import thrift stuff
-
-# from se_api import ScrobbleExchange
-# from se_api import ttypes
-
-# from thrift import Thrift
-# from thrift.transport import TSocket
-# from thrift.transport import TTransport
-# from thrift.protocol import TBinaryProtocol
-## End of thrift
-
-#try:
-    ## Connect to the API server
-    #transport = TSocket.TSocket('localhost', 9090)
-    #transport = TTransport.TBufferedTransport(transport)
-    #protocol = TBinaryProtocol.TBinaryProtocol(transport)
-    #client = ScrobbleExchange.Client(protocol)
-    #transport.open()
-    ## End
-
 def home(request):
     # Dummy artist data
     user_data = models.UserData()
@@ -74,21 +54,7 @@ def home(request):
         }]
     user_data.user = {'money': 140512, 'points': 242}
     user_data.portfolio_worth = sum(artist_SE['price'] for artist_SE in user_data.stocks)
-    
-    ##Done with the API
-    # api_user_data = client.getUserData(request.session['user'])
-    # authorized_user = ttypes.AuthUser(name = request.session['user'], 
-    #                   session_key = 'thekeyyougot')
-    
-    # user_data = __portfolio(request.session['user'])
-    # user_data.stocks = []
-    # for artistse in api_user_data.stocks:
-    #   a = {'name': artistse.artist.name, 'imgurls' = artistse.artist.imgurls}
-    #   stocks.append({'artist': a, 'price': artistse.price})
-    # user_data.user = {'money': client.getUserMoney(authorized_user), 
-    #                   'points': user_data.user.points}
-    # user_data.worth = sum(artist.price for artist in api_user_data.stocks)
-    
+
     return render_to_response(
         'index.html',
         {'user_data': user_data},
@@ -181,21 +147,6 @@ def artists(request):
 
     recommended_artists = list(top_SE_artists)
     random.shuffle(recommended_artists)
-    
-    ## Done with the API
-    # authorized_user = ttypes.AuthUser(name = request.session['user'], 
-    #                   session_key = 'thekeyyougot')
-    # artist1 = ttypes.Artist(name = 'Iron Maiden')
-    # artist2 = ttypes.Artist(name = 'Foo Fighters')
-    # artistlist = [artist1, artist2]
-   
-    # api_top_artists = client.getSETop(5)
-    # top_SE_artists = []
-    # for i in api_top_artists:
-    #   a = client.getArtistSE(i, authorized_user)
-    #   artist = {'name': i.name, 'imgurls': i.imgurls}
-    #   top_SE_artists.append('artist':artist, 'price': a.price, 'points' = 
-    #   a.points)
 
     return render_to_response('artists.html', {
         'artistlist': artistlist, 
@@ -209,7 +160,36 @@ def leaderboards(request):
     return render_to_response('leaderboards.html',{}, context_instance=RequestContext(request))
 
 def artist_single(request, artistname):
-    example_bio = 'Coldplay is a British <a href="http://www.last.fm/tag/alternative%20rock" class="bbcode_tag" rel="tag">alternative rock</a> band, formed in London, United Kingdom in 1997. The band comprises vocalist and pianist <a href="http://www.last.fm/music/Chris+Martin" class="bbcode_artist">Chris Martin</a>, lead guitarist <a href="http://www.last.fm/music/Jonny+Buckland" class="bbcode_artist">Jonny Buckland</a>, bassist <a href="http://www.last.fm/music/Guy+Berryman" class="bbcode_artist">Guy Berryman</a>, and drummer <a href="http://www.last.fm/music/Will+Champion" class="bbcode_artist">Will Champion</a>. Having released four successful albums, (all of which debuted at #1 on the UK album chart) Coldplay have also achieved great success with their singles, such as <a title="Coldplay &ndash; Yellow" href="http://www.last.fm/music/Coldplay/_/Yellow" class="bbcode_track">Yellow</a>, <a title="Coldplay &ndash; Speed of Sound" href="http://www.last.fm/music/Coldplay/_/Speed+of+Sound" class="bbcode_track">Speed of Sound</a>, the Grammy-winning <a title="Coldplay &ndash; Clocks" href="http://www.last.fm/music/Coldplay/_/Clocks" class="bbcode_track">Clocks</a> and the US and UK #1 single <a title="Coldplay &ndash; Viva la Vida" href="http://www.last.fm/music/Coldplay/_/Viva+la+Vida" class="bbcode_track">Viva la Vida</a>. Frontman Chris Martin credits 1980s Norwegian pop band <a href="http://www.last.fm/music/a-ha" class="bbcode_artist">a-ha</a> for inspiring him to form his own band.'
+    example_bio = """Coldplay is a British <a 
+    href="http://www.last.fm/tag/alternative%20rock" 
+    class="bbcode_tag" rel="tag">alternative rock</a> band, formed 
+    in London, United Kingdom in 1997. The band comprises vocalist 
+    and pianist <a href="http://www.last.fm/music/Chris+Martin" 
+    class="bbcode_artist">Chris Martin</a>, lead guitarist <a 
+    href="http://www.last.fm/music/Jonny+Buckland" 
+    class="bbcode_artist">Jonny Buckland</a>, bassist <a 
+    href="http://www.last.fm/music/Guy+Berryman" 
+    class="bbcode_artist">Guy Berryman</a>, and drummer <a 
+    href="http://www.last.fm/music/Will+Champion" 
+    class="bbcode_artist">Will Champion</a>. Having released four 
+    successful albums, (all of which debuted at #1 on the UK album 
+    chart) Coldplay have also achieved great success with their 
+    singles, such as <a title="Coldplay &ndash; Yellow" 
+    href="http://www.last.fm/music/Coldplay/_/Yellow" 
+    class="bbcode_track">Yellow</a>, <a title="Coldplay &ndash; 
+    Speed of Sound" 
+    href="http://www.last.fm/music/Coldplay/_/Speed+of+Sound" 
+    class="bbcode_track" >Speed of Sound</a>, the Grammy-winning <a 
+    title="Coldplay &ndash; Clocks" 
+    href="http://www.last.fm/music/Coldplay/_/Clocks" 
+    class="bbcode_track">Clocks</a> and the US and UK #1 single <a 
+    title="Coldplay &ndash; Viva la Vida" 
+    href="http://www.last.fm/music/Coldplay/_/Viva+la+Vida" 
+    class="bbcode_track">Viva la Vida</a>. Frontman Chris Martin 
+    credits 1980s Norwegian pop band <a 
+    href="http://www.last.fm/music/a-ha" 
+    class="bbcode_artist">a-ha</a> for inspiring him to form his 
+    own band."""
     artist = type('Artist', (), {
         'name': artistname, 
         'bio': {
@@ -239,21 +219,6 @@ def artist_single(request, artistname):
         'ownedby': artist.name != 'Nickelback',
         'price': 2300,
         })();
-    
-    ##Done with the API
-    # authorized_user = ttypes.AuthUser(name = request.session['user'], 
-    #                   session_key = 'thekeyyougot')
-    # artist_basic = client.getArtist(ttypes.Artist(mbid = '', name = 
-    #                   artistname))
-    # artist_se = client.getArtistSE(artist_basic, authorized_user)
-    # artist_lfm = client.getArtistLFM(artist_basic)
-    
-    # artist = {'name':artist_basic.name, 
-    #           'bio':{'summary' = artist_lfm.bio.summary}, 'similar': 
-    #           artist_lfm.similar
-    
-    # artist_SE = {'artist': artist, 'ownedby': artist.name != 'Nickelback', 
-    #              'price': artist_se.price}
     
     return render_to_response('artist_single.html', {'artist_SE': artist_SE}, context_instance=RequestContext(request))
 
@@ -293,9 +258,3 @@ def __portfolio(user=None):
 def __authenticated(request):
     #if request.session['userapitoken'] is not None:
     return {}
-
-# Close
-# transport.close()
-    
-# except Thrift.TException, tx:
-#     print '%s' % (tx.message)
