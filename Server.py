@@ -22,7 +22,7 @@ import time, hmac
 
 lastfm_config = {
     'api_key': config.lastfmcred['api_key'],
-    'secret' : config.lastfmcred['secret']
+    'api_secret' : config.lastfmcred['secret']
 }
 
 db_args = {
@@ -60,17 +60,16 @@ class SEHandler(object):
         return config.lastfmcred['api_key']
     
     @rethrow
-    def login(self, username, token):
+    def login(self, token):
         """
         If successful, returns the AuthUser with the user session token
         
         Parameters:
-        - username
         - token
         """
         with datm.DATMSession(_config):
             try:
-                user = datm.user(_config, username)
+                user = datm.user(_config)
                 sessiontoken = user.getSession(_config, token)
                 
                 ret = AuthUser(name=User(name=user.name),
@@ -155,6 +154,7 @@ class SEHandler(object):
                 #a.price = mechanics.price
                 #ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                 #                           points=a.points, ownedby=u.owns(a))
+                pass
             
             if (u.owns(a)):
                 ret.price = int(a.price * 0.97)
@@ -223,6 +223,7 @@ class SEHandler(object):
                 #a.points = mechanics.points
                 #a.price = mechanics.price
                 #ret.histvalue = a.history(_config, after=time_utc_old)
+                pass
             
             return ret
     
