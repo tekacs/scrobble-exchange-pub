@@ -130,8 +130,7 @@ def get_leaderboard(request):
         for i in range(len(board)):
             aa = {
                 '0': str(i+1),
-                '1': '<a hred = "#"><img src=\"http://lorempixel.com/48/48/\">
-                      neil-s</a>',
+                '1': '<a hred = "#"><img src=\"http://lorempixel.com/48/48/\">neil-s</a>',
                 '2': str(board[i].points)
                 'DT_RowClass': 'place-'+str(i+1)
             }

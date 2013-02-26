@@ -206,6 +206,7 @@ def get_leaderboard(request):
 
 ############ Artist stuff ############
 def artist_single(request, artistname):
+    #TODO: Change artist name mechanism
     example_bio = """Coldplay is a British <a
     href="http://www.last.fm/tag/alternative%20rock"
     class="bbcode_tag" rel="tag">alternative rock</a> band, formed
@@ -284,8 +285,9 @@ def search(request):
         form = ArtistSearchForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             results = client.searchArtist(form.cleaned_data['q'])
-            # return render_to_response(request, 'search_page.html', {
-                # 'form': form, 'results': results}, context_instance=RequestContext(request))
+            if (request.POST.get('lucky', 'false') == true):
+                #TODO: Pass ID instead of name once artist_single can handle it
+                return redirect('artist_single', artistname=results[0].name)
     else:
         form = ArtistSearchForm() # An unbound form
 
