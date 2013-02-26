@@ -123,7 +123,8 @@ def get_leaderboard(request):
         time_range = request.GET.get('time_range', 'default_time_range')
         
         # none of the below values make any difference with dummy data 
-        board = client.getTopUsers(n=3, league = league_id, time_range = 70)
+        board = client.getTopUsers(n=3, league = League(name=league_id), 
+                                                            time_range = 70)
         
         aadata = []
         for i in range(len(board)):
