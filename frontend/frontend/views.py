@@ -6,6 +6,7 @@ from django import forms
 
 import models
 from utils import json_response
+from se_api import ttypes
 
 import random
 

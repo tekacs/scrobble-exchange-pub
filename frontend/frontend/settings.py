@@ -167,6 +167,8 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     "frontend.utils.get_current_path",
     )
 
+#TODO: Add database table name prefix to avoid collisions with rest of data
+
 LASTFM_API_KEY = "9dd5403b2dccbc443222d331d66b4424"
 LASTFM_SECRET = "070a2c23f4cff56c14da0a11b6c64f83"
 LASTFM_WS_BASE_URL = "http://ws.audioscrobbler.com/2.0/"
