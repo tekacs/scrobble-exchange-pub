@@ -546,8 +546,6 @@ class ArtistLFM(object):
       raise TProtocol.TProtocolException(message='Required field plays is unset!')
     if self.tags is None:
       raise TProtocol.TProtocolException(message='Required field tags is unset!')
-    if self.similar is None:
-      raise TProtocol.TProtocolException(message='Required field similar is unset!')
     if self.bio is None:
       raise TProtocol.TProtocolException(message='Required field bio is unset!')
     return

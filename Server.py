@@ -155,13 +155,16 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def getArtistLFM(self, artist):
+    def getArtistLFM(self, artist, user):
         """
         Returns the artist info from last.fm for the artist. If either artist
-        or mbid are unknown, then the empty string should be sent.
-        
+        or mbid are unknown, then the empty string should be sent. An
+        authenticated user is required to return recommended artists, otherwise
+        the parameter should be set to none
+
         Parameters:
         - artist
+        - user
         """
         with datm.DATMSession(_config):
             if not artist.mbid:
@@ -173,10 +176,11 @@ class SEHandler(object):
 
             b = ArtistBio(summary=a.summary, content=a.content)       
             
+            #TODO: figure out how to pass an authenticated user
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             ret = ArtistLFM(artist=r, streamable=a.streamable,
                             listeners=a.listeners, plays=a.plays,
-                            tags=a.tags, similar=a.similar, bio=b)
+                            tags=a.tags, bio=b)
             
             return ret
     
@@ -207,16 +211,17 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def searchArtist(self, text):
+    def searchArtist(self, text, n, page):
         """
-        returns a list of possible artists from a partial string. Ordered by
-        decreasing relevance. List size is limited to 5 elements.
-        
+        Returns a list of tuples of the price of the artist the past n days.
+        For new artists the empty list is returned.
+
         Parameters:
-        - text
+        - artist
+        - n
         """
         with datm.DATMSession(_config):
-            alist = datm.artist.search(_config, text, limit=5)
+            alist = datm.artist.search(_config, text, limit=n, page = page)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
@@ -224,15 +229,21 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def getSETop(self, n):
+    def getSETop(self, n, trange):
         """
-        Returns a list of the n top SE artists by decreasing value.
+        Returns a list of the n top SE artists by decreasing value. Range is
+        the number of days the leaderboard is over
 
         Parameters:
         - n
+        - trange
         """
         with datm.DATMSession(_config):
-            alist = datm.artist.top(_config, limit=n)
+            
+            time_utc = time.mktime(datetime.utcnow().timetuple())
+            time_utc_old = time_utc - n*24*60*60
+            
+            alist = datm.artist.top(_config, limit=n, after=time_utc_old)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
@@ -240,15 +251,17 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def getLFMTop(self, n):
+    def getLFMTop(self, n, trange):
         """
-        Returns a list of the n top last.fm artists by decreasing value.
+        Returns a list of the n top last.fm artists by decreasing value. Range
+        is the number of days the leaderboard is over
 
         Parameters:
         - n
+        - trange
         """
         with datm.DATMSession(_config):
-            alist = datm.artist.popular(_config, limit=n)
+            alist = datm.artist.popular(_config, limit=n, after=time_utc_old)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]

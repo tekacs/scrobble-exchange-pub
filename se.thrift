@@ -10,7 +10,7 @@ namespace py se_api
 # Minor is for backwards-compatible ones (e.g. adding optional parameters)
 # Patch is for small bugfixes and similar
 
-const string VERSION = "1.0.0"
+const string VERSION = "2.0.0"
 
 ## Structs
 
@@ -55,7 +55,7 @@ struct ArtistLFM {
     3: required i32 listeners
     4: required i32 plays
     5: required list<string> tags
-    6: required list<Artist> similar
+    6: optional list<Artist> similar
     7: required ArtistBio bio
 }
 
@@ -189,10 +189,12 @@ throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d,4:
 ProgrammingError p, 5: ServiceError s),
     
     /** Returns the artist info from last.fm for the artist. If either artist 
-        or mbid are unknown, then the empty string should be sent. */
-    ArtistLFM getArtistLFM (1: required Artist artist) throws (1: TransientError 
-t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
-ServiceError s),
+        or mbid are unknown, then the empty string should be sent. An 
+        authenticated user is required to return recommended artists, otherwise 
+        the parameter should be set to none */
+    ArtistLFM getArtistLFM (1: required Artist artist, 2: required AuthUser 
+user) throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
+ProgrammingError p, 5: ServiceError s),
 
     /** Returns a list of tuples of the price of the artist the past n days. 
         For new artists the empty list is returned. */
@@ -201,20 +203,23 @@ n) throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4:
 ProgrammingError p, 5: ServiceError s),
     
     /** returns a list of possible artists from a partial string. Ordered by 
-        decreasing relevance. List size is limited to 5 elements. */
-    list<Artist> searchArtist (1: required string text) throws (1: 
-TransientError t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError 
-p, 5: ServiceError s),
+        decreasing relevance. List size is limited to n elements, and page 
+        returns the given page of results */
+    list<Artist> searchArtist (1: required string text, 2: required i32 n, 3: 
+required i32 page) throws (1: TransientError t, 2: AuthenticationError a, 3: 
+DataError d, 4: ProgrammingError p, 5: ServiceError s),
     
-    /** Returns a list of the n top SE artists by decreasing value. */
-    list<Artist> getSETop (1: required i32 n) throws (1: TransientError t, 2: 
-AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: ServiceError 
-s),
+    /** Returns a list of the n top SE artists by decreasing value. Trange is 
+        the number of days the leaderboard is over */
+    list<Artist> getSETop (1: required i32 n, 2: required i32 trange) throws 
+(1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
+ProgrammingError p, 5: ServiceError s),
     
-    /** Returns a list of the n top last.fm artists by decreasing value. */
-    list<Artist> getLFMTop (1: required i32 n) throws (1: TransientError t, 2: 
-AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: ServiceError 
-s),
+    /** Returns a list of the n top last.fm artists by decreasing value. Trange 
+        is the number of days the leaderboard is over */
+    list<Artist> getLFMTop (1: required i32 n, 2: required i32 trange) throws 
+(1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
+ProgrammingError p, 5: ServiceError s),
     
     /** Returns a list of the n most traded artists by decreasing value. */
     list<Artist> getTradedArtists (1: required i32 n) throws (1: TransientError 

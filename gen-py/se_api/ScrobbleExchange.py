@@ -67,13 +67,16 @@ class Iface(object):
     """
     pass
 
-  def getArtistLFM(self, artist):
+  def getArtistLFM(self, artist, user):
     """
     Returns the artist info from last.fm for the artist. If either artist
-    or mbid are unknown, then the empty string should be sent.
+    or mbid are unknown, then the empty string should be sent. An
+    authenticated user is required to return recommended artists, otherwise
+    the parameter should be set to none
 
     Parameters:
      - artist
+     - user
     """
     pass
 
@@ -88,31 +91,38 @@ class Iface(object):
     """
     pass
 
-  def searchArtist(self, text):
+  def searchArtist(self, text, n, page):
     """
     returns a list of possible artists from a partial string. Ordered by
-    decreasing relevance. List size is limited to 5 elements.
+    decreasing relevance. List size is limited to n elements, and page
+    returns the given page of results
 
     Parameters:
      - text
+     - n
+     - page
     """
     pass
 
-  def getSETop(self, n):
+  def getSETop(self, n, trange):
     """
-    Returns a list of the n top SE artists by decreasing value.
+    Returns a list of the n top SE artists by decreasing value. Trange is
+    the number of days the leaderboard is over
 
     Parameters:
      - n
+     - trange
     """
     pass
 
-  def getLFMTop(self, n):
+  def getLFMTop(self, n, trange):
     """
-    Returns a list of the n top last.fm artists by decreasing value.
+    Returns a list of the n top last.fm artists by decreasing value. Trange
+    is the number of days the leaderboard is over
 
     Parameters:
      - n
+     - trange
     """
     pass
 
@@ -417,21 +427,25 @@ class Client(Iface):
       raise result.s
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getArtistSE failed: unknown result");
 
-  def getArtistLFM(self, artist):
+  def getArtistLFM(self, artist, user):
     """
     Returns the artist info from last.fm for the artist. If either artist
-    or mbid are unknown, then the empty string should be sent.
+    or mbid are unknown, then the empty string should be sent. An
+    authenticated user is required to return recommended artists, otherwise
+    the parameter should be set to none
 
     Parameters:
      - artist
+     - user
     """
-    self.send_getArtistLFM(artist)
+    self.send_getArtistLFM(artist, user)
     return self.recv_getArtistLFM()
 
-  def send_getArtistLFM(self, artist):
+  def send_getArtistLFM(self, artist, user):
     self._oprot.writeMessageBegin('getArtistLFM', TMessageType.CALL, self._seqid)
     args = getArtistLFM_args()
     args.artist = artist
+    args.user = user
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -505,21 +519,26 @@ class Client(Iface):
       raise result.s
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getArtistHistory failed: unknown result");
 
-  def searchArtist(self, text):
+  def searchArtist(self, text, n, page):
     """
     returns a list of possible artists from a partial string. Ordered by
-    decreasing relevance. List size is limited to 5 elements.
+    decreasing relevance. List size is limited to n elements, and page
+    returns the given page of results
 
     Parameters:
      - text
+     - n
+     - page
     """
-    self.send_searchArtist(text)
+    self.send_searchArtist(text, n, page)
     return self.recv_searchArtist()
 
-  def send_searchArtist(self, text):
+  def send_searchArtist(self, text, n, page):
     self._oprot.writeMessageBegin('searchArtist', TMessageType.CALL, self._seqid)
     args = searchArtist_args()
     args.text = text
+    args.n = n
+    args.page = page
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -548,20 +567,23 @@ class Client(Iface):
       raise result.s
     raise TApplicationException(TApplicationException.MISSING_RESULT, "searchArtist failed: unknown result");
 
-  def getSETop(self, n):
+  def getSETop(self, n, trange):
     """
-    Returns a list of the n top SE artists by decreasing value.
+    Returns a list of the n top SE artists by decreasing value. Trange is
+    the number of days the leaderboard is over
 
     Parameters:
      - n
+     - trange
     """
-    self.send_getSETop(n)
+    self.send_getSETop(n, trange)
     return self.recv_getSETop()
 
-  def send_getSETop(self, n):
+  def send_getSETop(self, n, trange):
     self._oprot.writeMessageBegin('getSETop', TMessageType.CALL, self._seqid)
     args = getSETop_args()
     args.n = n
+    args.trange = trange
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -590,20 +612,23 @@ class Client(Iface):
       raise result.s
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getSETop failed: unknown result");
 
-  def getLFMTop(self, n):
+  def getLFMTop(self, n, trange):
     """
-    Returns a list of the n top last.fm artists by decreasing value.
+    Returns a list of the n top last.fm artists by decreasing value. Trange
+    is the number of days the leaderboard is over
 
     Parameters:
      - n
+     - trange
     """
-    self.send_getLFMTop(n)
+    self.send_getLFMTop(n, trange)
     return self.recv_getLFMTop()
 
-  def send_getLFMTop(self, n):
+  def send_getLFMTop(self, n, trange):
     self._oprot.writeMessageBegin('getLFMTop', TMessageType.CALL, self._seqid)
     args = getLFMTop_args()
     args.n = n
+    args.trange = trange
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -1116,7 +1141,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = getArtistLFM_result()
     try:
-      result.success = self._handler.getArtistLFM(args.artist)
+      result.success = self._handler.getArtistLFM(args.artist, args.user)
     except TransientError as t:
       result.t = t
     except AuthenticationError as a:
@@ -1160,7 +1185,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = searchArtist_result()
     try:
-      result.success = self._handler.searchArtist(args.text)
+      result.success = self._handler.searchArtist(args.text, args.n, args.page)
     except TransientError as t:
       result.t = t
     except AuthenticationError as a:
@@ -1182,7 +1207,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = getSETop_result()
     try:
-      result.success = self._handler.getSETop(args.n)
+      result.success = self._handler.getSETop(args.n, args.trange)
     except TransientError as t:
       result.t = t
     except AuthenticationError as a:
@@ -1204,7 +1229,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = getLFMTop_result()
     try:
-      result.success = self._handler.getLFMTop(args.n)
+      result.success = self._handler.getLFMTop(args.n, args.trange)
     except TransientError as t:
       result.t = t
     except AuthenticationError as a:
@@ -2256,15 +2281,18 @@ class getArtistLFM_args(object):
   """
   Attributes:
    - artist
+   - user
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRUCT, 'artist', (Artist, Artist.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'user', (AuthUser, AuthUser.thrift_spec), None, ), # 2
   )
 
-  def __init__(self, artist=None,):
+  def __init__(self, artist=None, user=None,):
     self.artist = artist
+    self.user = user
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2281,6 +2309,12 @@ class getArtistLFM_args(object):
           self.artist.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.user = AuthUser()
+          self.user.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2295,12 +2329,18 @@ class getArtistLFM_args(object):
       oprot.writeFieldBegin('artist', TType.STRUCT, 1)
       self.artist.write(oprot)
       oprot.writeFieldEnd()
+    if self.user is not None:
+      oprot.writeFieldBegin('user', TType.STRUCT, 2)
+      self.user.write(oprot)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
     if self.artist is None:
       raise TProtocol.TProtocolException(message='Required field artist is unset!')
+    if self.user is None:
+      raise TProtocol.TProtocolException(message='Required field user is unset!')
     return
 
 
@@ -2646,15 +2686,21 @@ class searchArtist_args(object):
   """
   Attributes:
    - text
+   - n
+   - page
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'text', None, None, ), # 1
+    (2, TType.I32, 'n', None, None, ), # 2
+    (3, TType.I32, 'page', None, None, ), # 3
   )
 
-  def __init__(self, text=None,):
+  def __init__(self, text=None, n=None, page=None,):
     self.text = text
+    self.n = n
+    self.page = page
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2668,6 +2714,16 @@ class searchArtist_args(object):
       if fid == 1:
         if ftype == TType.STRING:
           self.text = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.n = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.page = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -2684,12 +2740,24 @@ class searchArtist_args(object):
       oprot.writeFieldBegin('text', TType.STRING, 1)
       oprot.writeString(self.text)
       oprot.writeFieldEnd()
+    if self.n is not None:
+      oprot.writeFieldBegin('n', TType.I32, 2)
+      oprot.writeI32(self.n)
+      oprot.writeFieldEnd()
+    if self.page is not None:
+      oprot.writeFieldBegin('page', TType.I32, 3)
+      oprot.writeI32(self.page)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
     if self.text is None:
       raise TProtocol.TProtocolException(message='Required field text is unset!')
+    if self.n is None:
+      raise TProtocol.TProtocolException(message='Required field n is unset!')
+    if self.page is None:
+      raise TProtocol.TProtocolException(message='Required field page is unset!')
     return
 
 
@@ -2841,15 +2909,18 @@ class getSETop_args(object):
   """
   Attributes:
    - n
+   - trange
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'n', None, None, ), # 1
+    (2, TType.I32, 'trange', None, None, ), # 2
   )
 
-  def __init__(self, n=None,):
+  def __init__(self, n=None, trange=None,):
     self.n = n
+    self.trange = trange
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2863,6 +2934,11 @@ class getSETop_args(object):
       if fid == 1:
         if ftype == TType.I32:
           self.n = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.trange = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -2879,12 +2955,18 @@ class getSETop_args(object):
       oprot.writeFieldBegin('n', TType.I32, 1)
       oprot.writeI32(self.n)
       oprot.writeFieldEnd()
+    if self.trange is not None:
+      oprot.writeFieldBegin('trange', TType.I32, 2)
+      oprot.writeI32(self.trange)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
     if self.n is None:
       raise TProtocol.TProtocolException(message='Required field n is unset!')
+    if self.trange is None:
+      raise TProtocol.TProtocolException(message='Required field trange is unset!')
     return
 
 
@@ -3036,15 +3118,18 @@ class getLFMTop_args(object):
   """
   Attributes:
    - n
+   - trange
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'n', None, None, ), # 1
+    (2, TType.I32, 'trange', None, None, ), # 2
   )
 
-  def __init__(self, n=None,):
+  def __init__(self, n=None, trange=None,):
     self.n = n
+    self.trange = trange
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -3058,6 +3143,11 @@ class getLFMTop_args(object):
       if fid == 1:
         if ftype == TType.I32:
           self.n = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.trange = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -3074,12 +3164,18 @@ class getLFMTop_args(object):
       oprot.writeFieldBegin('n', TType.I32, 1)
       oprot.writeI32(self.n)
       oprot.writeFieldEnd()
+    if self.trange is not None:
+      oprot.writeFieldBegin('trange', TType.I32, 2)
+      oprot.writeI32(self.trange)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
     if self.n is None:
       raise TProtocol.TProtocolException(message='Required field n is unset!')
+    if self.trange is None:
+      raise TProtocol.TProtocolException(message='Required field trange is unset!')
     return
 
 
