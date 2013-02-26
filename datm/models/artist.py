@@ -12,9 +12,12 @@ class Artist(base.Base):
     mbid = Column(String(36), primary_key=True)
     name = Column(String(255), index=True, unique=True, nullable=False)
 
-    lastfm_price = Column(Integer, nullable=False)
-    local_price = Column(Integer, nullable=False)
-    last_closing_price = Column(Integer, nullable=False)
+    price = Column(Integer, nullable=False)
+    points = Column(Integer, nullable=False)
+
+    last_closing_price = Column(Integer)
+    last_listeners = Column(Integer)
+    last_playcount = Column(Integer)
 
     max_available = Column(Integer, nullable=False)
 #   no_remaining = Column(Integer)
@@ -35,23 +38,23 @@ class Artist(base.Base):
         backref=backref("artist", uselist=False)
     )
 
-    def __init__(self, mbid, name, lastfm_price, local_price, max_available):
+    def __init__(self, mbid, name, price, points, max_available):
         self.mbid = mbid
         self.name = name
 
-        self.lastfm_price = lastfm_price
-        self.local_price = local_price
+        self.price = price
+        self.points = points
         self.max_available = max_available
 
 class ArtistHistory(base.Base):
     __tablename__ = 'artist_history'
 
     date = Column(Integer, primary_key=True)
-    value = Column(Integer, nullable=False)
+    price = Column(Integer, nullable=False)
 
     artist_id = Column(Integer, ForeignKey("artists.mbid"))
 
-    def __init__(self, artist, date, value):
+    def __init__(self, artist, date, price):
         self.artist = artist
         self.date = date
-        self.value = value
+        self.price = price
