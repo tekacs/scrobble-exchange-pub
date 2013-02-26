@@ -54,5 +54,8 @@ jQuery(document).ready(function($) {
     $(document).on('focus', '.typeahead-search', function(e){
         $('ol.tt-suggestions li.tt-suggestion:first-child').addClass('tt-is-under-cursor');
     });
+    $(document).on('mouseover', 'ol.tt-suggestions li.tt-suggestion', function(){
+        $($(this).parents().first()).find('li.tt-suggestion:first-child').addClass('visited');
+    });
 
 });
