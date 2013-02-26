@@ -241,7 +241,7 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             
             time_utc = time.mktime(datetime.utcnow().timetuple())
-            time_utc_old = time_utc - n*24*60*60
+            time_utc_old = time_utc - trange*24*60*60
             
             alist = datm.artist.top(_config, limit=n, after=time_utc_old)
             
@@ -261,6 +261,10 @@ class SEHandler(object):
         - trange
         """
         with datm.DATMSession(_config):
+            
+            time_utc = time.mktime(datetime.utcnow().timetuple())
+            time_utc_old = time_utc - trange*24*60*60
+            
             alist = datm.artist.popular(_config, limit=n, after=time_utc_old)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
@@ -350,7 +354,7 @@ class SEHandler(object):
             return AuthUser(name=User(name=user.name, points=u.points), 
                             session_key=user.session_key, money=u.money)
 
-    def getTopUsers(self, n, league):
+    def getTopUsers(self, n, league, trange):
         """
         Returns the n top users by decreasing value in the given league.
 
@@ -359,7 +363,12 @@ class SEHandler(object):
         - league
         """
         with datm.DATMSession(_config):
-            ulist = datm.user.top(_config, limit=n, league=league.name)
+            
+            time_utc = time.mktime(datetime.utcnow().timetuple())
+            time_utc_old = time_utc - trange*24*60*60
+            
+            ulist = datm.user.top(_config, limit=n, league=league.name,
+                                                        after = time_utc_old)
             
             return UserLeaderboard(users=[User(name=u.name) for u in ulist])
 

@@ -31,6 +31,7 @@ class SEHandler(object):
         - username
         - token
         """
+       
         ret = AuthUser(User(name = username), session_key = 'randomstringhere', 
                                                                 money = 9399)
         return ret
@@ -251,10 +252,19 @@ class SEHandler(object):
     def getArtistHistory(self, artist, n):
         pass
 
-    def searchArtist(self, text):
-        pass
+    def searchArtist(self, text, n, page):
+        
+        artists = ['Daft Punk', 'Gorillaz', 'Flight of the Conchords', 'The 
+Killers', 'Hans Zimmer', 'A random band with a missing image and a long name!'\
+' (and punctuation)']
 
-    def getSETop(self, n):
+        results = [a for a in artists if text in a]
+        ret = [self.getArtist(Artist(mbid = '', name = a)) for a in results]
+        
+        return ret
+        
+
+    def getSETop(self, n, trange):
         """
         Returns a list of the n top SE artists by decreasing value.
 
@@ -270,7 +280,7 @@ class SEHandler(object):
         
         return top
     
-    def getLFMTop(self, n):
+    def getLFMTop(self, n, trange):
         pass
 
     def getTradedArtists(self, n):
@@ -304,14 +314,25 @@ class SEHandler(object):
         Parameters:
         - user
         """
+        
         ret = user
         ret.money = 2903
         
         return ret
-
     
-    def getTopUsers(self, n, league):
-        pass
+    def getTopUsers(self, n, league, trange):
+        
+        us = {
+            'neil-s':User(name = 'neil-s', points = 70),
+            'joebateson':User(name = 'joebateson', points = 40),
+            'rand':User(name = 'rand', points = 20)
+        }
+        
+        top = ['neil-s','joebateson','rand']
+        
+        ret = UserLeaderboard(users=[us[t] for t in top])
+        
+        return ret
 
     def getNearUsers(self, user):
         pass

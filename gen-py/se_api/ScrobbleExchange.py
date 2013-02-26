@@ -162,13 +162,15 @@ class Iface(object):
     """
     pass
 
-  def getTopUsers(self, n, league):
+  def getTopUsers(self, n, league, trange):
     """
-    Returns the n top users by decreasing value in the given league.
+    Returns the n top users by decreasing value in the given league. Trange
+    is the number of days the leaderboard is over
 
     Parameters:
      - n
      - league
+     - trange
     """
     pass
 
@@ -809,22 +811,25 @@ class Client(Iface):
       raise result.d
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserMoney failed: unknown result");
 
-  def getTopUsers(self, n, league):
+  def getTopUsers(self, n, league, trange):
     """
-    Returns the n top users by decreasing value in the given league.
+    Returns the n top users by decreasing value in the given league. Trange
+    is the number of days the leaderboard is over
 
     Parameters:
      - n
      - league
+     - trange
     """
-    self.send_getTopUsers(n, league)
+    self.send_getTopUsers(n, league, trange)
     return self.recv_getTopUsers()
 
-  def send_getTopUsers(self, n, league):
+  def send_getTopUsers(self, n, league, trange):
     self._oprot.writeMessageBegin('getTopUsers', TMessageType.CALL, self._seqid)
     args = getTopUsers_args()
     args.n = n
     args.league = league
+    args.trange = trange
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -1323,7 +1328,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = getTopUsers_result()
     try:
-      result.success = self._handler.getTopUsers(args.n, args.league)
+      result.success = self._handler.getTopUsers(args.n, args.league, args.trange)
     except DataError as d:
       result.d = d
     oprot.writeMessageBegin("getTopUsers", TMessageType.REPLY, seqid)
@@ -3989,17 +3994,20 @@ class getTopUsers_args(object):
   Attributes:
    - n
    - league
+   - trange
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'n', None, None, ), # 1
     (2, TType.STRUCT, 'league', (League, League.thrift_spec), None, ), # 2
+    (3, TType.I32, 'trange', None, None, ), # 3
   )
 
-  def __init__(self, n=None, league=None,):
+  def __init__(self, n=None, league=None, trange=None,):
     self.n = n
     self.league = league
+    self.trange = trange
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -4021,6 +4029,11 @@ class getTopUsers_args(object):
           self.league.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.trange = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4039,6 +4052,10 @@ class getTopUsers_args(object):
       oprot.writeFieldBegin('league', TType.STRUCT, 2)
       self.league.write(oprot)
       oprot.writeFieldEnd()
+    if self.trange is not None:
+      oprot.writeFieldBegin('trange', TType.I32, 3)
+      oprot.writeI32(self.trange)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -4047,6 +4064,8 @@ class getTopUsers_args(object):
       raise TProtocol.TProtocolException(message='Required field n is unset!')
     if self.league is None:
       raise TProtocol.TProtocolException(message='Required field league is unset!')
+    if self.trange is None:
+      raise TProtocol.TProtocolException(message='Required field trange is unset!')
     return
 
 

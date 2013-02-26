@@ -239,9 +239,10 @@ ServiceError s),
     /** Returns the current user with money. Requires AuthUser to auth */
    AuthUser getUserMoney (1: required AuthUser user) throws (1: DataError d),
     
-    /** Returns the n top users by decreasing value in the given league. */
-    UserLeaderboard getTopUsers (1: required i32 n, 2: required League league) 
-throws (1: DataError d),
+    /** Returns the n top users by decreasing value in the given league. Trange 
+        is the number of days the leaderboard is over */
+    UserLeaderboard getTopUsers (1: required i32 n, 2: required League league, 
+3: required i32 trange) throws (1: DataError d),
     
     /** Returns a list of 10 users with 4 above and 5 below in the leaderboard 
         compared to the user provided, including the user's position. */
