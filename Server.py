@@ -49,8 +49,8 @@ class SEHandler(object):
                 user = datm.user(_config, username)
                 sessiontoken = user.getSession(_config, token)
                 
-                ret = AuthUser(name = User(name = user.name),
-                                                    session_key = sessiontoken)
+                ret = AuthUser(name=User(name=user.name),
+                               session_key=sessiontoken)
                 return ret
             except InvalidAuthorisationException:
                 raise LoginException(LoginCode.AUTH, 'User not authenticated')
@@ -65,13 +65,13 @@ class SEHandler(object):
         """
         with datm.DATMSession(_config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid = artist.mbid)
+                a = datm.artist(_config, mbid=artist.mbid)
             elif not artist.name:
-                a = datm.artist(_config, name = artist.name)
+                a = datm.artist(_config, name=artist.name)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
                 
-            ret = Artist(mbid = a.mbid, name = a.name, imgurls = a.images)
+            ret = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
         
             return ret
 
@@ -85,13 +85,13 @@ class SEHandler(object):
         """
         with datm.DATMSession(_config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid = artist.mbid)
+                a = datm.artist(_config, mbid=artist.mbid)
             elif not artist.name:
-                a = datm.artist(_config, name = artist.name)
+                a = datm.artist(_config, name=artist.name)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
             
-            ret = Artist(mbid = a.mbid, name = a.name)
+            ret = Artist(mbid = a.mbid, name=a.name)
         
             return ret
 
@@ -108,17 +108,17 @@ class SEHandler(object):
         """
         with datm.DATMSession(_config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid = artist.mbid, user = user)
+                a = datm.artist(_config, mbid=artist.mbid, user=user)
             elif not artist.name:
-                a = datm.artist(_config, name = artist.name, user = user)
+                a = datm.artist(_config, name=artist.name, user=user)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
             
             u = datm.user(_config, user.name)
             
-            r = Artist(mbid = a.mbid, name = a.name, imgurls = a.images)
-            ret = ArtistSE(artist = r, numremaining = a.no_remaining, 
-                                        points = a.points, ownedby = u.owns(a))
+            r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
+            ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
+                                            points=a.points, ownedby=u.owns(a))
             
             if (u.owns(a)):
                 ret.price = a.price * 0.97
@@ -137,18 +137,18 @@ class SEHandler(object):
         """
         with datm.DATMSession(_config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid = artist.mbid)
+                a = datm.artist(_config, mbid=artist.mbid)
             elif not artist.name:
-                a = datm.artist(_config, name = artist.name)
+                a = datm.artist(_config, name=artist.name)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
 
-            b = ArtistBio(summary = a.summary, content = a.content)       
+            b = ArtistBio(summary=a.summary, content=a.content)       
             
-            r = Artist(mbid = a.mbid, name = a.name, imgurls = a.images)
-            ret = ArtistLFM(artist = r, streamable = a.streamable, listeners = 
-                            a.listeners, plays = a.plays, tags = a.tags, 
-                            similar = a.similar, bio = b)
+            r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
+            ret = ArtistLFM(artist=r, streamable=a.streamable,
+                            listeners=a.listeners, plays=a.plays,
+                            tags=a.tags, similar=a.similar, bio=b)
             
             return ret
 
@@ -163,9 +163,9 @@ class SEHandler(object):
         """
         with datm.DATMSession(_config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid = artist.mbid)
+                a = datm.artist(_config, mbid=artist.mbid)
             elif not artist.name:
-                a = datm.artist(_config, name = artist.name)
+                a = datm.artist(_config, name=artist.name)
             else:
                 raise SearchException(SearchCode.ARG, 'Incorrect artist data')
             
@@ -174,7 +174,7 @@ class SEHandler(object):
             time_utc_old = time_utc - n*24*60*60
             
             ret = ArtistHistory()
-            ret.histvalue = a.history(_config, after = time_utc_old)
+            ret.histvalue = a.history(_config, after=time_utc_old)
             
             return ret
 
@@ -187,9 +187,9 @@ class SEHandler(object):
         - text
         """
         with datm.DATMSession(_config):
-            alist = datm.artist.search(_config, text, limit = 5)
+            alist = datm.artist.search(_config, text, limit=5)
             
-            ret = [Artist(mbid = a.mbid, name = a.name, imgurls = a.images) for
+            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
             
             return ret
@@ -202,9 +202,9 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(_config):
-            alist = datm.artist.top(_config, limit = n)
+            alist = datm.artist.top(_config, limit=n)
             
-            ret = [Artist(mbid = a.mbid, name = a.name, imgurls = a.images) for
+            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
 
             return ret
@@ -217,9 +217,9 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(_config):
-            alist = datm.artist.popular(_config, limit = n)
+            alist = datm.artist.popular(_config, limit=n)
             
-            ret = [Artist(mbid = a.mbid, name = a.name, imgurls = a.images) for
+            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
             
             return ret
@@ -232,9 +232,9 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(_config):
-            alist = datm.artist.most_traded(_config, limit = n)
+            alist = datm.artist.most_traded(_config, limit=n)
             
-            ret = [Artist(mbid = a.mbid, name = a.name, imgurls = a.images) for
+            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
 
             return ret
@@ -247,9 +247,9 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(_config):
-            tlist = datm.trade.recent(_config, limit = n)
+            tlist = datm.trade.recent(_config, limit=n)
             
-            ret = [Artist(mbid = t.mbid, name = t.name, imgurls = t.images) for
+            ret = [Artist(mbid=t.mbid, name=t.name, imgurls=t.images) for
                                                                     t in tlist]
             
             return ret
@@ -264,29 +264,29 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             u = datm.user(_config, user)
             
-            basicu = User(name = u.name, points = u.points)
+            basicu = User(name=u.name, points=u.points)
             
-            ret = UserData(user = basicu)
+            ret = UserData(user=basicu)
             ret.trades = []
             ret.stocks = []
-            ret.trophies = [Trophy(name = u.trophies.name, description = 
-                                                        u.trophies.description)]
-            ret.league = League(name = u.league.name, description = 
-                                    u.league.description, icon = u.league.icon)
+            ret.trophies = [Trophy(name=u.trophies.name,
+                                   description=u.trophies.description)]
+            ret.league = League(name=u.league.name,
+                                description=u.league.description,
+                                icon=u.league.icon)
             
             for t in u.trades:
-                a = Artist(mbid = t.Artist.mbid, name = t.Artist.name, imgurls 
-                                                            = t.Artist.images)
+                a = Artist(mbid=t.Artist.mbid, name=t.Artist.name,
+                           imgurls=t.Artist.images)
                 
-                ret.trades.append(Trade(artist = a, price = t.price, time = 
-                                                                        t.time))
+                ret.trades.append(Trade(artist=a, price=t.price, time=t.time))
             
             for t in u.stocks:
-                a = Artist(mbid = t.Artist.mbid, name = t.Artist.name, imgurls 
-                                                            = t.Artist.images)
+                a = Artist(mbid=t.Artist.mbid, name=t.Artist.name,
+                           imgurls=t.Artist.images)
                 
-                ret.stocks.append(ArtistSE(artist = a, price = t.price, 
-                                                numremaining = no_remaining))
+                ret.stocks.append(ArtistSE(artist=a, price=t.price, 
+                                           numremaining=no_remaining))
             
             return ret
         
@@ -300,8 +300,8 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             u = datm.user(_config, user.name, user.session_key)
             
-            return AuthUser(name = User(name = user.name, points = u.points), 
-                            session_key = user.session_key, money = u.money)
+            return AuthUser(name=User(name=user.name, points=u.points), 
+                            session_key=user.session_key, money=u.money)
 
     def getTopUsers(self, n, league):
         """
@@ -312,9 +312,9 @@ class SEHandler(object):
         - league
         """
         with datm.DATMSession(_config):
-            ulist = datm.user.top(_config, limit = n, league = league.name)
+            ulist = datm.user.top(_config, limit=n, league=league.name)
             
-            return UserLeaderboard(users = [User(name = u.name) for u in ulist])
+            return UserLeaderboard(users=[User(name=u.name) for u in ulist])
 
     def getNearUsers(self, user):
         """
@@ -325,9 +325,9 @@ class SEHandler(object):
         - user
         """
         with datm.DATMSession(_config):
-            ulist = datm.user.near(_config, name = user)
+            ulist = datm.user.near(_config, name=user)
             
-            return UserLeaderboard(users = [User(name = u.name) for u in ulist])
+            return UserLeaderboard(users=[User(name=u.name) for u in ulist])
    
     def getGuarantee(self, artist, user):
         """
@@ -339,9 +339,9 @@ class SEHandler(object):
         """
         with datm.DATMSession(_config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid = artist.mbid, user = user)
+                a = datm.artist(_config, mbid=artist.mbid, user=user)
             elif not artist.name:
-                a = datm.artist(_config, name = artist.name, user = user)
+                a = datm.artist(_config, name=artist.name, user=user)
             else:
                 raise TransactionException(TransactionCode.ARG, 'Incorrect \
                                                                 artist data')
@@ -362,9 +362,9 @@ class SEHandler(object):
             m.update(str(price))
             el = m.hexdigest()
             
-            return Guarantee(elephant = el, artist = Artist(mbid = a.mbid, 
-                            name = a.name, imgurls = a.images), price = price,   
-                            time = time_utc)
+            return Guarantee(elephant = el, artist = Artist(mbid=a.mbid, 
+                            name=a.name, imgurls=a.images), price=price,   
+                            time=time_utc)
         
 
     def buy(self, guarantee, user):
@@ -389,23 +389,23 @@ class SEHandler(object):
             
             #authenticate the elephant
             if guarantee.elephant != el:
-                raise TransactionException(code = TransactionCode.ARG, message  
-                                                        = 'Incorrect Elephant')
+                raise TransactionException(code=TransactionCode.ARG,
+                                           message='Incorrect Elephant')
             
             #check for 15s time (with some leeway)
             if (time_utc - guarantee.time) > 17:
-                raise TransactionException(code = TransactionCode.TIME, message 
-                                                                  = 'Too late')
+                raise TransactionException(code=TransactionCode.TIME,
+                                           message='Too late')
             
-            u = datm.user(_config, user = user.name)
-            a = datm.artist(_config, mbid = guarantee.artist.mbid)
+            u = datm.user(_config, user=user.name)
+            a = datm.artist(_config, mbid=guarantee.artist.mbid)
             
             try:
-                t = datm.trade.buy(_config, user = u, artist = a, price = 
-                                                                guarantee.price)
+                t = datm.trade.buy(_config, user=u, artist=a,
+                                   price=guarantee.price)
             except NoStockRemainingException:
-                raise TransactionException(code = TransactionCode.NUM, message 
-                                                         = 'No stock remaining')
+                raise TransactionException(code=TransactionCode.NUM,
+                                           message='No stock remaining')
         
 
     def sell(self, guarantee, user):
@@ -430,23 +430,23 @@ class SEHandler(object):
             
             #authenticate the elephant
             if guarantee.elephant != el:
-                raise TransactionException(code = TransactionCode.ARG, message  
-                                                        = 'Incorrect Elephant')
+                raise TransactionException(code=TransactionCode.ARG,
+                                           message='Incorrect Elephant')
             
             #check for 15s time (with some leeway)
             if (time_utc - guarantee.time) > 17:
-                raise TransactionException(code = TransactionCode.TIME, message 
-                                                                  = 'Too late')
+                raise TransactionException(code=TransactionCode.TIME,
+                                           message='Too late')
             
-            u = datm.user(_config, user = user.name)
-            a = datm.artist(_config, mbid = guarantee.artist.mbid)
+            u = datm.user(_config, user=user.name)
+            a = datm.artist(_config, mbid=guarantee.artist.mbid)
             
             try:
-                t = datm.trade.sell(_config, user = u, artist = a, price = 
-                                                                guarantee.price)
+                t = datm.trade.sell(_config, user=u, artist=a,
+                                    price=guarantee.price)
             except StockNotOwnedException:
-                raise TransactionException(code = TransactionCode.NONE, message 
-                                                          = 'User cannot sell')
+                raise TransactionException(code=TransactionCode.NONE,
+                                           message='User cannot sell')
         
 
 
