@@ -138,22 +138,18 @@ def artist_single(request, artistname):
 ############ Buy/Sell ############
 
 @json_response
-def sell(request, artist=None, artist_id=None, price=None):
-    if (request.GET or (artist==None and artist_id==None)):
-        #marketprice = se_api.get_sell_price(artist)
-        marketprice = 40
-        return {'marketprice': 40}
-        #return render_to_response('sell.html', {'marketprice': marketprice})
-    elif (request.POST):
-        pass
-        #TODO: Authenticate
-        # if 'user' in request.session:
-        #     se_api.create_sell_orders(server=server, 
-        #         user=request.session['user'], price=price)
+def price(request, artist_id=None):
+    print 'entered price function correctly'
+    # artist_SE = client.getArtistSE(artist = se_api.Artist(mbid = artist_id), user = request.user)
+    artist_price_guarantee = client.getGuarantee(artist = se_api.Artist(mbid = artist_id), user = request.user)
+    return artist_price_guarantee
 
-def buy_search(request):
-    #TODO
-    pass
+
+@json_response
+@require_POST()
+def sell(request, artist=None, artist_id=None, price=None):
+    #TODO: Remind Joe to check out https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
+    
 
 def buy(request, artist=None, artist_id=None, price=None):
     #TODO

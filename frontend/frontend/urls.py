@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^leaderboards/', 'frontend.views.leaderboards', name='leaderboards'),
     url(r'^sell/', 'frontend.views.sell', name='sell'),
     url(r'^lastfmauth/', include('lastfmauth.urls')),
+    url(r'^price/(?P<artist_id>[0-9A-Fa-f-]{36})/$', 'frontend.views.price', name='price'),
 
     # TODO: need to fix for artists with spaces in names
     url(r'^artist/([^/]+)/$', 'frontend.views.artist_single', name ='artist_single'),
