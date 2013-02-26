@@ -1,0 +1,18 @@
+/* Leaderboards page styling */
+
+.leaderboards-sidebar-inner {
+    padding: 15px 15px 10px 15px;
+    margin-left: 15px;
+    margin-bottom: 10px;
+    background-color: #EEE;
+
+    ul {
+        list-style-type: none;
+    }
+
+    a.time-adjust {
+        &.selected {
+            font-weight: bold;
+        }
+    }
+}

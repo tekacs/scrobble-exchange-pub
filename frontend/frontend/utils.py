@@ -21,3 +21,8 @@ def json_response(func):
             data = json.dumps(str(objects))
         return HttpResponse(data, "application/json")
     return decorator
+
+def get_current_path(request):
+    return {
+       'current_path': request.get_full_path()
+    }

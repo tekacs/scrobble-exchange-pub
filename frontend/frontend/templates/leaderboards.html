@@ -5,19 +5,19 @@
 {% block title %}Leaderboards{% endblock title %}
 
 {% block above_main %}
-    <h1 class="main-header">Leaderboards</h1> 
+    <h1 class="main-header">Leaderboards - <span class="leaderboards-time">All Time</span></h1>
 {% endblock above_main %}
 
 {% block main %}
-    
+
     <dl class="tabs">
-      <dd class="active"><a href="#simple1">League 1</a></dd>
-      <dd><a href="#simple2">League 2</a></dd>
-      <dd class="hide-for-small"><a href="#simple3">League 3</a></dd>
+      <dd class="active"><a href="#league1">League 1</a></dd>
+      <dd><a href="#league2">League 2</a></dd>
+      <dd class="hide-for-small"><a href="#league3">League 3</a></dd>
     </dl>
     <ul class="tabs-content">
-      <li class="active" id="simple1Tab">
-        <table class="twenty">
+      <li class="active" id="league1Tab">
+        <table class="leaderboard leaderboard-1">
           <thead>
             <tr>
               <th>Rank</th>
@@ -25,65 +25,10 @@
               <th>Score</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td><a href="#">UserA</a></td>
-              <td>47103</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td><a href="#">UserB</a></td>
-              <td>37210</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td><a href="#">UserC</a></td>
-              <td>32715</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td><a href="#">UserD</a></td>
-              <td>31098</td>
-            </tr>
-          </tbody>
-        </table>  
-      </li>
-      <li id="simple2Tab">
-        <table class="twenty">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>User</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td><a href="#">UserE</a></td>
-              <td>25490</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td><a href="#">UserF</a></td>
-              <td>23164</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td><a href="#">UserG</a></td>
-              <td>21094</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td><a href="#">UserH</a></td>
-              <td>19012</td>
-            </tr>
-          </tbody>
         </table>
       </li>
-      <li id="simple3Tab">
-        <table class="twenty">
+      <li id="league2Tab">
+        <table class="leaderboard leaderboard-2">
           <thead>
             <tr>
               <th>Rank</th>
@@ -91,32 +36,49 @@
               <th>Score</th>
             </tr>
           </thead>
-          <tbody>
+        </table>
+      </li>
+      <li id="league3Tab">
+        <table class="leaderboard leaderboard-3">
+          <thead>
             <tr>
-              <td>1</td>
-              <td><a href="#">UserI</a></td>
-              <td>18023</td>
+              <th>Rank</th>
+              <th>User</th>
+              <th>Score</th>
             </tr>
-            <tr>
-              <td>2</td>
-              <td><a href="#">UserJ</a></td>
-              <td>17118</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td><a href="#">UserK</a></td>
-              <td>16443</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td><a href="#">UserL</a></td>
-              <td>14724</td>
-            </tr>
-          </tbody>
+          </thead>
         </table>
       </li>
     </ul>
 {% endblock main %}
 
 {% block sidebar %}
+  <div class="leaderboards-sidebar-inner">
+    <h2 class="sidebar-red">Your current position</h2>
+    <p class="lead">You are currently ranked <strong>10th</strong> in <strong>League 1</strong>, with a total of <strong>37210</strong> points.</p>
+    <p>Earn <strong>9894</strong> more points to overtake your closest rival, <a href="#"><strong>nosetabeoj</strong></a>!</p>
+  </div>
+
+  <div class="leaderboards-sidebar-inner">
+    <h2 class="sidebar-red">Change timespan</h2>
+    <ul>
+      <li><a class="time-adjust selected" data-timeadjust="0" href="#">All Time</a></li>
+      <li><a class="time-adjust" data-timeadjust="1" href="#">Last Month</a></li>
+      <li><a class="time-adjust" data-timeadjust="2" href="#">Last Week</a></li>
+      <li><a class="time-adjust" data-timeadjust="3" href="#">Last 24 hours</a></li>
+    </ul>
+  </div>
 {% endblock sidebar %}
+
+{% block body_additional_js %}
+  <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.tabs.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/libs/jquery.dataTables.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/libs/dataTables.scroller.min.js" %}"></script>
+  <script type="text/javascript">
+    window.SE.User = {
+      'league': 1,
+      'leaderboard_position': 10
+    }
+  </script>
+  <script type="text/javascript" src="{% static "js/leaderboards.js" %}"></script>
+{% endblock body_additional_js %}

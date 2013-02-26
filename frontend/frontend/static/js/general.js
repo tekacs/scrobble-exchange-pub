@@ -1,71 +1,86 @@
-// TODO: set up object to contain settings such as this
-var price_countdown;
+// Define global object to contain all variables/methods
+var SE = SE || {};
 
-function startCountdown() {
-    var seconds = $('.dial').val();
+window.SE.Search = {
+    pollAddMoreLinkTimeoutSet: false,
+    getMoreLink: function(query) {
+        return '<li class="tt-suggestion more-link" data-value="' + query + '"><p class="artist-name" data-url="/search/?q=' + query + '">See more results for ' + query + '</p></li>';
+    },
+    pollAddMoreLink: function(context) {
 
-    // We have reached the end of the timer, need to get a new price
-    // TODO: get new price
-    seconds = (seconds < 1) ? 15 : seconds - 1;
-    
-    // Reduce knob value and start a new timer
-    $('.dial').val(seconds).trigger('change');
-    $('.timer-text').text(seconds);
-    if (seconds <= 5){
-        $('.dial').trigger(
-            'configure',
-            {
-                'fgColor': '#b40200',
-                'inputColor': '#b40200'
+        var parent = $($(context).parents().first());
+
+        if (parent.find('.tt-suggestion').length > 0){
+
+            if (parent.find('.more-link').length === 0){
+                parent.find('ol.tt-suggestions').append(window.SE.Search.getMoreLink($(context).val()));
             }
-        );
-    } else {
-        $('.dial').trigger(
-            'configure',
-            {
-                'fgColor': '#0187c5',
-                'inputColor': '#0187c5'
-            }
-        );
+
+            window.clearTimeout(window.SE.Search.pollAddMoreLink);
+            window.SE.Search.pollAddMoreLinkTimeoutSet = false;
+
+        } else {
+            window.setTimeout(window.SE.Search.pollAddMoreLink, 50, context);
+        }
     }
-    price_countdown = setTimeout(startCountdown, 1000);
-}
+};
 
-$(document).ready(function() {
-
-    $(document).foundationTabs();
-    
-    $("#buy-button, #sell-button").click(function() {
-        var elementID = $(this).attr('id');
-        var subText = (elementID === 'buy-button') ? 'buy' : 'sell';
-        var price = $(this).data('price');
-        var artistname = $(this).data('artistname');
-
-        $('.buy-sell').text(subText);
-        $('#buy-sell-modal .price-text').text(price);
-        $('#buy-sell-modal .artist-text').text(artistname);
-
-        $("#buy-sell-modal").reveal({
-            // Order of function calls for knob:
-            // open -> opened -> close -> closed
-            "open": function() {
-                $('.dial').knob().trigger(
-                    'configure',
-                    {
-                        'fgColor': '#0187c5',
-                        'inputColor': '#0187c5'
-                    }
-                );
-            },
-            "opened": function() {
-                startCountdown();
-            },
-            "closed": function() {
-                clearTimeout(window.price_countdown);
-                $('.dial').val(15).trigger('change');
-            }
-        });
+jQuery(document).ready(function($) {
+    $('.typeahead-search').typeahead({
+        name: 'artists',
+        remote: '../static/js/test_typeahead.json?1231awdw2aadAA23%QUERY',
+        limit: 3,
+        template: [
+            '<div class="artist-image" style="background-image:url(\'{{img}}\')"></div>' +
+            '<p class="artist-name" data-url="{{url}}">{{value}}</p>'
+        ],
+        engine: window.Hogan
     });
+
+    // Add more link below all suggestions
+    $('.typeahead-search').on('keydown', function(e){
+        if (!window.SE.Search.pollAddMoreLinkTimeoutSet){
+            window.SE.Search.pollAddMoreLinkTimeoutSet = true;
+            window.setTimeout(window.SE.Search.pollAddMoreLink, 50, this);
+        }
+    });
+
+    $('.typeahead-search').on('keydown', function(e){
+        // enter key pressed, submit
+        if (e.which === 13) {
+            $(this).parents('form').first().submit();
+        }
+    });
+
+    // Change lucky status to false when on more items link
+    $('.typeahead-search').on('keyup', function(e){
+        var parent = $($(this).parents().first());
+        var selectedItem = parent.find('.tt-is-under-cursor');
+
+        if ($(selectedItem).hasClass('more-link')){
+            $(parent).parents().find('.lucky-hidden').val('false');
+        } else {
+            $(parent).parents().find('.lucky-hidden').val('true');
+        }
+    });
+
+    // Clicking an artist name takes us to their page
+    $(document).on('click', '.tt-suggestion', function(e){
+        var url = $(this).find('p.artist-name').data('url');
+        window.location.href = url;
+    });
+
+
+    // Highlight first suggestion by default - see visited css class
+    // Had to do this due to lack of events or callbacks in typeahead 0.8.1
+    $(document).on('focus keydown', '.typeahead-search', function(e){
+        $('ol.tt-suggestions li.tt-suggestion:first-child').addClass('visited');
+    });
+    $(document).on('focus', '.typeahead-search', function(e){
+        $('ol.tt-suggestions li.tt-suggestion:first-child').addClass('tt-is-under-cursor');
+    });
+    $(document).on('mouseover', 'ol.tt-suggestions li.tt-suggestion', function(){
+        $($(this).parents().first()).find('li.tt-suggestion:first-child').addClass('visited');
+    });
+
 });
-
-

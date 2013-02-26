@@ -1,0 +1,32 @@
+[
+    {
+        "value": "Hans Zimmer",
+        "url": "/artist/Hans%20Zimmer/",
+        "img": "http://userserve-ak.last.fm/serve/500/73701504/Hans+Zimmer+hz4.png"
+    },
+    {
+        "value": "Coldplay",
+        "url": "/artist/Coldplay/",
+        "img": "http:\/\/userserve-ak.last.fm\/serve\/500\/75646980\/Coldplay+PNG.png"
+    },
+    {
+        "value": "Gorillaz",
+        "url": "/artist/Gorillaz/",
+        "img": "http:\/\/userserve-ak.last.fm\/serve\/_\/411274\/Gorillaz.jpg"
+    },
+    {
+        "value": "Hans Zimmer2",
+        "url": "/artist/Hans%20Zimmer/",
+        "img": "http://userserve-ak.last.fm/serve/500/73701504/Hans+Zimmer+hz4.png"
+    },
+    {
+        "value": "Coldplay2",
+        "url": "/artist/Coldplay/",
+        "img": "http:\/\/userserve-ak.last.fm\/serve\/500\/75646980\/Coldplay+PNG.png"
+    },
+    {
+        "value": "Gorillaz2",
+        "url": "/artist/Gorillaz/",
+        "img": "http:\/\/userserve-ak.last.fm\/serve\/_\/411274\/Gorillaz.jpg"
+    }
+]
