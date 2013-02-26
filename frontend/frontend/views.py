@@ -2,6 +2,7 @@ from django.template import RequestContext, loader
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.http import require_POST
+from django import forms
 
 import models
 from utils import json_response
@@ -160,6 +161,8 @@ def artists(request):
         'recommended_artists': recommended_artists
     })
 
+
+############ Leaderboards ############
 '''By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX'''
 def leaderboards(request):
     # leaderboard = client.getNearUsers(request.user)
@@ -189,6 +192,8 @@ def get_leaderboard(request):
     }
     return leaderboard
 
+
+############ Artist stuff ############
 def artist_single(request, artistname):
     example_bio = """Coldplay is a British <a 
     href="http://www.last.fm/tag/alternative%20rock" 
@@ -252,6 +257,31 @@ def artist_single(request, artistname):
     
     return render_to_response('artist_single.html', {'artist_SE': artist_SE}, context_instance=RequestContext(request))
 
+
+''' Sample URL: http://localhost:8000/search/autocomplete/?q=blah '''
+@json_response
+def auto_complete(request):
+    partial_text = request.GET.get('q')
+    # results = client.searchArtist(partial_text)
+    results = {}
+    return results
+
+''' Sample URL: http://localhost:8000/search/?q=blah . See https://docs.djangoproject.com/en/dev/topics/forms/ '''
+def search(request):
+    results = {}
+    if request.method == 'POST': # If the form has been submitted...
+        form = ArtistSearchForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            results = client.searchArtist(form.cleaned_data['q'])
+            # return render_to_response(request, 'search_page.html', {
+                # 'form': form, 'results': results}, context_instance=RequestContext(request))
+    else:
+        form = ArtistSearchForm() # An unbound form
+
+    return render_to_response('search_results.html', {
+        'form': form, 'results': results}, context_instance=RequestContext(request))
+
+
 ############ Buy/Sell ############
 
 @json_response
@@ -271,6 +301,8 @@ def sell(request, artist=None, artist_id=None, price=None):
 def buy(request, artist=None, artist_id=None, price=None):
     #TODO
     pass
+
+
 ############ Helper Functions ############
 
 def __portfolio(user=None):
@@ -283,3 +315,6 @@ def __portfolio(user=None):
 def __authenticated(request):
     #if request.session['userapitoken'] is not None:
     return {}
+
+class ArtistSearchForm(forms.Form):
+    q = forms.CharField(max_length=100, label='Query: ')
