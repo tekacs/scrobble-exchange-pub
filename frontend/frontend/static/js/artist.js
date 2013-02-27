@@ -85,9 +85,7 @@ window.SE.Artist = {
           width: 620,
           height: 300,
           renderer: 'line',
-          // TODO: need this url to exist and give points chart, following structure of json file below
-          //dataURL: '/artist/history/?artist_id=' + window.SE.Artist.mbid + '&days=7&field=points',
-          dataURL: '/static/js/test_data_graph.json',
+          dataURL: '/artist/history/?artist_id=' + window.SE.Artist.mbid + '&days=7&field=points',
           series: [
             {
               color: "#dc1303",
