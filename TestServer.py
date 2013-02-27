@@ -336,7 +336,18 @@ class SEHandler(object):
         return ret
 
     def getNearUsers(self, user):
-        pass
+        
+        us = {
+            'neil-s':User(name = 'neil-s', points = 70),
+            'joebateson':User(name = 'joebateson', points = 40),
+            'rand':User(name = 'rand', points = 20)
+        }
+        
+        near = ['neil-s','joebateson','rand']
+        
+        ret = UserLeaderboard(users=[us[t] for n in near])
+        
+        return ret
    
     def getGuarantee(self, artist, user):
         """
