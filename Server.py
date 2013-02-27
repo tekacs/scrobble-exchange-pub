@@ -26,7 +26,7 @@ lastfm_config = {
 }
 
 db_args = {
-    'url': 'sqlite:///:memory:',
+    'url': 'sqlite:///db',
     'pool_size': None,
     'max_overflow': None
 }
