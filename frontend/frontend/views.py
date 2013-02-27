@@ -289,7 +289,7 @@ def search(request):
     # if request.method == 'POST': # If the form has been submitted...
 
     query = request.GET.get('q')
-    results = client.searchArtist(query)
+    results = client.searchArtist(query, RESULTS_PER_PAGE, 1)
     if (request.GET.get('lucky', 'false') == 'true'):
         #TODO: Pass ID instead of name once artist_single can handle it
         return redirect('artist_single', artistname=results[0].name)
