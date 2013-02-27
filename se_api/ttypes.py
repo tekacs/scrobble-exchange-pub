@@ -287,6 +287,7 @@ class ArtistSE(object):
    - price
    - numremaining
    - points
+   - dividend
    - ownedby
   """
 
@@ -296,14 +297,16 @@ class ArtistSE(object):
     (2, TType.I32, 'price', None, None, ), # 2
     (3, TType.I32, 'numremaining', None, None, ), # 3
     (4, TType.I32, 'points', None, None, ), # 4
-    (5, TType.BOOL, 'ownedby', None, None, ), # 5
+    (5, TType.I32, 'dividend', None, None, ), # 5
+    (6, TType.BOOL, 'ownedby', None, None, ), # 6
   )
 
-  def __init__(self, artist=None, price=None, numremaining=None, points=None, ownedby=None,):
+  def __init__(self, artist=None, price=None, numremaining=None, points=None, dividend=None, ownedby=None,):
     self.artist = artist
     self.price = price
     self.numremaining = numremaining
     self.points = points
+    self.dividend = dividend
     self.ownedby = ownedby
 
   def read(self, iprot):
@@ -337,6 +340,11 @@ class ArtistSE(object):
         else:
           iprot.skip(ftype)
       elif fid == 5:
+        if ftype == TType.I32:
+          self.dividend = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
         if ftype == TType.BOOL:
           self.ownedby = iprot.readBool();
         else:
@@ -367,8 +375,12 @@ class ArtistSE(object):
       oprot.writeFieldBegin('points', TType.I32, 4)
       oprot.writeI32(self.points)
       oprot.writeFieldEnd()
+    if self.dividend is not None:
+      oprot.writeFieldBegin('dividend', TType.I32, 5)
+      oprot.writeI32(self.dividend)
+      oprot.writeFieldEnd()
     if self.ownedby is not None:
-      oprot.writeFieldBegin('ownedby', TType.BOOL, 5)
+      oprot.writeFieldBegin('ownedby', TType.BOOL, 6)
       oprot.writeBool(self.ownedby)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -383,6 +395,8 @@ class ArtistSE(object):
       raise TProtocol.TProtocolException(message='Required field numremaining is unset!')
     if self.points is None:
       raise TProtocol.TProtocolException(message='Required field points is unset!')
+    if self.dividend is None:
+      raise TProtocol.TProtocolException(message='Required field dividend is unset!')
     return
 
 
