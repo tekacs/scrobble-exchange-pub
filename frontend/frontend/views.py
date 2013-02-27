@@ -50,11 +50,11 @@ def user_profile(request, username):
 def leaderboards(request):
     return render_to_response('leaderboards.html',{}, context_instance=RequestContext(request))
 
-'''Sample URL: http://localhost:8000/leaderboards/get/?league_id=1&time_range=3'''
+'''Sample URL: http://localhost:8000/leaderboards/get/user?time_range=3'''
 @json_response
 def get_user_leaderboard(request):
     #given: time_range (0-3, 0-alltime, 1-month, 2-week, 3-day)
-    time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '7'))]
+    time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '2'))]
 
     userdata = client.getUserData(request.user.username)
     user_league = userdata.league.__dict__
@@ -74,7 +74,7 @@ def get_user_leaderboard(request):
     'user_points': user_points, 
     'user_position': user_position, 
     'next_user': next_user}
-    
+
     return data
 
 '''See http://localhost:8000/leaderboards/get/?league_id=1&time_range=3 for example'''
@@ -82,7 +82,7 @@ def get_user_leaderboard(request):
 def get_leaderboard(request):
     
     league_id = request.GET.get('league_id','default_league')
-    time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '7'))]
+    time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '2'))]
     
     # none of the below values make any difference with dummy data 
     #TODO: Replace magic number for default users
