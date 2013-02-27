@@ -44,8 +44,8 @@ class Trade(DATMObject):
         except NoResultFound:
             raise NoDatabaseObjectException()
 
-    def create(self):
-        self.dbo = models.Trade(self.user, self.artist, self.price)
+    def create(self, purchase):
+        self.dbo = models.Trade(self.user, self.artist, self.price, purchase)
         self.session.db.add(self.dbo)
 
     user = db.dbo_property('user')
@@ -62,11 +62,15 @@ class Trade(DATMObject):
 
     @require_db
     def buy(self):
-        pass
+        if self.artist.no_remaining > 0 and not self.user.owns(self.artist):
+            self.create(True)
+        else:
+            raise NoStockRemainingException()
 
     @require_db
     def sell(self):
-        pass
+        if self.user.owns(self.artist):
+            self.create(False)
 
 class NoStockRemainingException(Exception):
     pass

@@ -189,7 +189,7 @@ class Artist(DATMObject):
     @staticmethod
     @require_db
     def most_traded(limit=10):
-        # TODO: this!
+        # TODO: this! (group by & func.count)
         pass
 
     # Object Interface
