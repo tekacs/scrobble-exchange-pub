@@ -9,8 +9,21 @@ from util.magic import memoised_property
 
 class Trophy(DATMObject):
     @datm_setup
-    def __init__(self, config, name, description=None, icon=None):
-        self._name = name
+    def __init__(self,
+                 config,
+                 id=None,
+                 name=None,
+                 icon=None,
+                 description=None,
+                 dbo=None):
+        if dbo is not None:
+            self.dbo = dbo
+        elif id is not None:
+            self.id = id
+        else:
+            self.name = name
+            self.icon = icon
+            self.description = description
 
     @memoised_property
     @require_db
@@ -18,28 +31,18 @@ class Trophy(DATMObject):
         return db.query(
             self.config,
             models.Trophy
-        ).filter(models.Trophy.name == self.name).one()
+        ).filter(models.Trophy.id == self.id).one()
 
-    @property
-    def name(self):
-        return self._name
-
-    @property
     @require_db
-    def description(self):
-        return self.dbo.desc
+    def create(self):
+        self.dbo = models.Trade(self.name, self.icon, self.description)
+        self.session.db.add(self.dbo)
 
-    @description.setter
-    @require_db
-    def description(self, value):
-        self.dbo.desc = value
+    name = db.dbo_property('name')
+    description = db.dbo_property('description')
+    icon = db.dbo_property('icon')
 
     @property
     @require_db
-    def icon(self):
-        return self.dbo.icon
-
-    @icon.setter
-    @require_db
-    def icon(self, value):
-        self.dbo.icon = value
+    def possessors(self):
+        return self.dbo.possessors

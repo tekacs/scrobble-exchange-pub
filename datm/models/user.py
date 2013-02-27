@@ -12,6 +12,7 @@ class User(base.Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(15), index=True, unique=True, nullable=False)
+    session_key = Column(String(32))
 
     money = Column(Integer, nullable=False)
     points = Column(Integer, nullable=False)
@@ -39,9 +40,10 @@ class User(base.Base):
 
     league_id = Column(Integer, ForeignKey("leagues.id"))
 
-    def __init__(self, name, money, points):
+    def __init__(self, name, session_key, money, points):
         """Create a new, blank ``User``."""
         self.name = name
+        self.session_key = session_key
         self.money = money
         self.points = points
 

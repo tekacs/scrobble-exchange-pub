@@ -6,6 +6,23 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 import base
 
+class ArtistHistory(base.Base):
+    __tablename__ = 'artist_history'
+
+    date = Column(Integer, primary_key=True)
+    price = Column(Integer, nullable=False)
+    points = Column(Integer, nullable=False)
+    dividends = Column(Integer, nullable=False)
+
+    artist_id = Column(Integer, ForeignKey("artists.mbid"))
+
+    def __init__(self, artist, date, price, points, dividends):
+        self.artist = artist
+        self.date = date
+        self.price = price
+        self.points = points
+        self.dividends = dividends
+
 class Artist(base.Base):
     __tablename__ = 'artists'
 
@@ -13,7 +30,6 @@ class Artist(base.Base):
     name = Column(String(255), index=True, unique=True, nullable=False)
 
     price = Column(Integer, nullable=False)
-    points = Column(Integer, nullable=False)
 
     last_closing_price = Column(Integer)
     last_listeners = Column(Integer)
@@ -35,7 +51,8 @@ class Artist(base.Base):
 
     history = relationship(
         "ArtistHistory",
-        backref=backref("artist", uselist=False)
+        backref=backref("artist", uselist=False),
+        order_by="artist_history.date"
     )
 
     def __init__(self, mbid, name, price, points, max_available):
@@ -45,16 +62,3 @@ class Artist(base.Base):
         self.price = price
         self.points = points
         self.max_available = max_available
-
-class ArtistHistory(base.Base):
-    __tablename__ = 'artist_history'
-
-    date = Column(Integer, primary_key=True)
-    price = Column(Integer, nullable=False)
-
-    artist_id = Column(Integer, ForeignKey("artists.mbid"))
-
-    def __init__(self, artist, date, price):
-        self.artist = artist
-        self.date = date
-        self.price = price

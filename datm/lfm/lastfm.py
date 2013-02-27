@@ -57,14 +57,15 @@ class ExpiredTokenError(AuthenticationError):
 class InvalidResourceError(DataError):
     pass
 
-class InvalidAPIKeyError(DataError):
-    pass
-
 class NotLoggedInError(DataError):
     """No user credentials were passed.
 
     This is not an authentication error so much as it is a flaw in the data
-    passed to the relevant API call."""
+    passed to the relevant API call.
+    """
+
+class InvalidAPIKeyError(ProgrammingError):
+    pass
 
 class InvalidServiceError(ProgrammingError):
     pass

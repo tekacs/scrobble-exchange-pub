@@ -7,7 +7,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import lfm
-from base import DATMObject
 from models.base import Base as DeclarativeBase
 
 class DATMConfig(object):
@@ -21,7 +20,7 @@ class DATMConfig(object):
                 )
             except KeyError:
                 raise TypeError(
-                    'Argument lastfm must bear keys api_key, secret.'
+                    'Argument lastfm must bear keys api_key, api_secret.'
                 )
             self._lastfm = DATMLastFM(request_builder)
 
