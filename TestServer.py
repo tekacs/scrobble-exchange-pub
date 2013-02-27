@@ -343,7 +343,7 @@ class SEHandler(object):
             'rand':User(name = 'rand', points = 20)
         }
         
-        near = ['neil-s','joebateson','rand']
+        near = ['neil-s','joebateson','rand', 'rand']
         
         ret = UserLeaderboard(users=[us[t] for n in near])
         
