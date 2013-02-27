@@ -20,27 +20,30 @@ TIME_RANGE_TRANSLATION = [0,31,7,1]
 
 def home(request):
     #Done with the API
-    authorized_user = __authuser(request)
+    if request.user_is_authenticated:
+        authorized_user = __authuser(request)
 
-    api_user_data = client.getUserData('fiwl')
-    
-    user_data = models.UserData()
-    user_data.stocks = []
-    
-    for artistse in api_user_data.stocks:
-        a = {'name': artistse.artist.name, 'imgurls': 
-                                                    artistse.artist.imgurls}
-        user_data.stocks.append({'artist': a, 'price': artistse.price,
-                        'points': artistse.price, 'dividend':artistse.dividend})
+        api_user_data = client.getUserData('fiwl')
         
-    user_data.user = {'money': client.getUserMoney(authorized_user).money, 
-                    'points': api_user_data.user.points}
-    user_data.portfolio_worth = sum(artist.price for artist in 
-                                                    api_user_data.stocks)
+        user_data = models.UserData()
+        user_data.stocks = []
+        
+        for artistse in api_user_data.stocks:
+            a = {'name': artistse.artist.name, 'imgurls': 
+                                                        artistse.artist.imgurls}
+            user_data.stocks.append({'artist': a, 'price': artistse.price,
+                            'points': artistse.price, 'dividend':artistse.dividend})
+            
+        user_data.user = {'money': client.getUserMoney(authorized_user).money, 
+                        'points': api_user_data.user.points}
+        user_data.portfolio_worth = sum(artist.price for artist in 
+                                                        api_user_data.stocks)
 
-    return render_to_response('index.html',
-        {'user_data': user_data}, context_instance=RequestContext(request)
-        )
+        return render_to_response('index.html',
+            {'user_data': user_data}, context_instance=RequestContext(request)
+            )
+    else:
+        return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def user_profile(request, username):
     return render_to_response('user_profile.html',{}, context_instance=RequestContext(request))
@@ -266,7 +269,8 @@ def search(request):
 
 @json_response
 def price(request, artist_id=None):
-    artist = ttypes.Artist(mbid = artist_id)
+    # artist_name = request.GET.get('artist_name')
+    artist = ttypes.Artist(name = artist_name)
     authuser =  __authuser(request)
     # artist_SE = client.getArtistSE(artist = artist, user = authuser)
     # TODO: Ask Victor why this may be throwing exceptions
@@ -291,22 +295,36 @@ def price(request, artist_id=None):
 @json_response
 def guaranteed_price(request):
     artist_id = request.GET.get('artist_id')
-    artist_price_guarantee = client.getGuarantee(artist = se_api.Artist(mbid = artist_id), user = request.user)
+    artist = ttypes.Artist(mbid = artist_id)
+    artist_price_guarantee = client.getGuarantee(artist = artist, user = __authuser(request)).__dict__
     return artist_price_guarantee
 
 @json_response
 @require_POST
 def sell(request):
     #TODO: Remind Joe to check out https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
-    guarantee = request.POST.get('guarantee')
-    success = client.sell(guarantee=se_api.Guarantee(guarantee), user=se_api.AuthUser(request.user))
+    # guarantee = request.POST.get('guarantee')
+    elephant = request.POST.get('elephant')
+    price = int(request.POST.get('price'))
+    time = int(request.POST.get('time'))
+    artist = ttypes.Artist(mbid=request.POST.get('artist_id')
+
+    guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
+
+    success = client.sell(guarantee=guarantee, user=__authuser(request))
     return success;
 
 @json_response
 @require_POST
 def buy(request):
-    guarantee = request.POST.get('guarantee')
-    success = client.buy(guarantee=se_api.Guarantee(guarantee), user=se_api.AuthUser(request.user))
+    elephant = request.POST.get('elephant')
+    price = int(request.POST.get('price'))
+    time = int(request.POST.get('time'))
+    artist = ttypes.Artist(mbid=request.POST.get('artist_id')
+
+    guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
+
+    success = client.buy(guarantee=guarantee, user=__authuser(request))
     return success;
 
 
