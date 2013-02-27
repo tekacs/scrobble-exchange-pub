@@ -37,7 +37,7 @@ urlpatterns = patterns('',
     url(r'^price/', 'frontend.views.price', name='price'),
 
     url(r'^lastfmauth/', include('lastfmauth.urls')),
-    
 
+    url(r'^user/([^/]+)/$', 'frontend.views.user_profile', name ='user_profile'),
     # (r'^', include(django_url_framework.site.urls) ),
 )

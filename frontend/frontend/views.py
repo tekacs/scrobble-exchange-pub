@@ -67,6 +67,9 @@ def home(request):
         context_instance=RequestContext(request)
         )
 
+def user_profile(request, username):
+    return render_to_response('user_profile.html',{}, context_instance=RequestContext(request))
+
 ############ Leaderboards ############
 '''By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX'''
 def leaderboards(request):
@@ -324,14 +327,14 @@ def guaranteed_price(request):
 @require_POST
 def sell(request):
     #TODO: Remind Joe to check out https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
-    guarantee = request.POST.get('guarantee')  
+    guarantee = request.POST.get('guarantee')
     success = client.sell(guarantee=se_api.Guarantee(guarantee), user=se_api.AuthUser(request.user))
     return success;
 
 @json_response
 @require_POST
 def buy(request):
-    guarantee = request.POST.get('guarantee')  
+    guarantee = request.POST.get('guarantee')
     success = client.buy(guarantee=se_api.Guarantee(guarantee), user=se_api.AuthUser(request.user))
     return success;
 
