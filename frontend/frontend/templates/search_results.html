@@ -1,10 +1,59 @@
 {% extends "base.html" %}
+{% load extras %}
+
+{% block title %}{{query}} - Search{% endblock %}
 
 {% block above_main %}
-<h1 class="main-header">Search results</h1>
+    <h1 class="main-header">Search results</h1>
 {% endblock above_main %}
 
 {% block main %}
+
+    <div class="row collapse search-elements">
+        <form class="search-form" action="/search" method="GET">
+            <div class="eighteen mobile-three columns">
+                <input name="q" type="text" class="typeahead-search" placeholder="Search for an artist" value="{{query}}">
+                <input class="lucky-hidden" type="hidden" name="lucky" value="true">
+            </div>
+            <div class="four mobile-one columns end">
+                <input type="submit" class="button expand postfix" value="Search"></input>
+            </div>
+        </form>
+    </div>
+
+    {% for artist in results %}
+        <a href="{% url frontend.views.artist_single artist.name|urlencode %}">
+            <div class="portfolio-img" style="background-image: url('{{ artist.imgurls|get_image:'mega' }}');">
+                <div class="text-over-image bottom">
+                    <span class="primary">{{ artist.name|truncatechars:20 }}</span>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+
+    {% if results %}
+
+        <div class="search-footer">
+            {% if page == 1 %}
+                previous
+            {% else %}
+                <a class="paginate-text" href="{{previous_page}}">previous</a>
+            {% endif %}
+            | <a class="paginate-text" href="{{next_page}}">next</a>
+
+        </div>
+
+
+    {% else %}
+
+        <h3 class="artist-subheader">No artists were found for query: </h3>
+        <h4>"{{query}}"</h4>
+
+        <p class="lead">Try adjusting your search!</p>
+
+        <p>Or, why not take a look at the <a href="{% url frontend.views.artists %}">artists</a> page for top lists, recommended artists, and recent trades.</p>
+
+    {% endif %}
 {% endblock main %}
 
 {% block sidebar %}
