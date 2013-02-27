@@ -31,7 +31,7 @@ jQuery(document).ready(function($) {
     $('.typeahead-search').each(function() {
         $(this).typeahead({
             name: 'artists',
-            remote: '../static/js/test_typeahead.json?1231awdw2aadAA23%QUERY',
+            remote: '/search/autocomplete/?q=%QUERY',
             limit: 3,
             template: [
                 '<div class="artist-image" style="background-image:url(\'{{img}}\')"></div>' +
