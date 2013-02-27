@@ -73,3 +73,29 @@
     background: rgba(255, 255, 255, 0.2);
     border-radius: 3px;
 }
+
+
+/* Custom additions */
+
+.rickshaw_legend {
+    background-color: #eee;
+    color: #222;
+    font-family: $bodyFontFamily;
+    padding-left: 10px;
+    margin-top: 20px;
+    float: left;
+
+    span.label {
+        margin-left: 2px;
+    }
+
+    .line {
+        a.action {
+            color: #000;
+        }
+    }
+
+    li {
+        display: inline;
+    }
+}

@@ -40,6 +40,10 @@ body {
             font-weight: bold;
         }
 
+        #chart {
+            height: 300px;
+        }
+
         p.artist-bio {
             margin-top: 20px;
         }
@@ -91,6 +95,20 @@ body {
             height: 140px;
         }
 
+        p.artist-bio {
+            clear: right;
+            padding-top: 40px;
+        }
+
+        div.chart-links {
+            float: right;
+            padding-top: 37px;
+            padding-right: 45px;
+            .selected {
+                font-weight: bold;
+            }
+        }
+
         .search-footer {
             clear: left;
             padding-top: 10px;
@@ -116,12 +134,39 @@ body {
         }
 
         p.sidebar-price {
-            font-size: ms(3);
+            font-size: ms(4);
             font-weight: bold;
+            background-color: #eee;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .sub-info {
+
+            p {
+                background-color: #eee;
+                min-height: 120px;
+                color: #333;
+
+                &:first-child {
+                    margin-right: 5%;
+                }
+
+                span {
+                    font-size: ms(2);
+                    display: block;
+                }
+                float: left;
+                width: 47.5%;
+                text-align: center;
+                font-size: ms(1);
+                padding: 10px;
+            }
+
         }
 
         #buy-button, #sell-button {
-            width: 150px;
+            width: 100%;
         }
 
         #sell-button {

@@ -275,6 +275,8 @@ def artist_single(request, artistname):
         'artist': artist,
         'ownedby': artist.name != 'Nickelback',
         'price': 2300,
+        'points': 103,
+        'dividends': 41
         })();
 
     return render_to_response('artist_single.html', {'artist_SE': artist_SE}, context_instance=RequestContext(request))
@@ -335,8 +337,8 @@ def search(request):
         return redirect('artist_single', results[0].name)
     else:
         return render_to_response('search_results.html', {
-            'query':query, 
-            'results': results, 
+            'query':query,
+            'results': results,
             'page':page_number,
             'next_page':next_page,
             'previous_page':previous_page}, context_instance=RequestContext(request))

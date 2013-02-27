@@ -1,48 +1,144 @@
-// Very rough and ready approach to handling the JS on artists' pages
 window.SE.Artist = {
-    name: '',
-    id: '',
-
-    drawGraph: function() {
+    // TODO: reduce repeated code, make more general
+    drawMoneyGraph: function() {
         'use strict';
-
-        //set up our data series with 50 random data points
         var Rickshaw = window.Rickshaw;
 
-        var artistPriceData = [ [] ];
-        var artistDividendData = [ [] ];
-        var random = new Rickshaw.Fixtures.RandomData(60);
+        $('#chart').empty();
+        $('#legend').empty();
 
-        for (var i = 0; i < 60; i++) {
-          random.addData(artistPriceData);
-          random.addData(artistDividendData);
-        }
-
-        var graph = new Rickshaw.Graph( {
-          element: document.getElementById("priceChart"),
+        var graph = new Rickshaw.Graph.Ajax( {
+          element: document.getElementById("chart"),
           width: 620,
           height: 300,
           renderer: 'line',
-          stroke: true,
+          dataURL: '/artist/history/?artist_id=' + window.SE.Artist.mbid + '&days=7&field=money',
           series: [
             {
               color: "#dc1303",
-              stroke: "",
-              data: artistPriceData[0],
-              name: 'Price for ' + this.name
+              name: 'price'
             }, {
               color: "#0187c5",
-              stroke: "#0187c5",
-              data: artistDividendData[0],
-              name: 'Dividends for ' + this.name
+              name: 'dividends'
             }
-          ]
-        } );
+          ],
+          onComplete: function(transport) {
+            var graph = transport.graph;
 
-        var hoverDetail = new Rickshaw.Graph.HoverDetail({graph: graph});
-        var x_axis = new Rickshaw.Graph.Axis.Time({graph: graph });
+            var hoverDetail = new Rickshaw.Graph.HoverDetail({
+                graph: graph,
+                formatter: function(series, x, y) {
+                    return (series.name === 'price') ? 'Market price: $' + y : 'Dividends: $' + y;
+                }
+            });
 
-        graph.render();
+            var yAxis = new Rickshaw.Graph.Axis.Y({
+                graph: graph,
+                tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+            });
+
+            var time = new Rickshaw.Fixtures.Time();
+            var days = time.unit('day');
+
+            var xAxis = new Rickshaw.Graph.Axis.Time({
+                graph: graph,
+                timeUnit: days
+            });
+
+            var legend = new Rickshaw.Graph.Legend({
+                graph: graph,
+                element: document.querySelector('#legend')
+            });
+
+            var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+                graph: graph,
+                legend: legend
+            });
+
+            var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+                graph: graph,
+                legend: legend
+            });
+
+            graph.update();
+
+            $('.rickshaw_legend span.label').each(function(){
+                if ($(this).text() === 'dividends'){
+                    $(this).html('Dividends <strong>($)</strong>');
+                } else if ($(this).text() === 'price'){
+                    $(this).html('Market price <strong>($)</strong>');
+                }
+            });
+          }
+        });
+    },
+    drawPointsGraph: function() {
+        'use strict';
+
+        var Rickshaw = window.Rickshaw;
+
+        $('#chart').empty();
+        $('#legend').empty();
+
+        var graph = new Rickshaw.Graph.Ajax( {
+          element: document.getElementById("chart"),
+          width: 620,
+          height: 300,
+          renderer: 'line',
+          // TODO: need this url to exist and give points chart, following structure of json file below
+          //dataURL: '/artist/history/?artist_id=' + window.SE.Artist.mbid + '&days=7&field=points',
+          dataURL: '/static/js/test_data_graph.json',
+          series: [
+            {
+              color: "#dc1303",
+              name: 'points'
+            }
+          ],
+          onComplete: function(transport) {
+            var graph = transport.graph;
+
+            var hoverDetail = new Rickshaw.Graph.HoverDetail({
+                graph: graph,
+                formatter: function(series, x, y) {
+                    return 'Points: ' + y;
+                }
+            });
+
+            var yAxis = new Rickshaw.Graph.Axis.Y({
+                graph: graph,
+                tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+            });
+
+            var time = new Rickshaw.Fixtures.Time();
+            var days = time.unit('day');
+
+            var xAxis = new Rickshaw.Graph.Axis.Time({
+                graph: graph,
+                timeUnit: days
+            });
+
+            var legend = new Rickshaw.Graph.Legend({
+                graph: graph,
+                element: document.querySelector('#legend')
+            });
+
+            var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+                graph: graph,
+                legend: legend
+            });
+
+            var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+                graph: graph,
+                legend: legend
+            });
+
+            graph.update();
+
+            $('.rickshaw_legend span.label').each(function(){
+                $(this).html('Points');
+            });
+          }
+        });
     }
 };
 
@@ -77,19 +173,35 @@ window.SE.startCountdown = function () {
 };
 
 jQuery(document).ready(function($) {
-  $("#buy-button, #sell-button").click(function() {
-      var elementID = $(this).attr('id');
-      var subText = (elementID === 'buy-button') ? 'buy' : 'sell';
-      var bgColour = (elementID === 'buy-button') ? 'auto' : '#b40200';
-      var price = $(this).data('price');
-      var artistname = $(this).data('artistname');
 
-      $('.buy-sell').text(subText);
-      $('.label').css('background-color', bgColour);
-      $('#buy-sell-modal .price-text').text(price);
-      $('#buy-sell-modal .artist-text').text(artistname);
+    window.SE.Artist.drawMoneyGraph();
 
-      $("#buy-sell-modal").reveal({
+    $('a.chart-switch').on('click', function(){
+      var isSelected = $(this).hasClass('selected');
+      var field = $(this).data('chart');
+      if (!isSelected){
+        $(this).addClass('selected').siblings().removeClass('selected');
+        if (field === 'money') {
+          window.SE.Artist.drawMoneyGraph();
+        } else if (field === 'points') {
+          window.SE.Artist.drawPointsGraph();
+        }
+      }
+    });
+
+    $("#buy-button, #sell-button").click(function() {
+        var elementID = $(this).attr('id');
+        var subText = (elementID === 'buy-button') ? 'buy' : 'sell';
+        var bgColour = (elementID === 'buy-button') ? 'auto' : '#b40200';
+        var price = $(this).data('price');
+        var artistname = $(this).data('artistname');
+
+        $('.buy-sell').text(subText);
+        $('.label').css('background-color', bgColour);
+        $('#buy-sell-modal .price-text').text(price);
+        $('#buy-sell-modal .artist-text').text(artistname);
+
+        $("#buy-sell-modal").reveal({
           // Order of function calls for knob:
           // open -> opened -> close -> closed
           "open": function() {
@@ -108,6 +220,6 @@ jQuery(document).ready(function($) {
               clearTimeout(window.price_countdown);
               $('.dial').val(15).trigger('change');
           }
-      });
-  });
+        });
+    });
 });
