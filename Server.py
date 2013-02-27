@@ -150,10 +150,8 @@ class SEHandler(object):
                                points=a.points, dividend=a.dividend, 
                                ownedby=u.owns(a))
             except NoDatabaseObjectException():
-                #a.no_remaining = mechanics.no_remaining
-                #a.points = mechanics.points
-                #a.price = mechanics.price
-                #a.dividend = mechanics.dividend
+                #a.create(mechanics.no_remaining, mechanics.points, 
+                #mechanics.price, mechanics.dividend)
                 #ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                 #               points=a.points, dividend=a.dividend, 
                 #               ownedby=u.owns(a))
@@ -222,10 +220,8 @@ class SEHandler(object):
             try:
                 ret.histvalue = a.history(_config, after=time_utc_old)
             except NoDatabaseObjectException():
-                #a.no_remaining = mechanics.no_remaining
-                #a.points = mechanics.points
-                #a.price = mechanics.price
-                #a.dividend = mechanics.dividend
+                #a.create(mechanics.no_remaining, mechanics.points, 
+                #mechanics.price, mechanics.dividend)
                 #ret.histvalue = a.history(_config, after=time_utc_old)
                 pass
             
