@@ -520,7 +520,7 @@ class SEHandler(object):
 SEHandler._config.db.create_all()
 
 processor = ScrobbleExchange.Processor(SEHandler())
-transport = TSocket.TServerSocket(port=9091)
+transport = TSocket.TServerSocket(port=9090)
 tfactory = TTransport.TBufferedTransportFactory()
 pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 
