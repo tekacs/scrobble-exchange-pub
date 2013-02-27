@@ -28,7 +28,7 @@
 
     <h3 class="artist-subheader">Similar Artists</h3>
     {% for similar_artist in artist_SE.artist.similar %}
-        <a href="/artist/{{ similar_artist.name|urlencode }}">
+        <a href="{% url frontend.views.artist similar_artist.name|urlencode %}">
             <div class="artist-img" style="background-image: url('{{ similar_artist.imgurls|get_image:'mega' }}');">
                 <div class="text-over-image bottom">
                     <span class="primary">{{ similar_artist.name|truncatechars:15 }}</span>
