@@ -8,7 +8,7 @@
         <h4>Portfolio</h4>
 
         {% for artist_SE in user_data.stocks %}
-            <a href="/artist/{{ artist_SE.artist.name|urlencode }}">
+            <a href="{% url frontend.views.artist_single artist_SE.artist.name|urlencode %}">
                 <div class="portfolio-img" style="background-image: url('{{ artist_SE.artist.imgurls|get_image:'mega' }}');">
                     <div class="text-over-image bottom">
                         <span class="primary">{{ artist_SE.artist.name|truncatechars:20 }}</span>

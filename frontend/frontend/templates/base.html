@@ -30,14 +30,14 @@
               <ul class="left">
                 <li class="name">
                   <h1>
-                    <a href="/">
+                    <a href="{% url frontend.views.home %}">
                       Scrobble Exchange
                     </a>
                   </h1>
                 </li>
-                <li><a href="/">Portfolio</a></li>
-                <li><a href="/artists">Artists</a></li>
-                <li><a href="/leaderboards">Leaderboards</a></li>
+                <li><a href="{% url frontend.views.home %}">Portfolio</a></li>
+                <li><a href="{% url frontend.views.artists %}">Artists</a></li>
+                <li><a href="{% url frontend.views.leaderboards %}">Leaderboards</a></li>
                 <li class="toggle-topbar"><a href="#"></a></li>
               </ul>
               <ul class="right">

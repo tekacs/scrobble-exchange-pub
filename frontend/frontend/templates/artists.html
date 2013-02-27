@@ -31,7 +31,7 @@
                     <li class="rankItem">
                         <div class="rankItem-wrap">
                             <div class="rankItem-wrap2">
-                                <a href="/artist/{{valuable_artist_SE.artist.name|urlencode}}" class="rankItem-blockLink">
+                                <a href="{% url frontend.views.artist_single valuable_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
                                     <h4>
                                         <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
                                         <span class="rankItem-title">{{valuable_artist_SE.artist.name}}</span>
@@ -76,7 +76,7 @@
                     <li class="rankItem">
                         <div class="rankItem-wrap">
                             <div class="rankItem-wrap2">
-                                <a href="/artist/{{traded_artist_SE.artist.name|urlencode}}" class="rankItem-blockLink">
+                                <a href="{% url frontend.views.artist_single traded_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
                                     <h4>
                                         <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
                                         <span class="rankItem-title">{{traded_artist_SE.artist.name}}</span>
@@ -125,7 +125,7 @@
                     <li class="rankItem">
                         <div class="rankItem-wrap">
                             <div class="rankItem-wrap2">
-                                <a href="/artist/{{popular_artist_SE.artist.name|urlencode}}" class="rankItem-blockLink">
+                                <a href="{% url frontend.views.artist_single popular_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
                                     <h4>
                                         <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
                                         <span class="rankItem-title">{{popular_artist_SE.artist.name}}</span>
@@ -177,7 +177,7 @@
                 <li class="rankItem sidebar-item">
                     <div class="rankItem-wrap">
                         <div class="rankItem-wrap2">
-                            <a href="/artist/{{recommended_artist_SE.artist.name|urlencode}}" class="rankItem-blockLink">
+                            <a href="{% url frontend.views.artist_single recommended_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
                                 <h4>
                                     <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
                                     <span class="rankItem-title">{{recommended_artist_SE.artist.name|truncatechars:30}}</span>
