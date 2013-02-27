@@ -1,7 +1,14 @@
 # Django settings for frontend project.
 
-import os
+import os, sys, glob
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+
+# Import thrift stuff
+from se_api import ScrobbleExchange, ttypes
+from thrift import Thrift
+from thrift.transport import TSocket, TTransport
+from thrift.protocol import TBinaryProtocol
+# End of thrift
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -169,7 +176,23 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
 
 #TODO: Add database table name prefix to avoid collisions with rest of data
 
-LASTFM_API_KEY = "9dd5403b2dccbc443222d331d66b4424"
-LASTFM_SECRET = "070a2c23f4cff56c14da0a11b6c64f83"
+API_SERVER = 'ec2-54-246-25-244.eu-west-1.compute.amazonaws.com'
+API_PORT = 9090
+
+try:
+    # Connect to the API server
+    transport = TSocket.TSocket(API_SERVER, API_PORT)
+    transport = TTransport.TBufferedTransport(transport)
+    protocol = TBinaryProtocol.TBinaryProtocol(transport)
+    CLIENT = ScrobbleExchange.Client(protocol)
+    transport.open()
+    # End
+
+except Thrift.TException, tx:
+    print '%s' % (tx.message)
+
+# LASTFM_API_KEY = "9dd5403b2dccbc443222d331d66b4424"
+LASTFM_API_KEY = CLIENT.apikey()
+# LASTFM_SECRET = "070a2c23f4cff56c14da0a11b6c64f83"
 LASTFM_WS_BASE_URL = "http://ws.audioscrobbler.com/2.0/"
 LASTFM_AUTH_REDIRECT = '/'

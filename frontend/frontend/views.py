@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.views.decorators.http import require_POST
 from django import forms
+from django.conf import settings
 
 import models
 from utils import json_response
@@ -11,6 +12,7 @@ from se_api import ttypes
 import random
 
 RESULTS_PER_PAGE = 10;
+client =  settings.CLIENT
 
 def home(request):
     # Dummy artist data
