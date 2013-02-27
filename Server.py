@@ -72,8 +72,8 @@ class SEHandler(object):
                 user = datm.user(_config)
                 sessiontoken = user.getSession(_config, token)
                 
-                ret = AuthUser(name=User(name=user.name),
-                               session_key=sessiontoken)
+                ret = AuthUser(name=User(name=user.name,
+                            profileimage=user.image), session_key=sessiontoken)
                 return ret
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
@@ -366,8 +366,9 @@ class SEHandler(object):
         with datm.DATMSession(_config):
             u = datm.user(_config, user.name, user.session_key)
             
-            return AuthUser(name=User(name=user.name, points=u.points), 
-                            session_key=user.session_key, money=u.money)
+            return AuthUser(name=User(name=user.name, points=u.points,
+                            profileimage=u.image),session_key=user.session_key, 
+                            money=u.money)
 
     def getTopUsers(self, n, league, trange):
         """

@@ -87,6 +87,7 @@ struct League {
 struct User {
     1: required string name
     2: optional i32 points
+    3: optional string profileimage
 }
 
 /** Basic authenticated user. Does not necessarily include their money */

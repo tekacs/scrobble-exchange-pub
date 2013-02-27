@@ -29,8 +29,9 @@ class SEHandler(object):
         - token
         """
        
-        ret = AuthUser(User(name = 'fiwl'), session_key = 'randomstringhere', 
-                                                                money = 9399)
+        ret = AuthUser(User(name = 'fiwl',profileimage='http://userserve-ak.'\
+            'last.fm/serve/126/8270359.jpg'), session_key = 'randomstringhere', 
+            money = 9399)
         return ret
 
     def getArtist(self, artist):
@@ -313,6 +314,8 @@ class SEHandler(object):
         
         ret = user
         ret.money = 2903
+        ret.name.profileimage = 'http://userserve-ak.last.fm/'\
+                                'serve/126/8270359.jpg'
         
         return ret
     
