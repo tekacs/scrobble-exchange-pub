@@ -279,7 +279,7 @@ def artist_single(request, artistname):
 @json_response
 def auto_complete(request):
     partial_text = request.GET.get('q')
-    # results = client.searchArtist(partial_text)
+    # results = client.searchArtist(partial_text, RESULTS_PER_PAGE, 1)
     results = {}
     return results
 
