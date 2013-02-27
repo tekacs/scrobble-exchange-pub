@@ -289,11 +289,20 @@ def auto_complete(request):
 
 ''' Sample URL: http://localhost:8000/search/?q=blah . See https://docs.djangoproject.com/en/dev/topics/forms/ '''
 def search(request):
-    #TODO: Redirect to search results page if query is empty
+    #TODO: Do something clever if query string is empty
     results = {}
     query = request.GET.get('q','')
+    if (query == ''):
+        return render_to_response('search_results.html', {
+            'query' : '',
+            'results' : {},
+            'page' : 1,
+            'next_page' : "#",
+            'previous_page' : "#"
+            }, context_instance=RequestContext(request))
+        
     page_number = int(request.GET.get('page', '1'))
-    
+
     if (page_number > 1):
         previous_page = "%s?q=%s&page=%s" % (reverse('frontend.views.search'), query, page_number - 1)
     else:
