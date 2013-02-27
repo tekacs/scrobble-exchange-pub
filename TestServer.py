@@ -29,7 +29,7 @@ class SEHandler(object):
         - token
         """
        
-        ret = AuthUser(User(name = username), session_key = 'randomstringhere', 
+        ret = AuthUser(User(name = 'fiwl'), session_key = 'randomstringhere', 
                                                                 money = 9399)
         return ret
 
