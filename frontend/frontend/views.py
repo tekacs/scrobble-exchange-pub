@@ -75,10 +75,11 @@ def get_user_leaderboard(request):
     user_position = userleaderboard.position
 
     data = {
-    'user_league':user_league, 
-    'user_points': user_points, 
-    'user_position': user_position, 
-    'next_user': next_user}
+        'user_league':user_league, 
+        'user_points': user_points, 
+        'user_position': user_position, 
+        'next_user': next_user
+    }
 
     return data
 
@@ -118,8 +119,7 @@ def get_leaderboard(request):
 
 ############ Artist stuff ############
 def artists(request):
-    authorized_user = ttypes.AuthUser(name = ttypes.User(name = 'fiwl'), 
-                                                session_key = 'thekeyyougot')
+    authorized_user = __authuser(request)
     artist1 = ttypes.Artist(name = 'Iron Maiden')
     artist2 = ttypes.Artist(name = 'Foo Fighters')
     artistlist = [artist1, artist2]
@@ -158,8 +158,7 @@ def artist_single(request, artistname):
     #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
     if (artistname == ''):
         return redirect('artists')
-    authorized_user = ttypes.AuthUser(name = ttypes.User(name = 'fiwl'), 
-                                                session_key = 'thekeyyougot')
+    authorized_user = __authuser(request)
     artist_basic = client.getArtist(ttypes.Artist(mbid = '', name = 
                     artistname))
     artist_se = client.getArtistSE(artist_basic, authorized_user)
