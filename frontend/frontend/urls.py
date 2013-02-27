@@ -21,9 +21,12 @@ urlpatterns = patterns('',
 
     #TODO: Remove dollar signs
     url(r'^$', 'frontend.views.home', name='home'),
-    url(r'^artists/', 'frontend.views.artists', name='artists'),
+
     # TODO: need to fix for artists with spaces in names
+    url(r'^artist/history/', 'frontend.views.artist_history', name='artist_history'),
     url(r'^artist/([^/]*)/?', 'frontend.views.artist_single', name ='artist_single'),
+    url(r'^artists/', 'frontend.views.artists', name='artists'),
+
 
     url(r'^search/autocomplete', 'frontend.views.auto_complete', name='auto_complete'),
     url(r'^search/', 'frontend.views.search', name='search'),

@@ -279,6 +279,27 @@ def artist_single(request, artistname):
 
     return render_to_response('artist_single.html', {'artist_SE': artist_SE}, context_instance=RequestContext(request))
 
+''' Sample URL: http://127.0.0.1:8000/artist/history/?artist_id=0383dadf-2a4e-4d10-a46a-e9e041da8eb3&days=2'''
+@json_response
+def artist_history(request):
+    # artist_id = request.GET.get('artist_id')
+    # artist = ttypes.Artist(mbid=artist_id)
+
+    # days = int(request.GET.get('days', '1'))
+
+    # history = client.getArtistHistory(artist, days)
+
+    history = [
+        {
+            "name": "price",
+            "data": [ { "x": 0, "y": 40 }, { "x": 1, "y": 49 }, { "x": 2, "y": 38 }, { "x": 3, "y": 30 }, { "x": 4, "y": 32 } ]
+        }, {
+            "name": "dividends",
+            "data": [ { "x": 0, "y": 19 }, { "x": 1, "y": 22 }, { "x": 2, "y": 29 }, { "x": 3, "y": 20 }, { "x": 4, "y": 14 } ]
+        }
+    ]
+    return history
+
 ''' Sample URL: http://localhost:8000/search/autocomplete/?q=blah '''
 @json_response
 def auto_complete(request):
