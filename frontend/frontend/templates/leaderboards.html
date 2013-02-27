@@ -5,7 +5,7 @@
 {% block title %}Leaderboards{% endblock title %}
 
 {% block above_main %}
-    <h1 class="main-header">Leaderboards - <span class="leaderboards-time">All Time</span></h1>
+    <h1 class="main-header">Leaderboards - <span class="leaderboards-time">Last Week</span></h1>
 {% endblock above_main %}
 
 {% block main %}
@@ -55,17 +55,18 @@
 {% block sidebar %}
   <div class="leaderboards-sidebar-inner">
     <h2 class="sidebar-red">Your current position</h2>
-    <p class="lead">You are currently ranked <strong>10th</strong> in <strong>League 1</strong>, with a total of <strong>37210</strong> points.</p>
-    <p>Earn <strong>9894</strong> more points to overtake your closest rival, <a href="#"><strong>nosetabeoj</strong></a>!</p>
+    <p class="lead">You are currently ranked <strong><span class="context-user-position"></span></strong> in <strong>League <span class="context-user-league"></span></strong>, with a total of <strong><span class="context-user-points"></span></strong> points.</p>
+    {% if next_user %}
+      <p>Earn <strong><span class="context-next_user-points">{{next_user.points}}</span></strong> more points to overtake your closest rival, <a href="#"><strong><span class="context-next_user-name">{{next_user.name}}</span></strong></a>!</p>
+    {% endif %}
   </div>
 
   <div class="leaderboards-sidebar-inner">
     <h2 class="sidebar-red">Change timespan</h2>
     <ul>
-      <li><a class="time-adjust selected" data-timeadjust="0" href="#">All Time</a></li>
-      <li><a class="time-adjust" data-timeadjust="1" href="#">Last Month</a></li>
-      <li><a class="time-adjust" data-timeadjust="2" href="#">Last Week</a></li>
       <li><a class="time-adjust" data-timeadjust="3" href="#">Last 24 hours</a></li>
+      <li><a class="time-adjust selected" data-timeadjust="2" href="#">Last Week</a></li>
+      <li><a class="time-adjust" data-timeadjust="1" href="#">Last Month</a></li>
     </ul>
   </div>
 {% endblock sidebar %}
