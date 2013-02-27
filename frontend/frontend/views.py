@@ -289,8 +289,6 @@ def auto_complete(request):
 
 ''' Sample URL: http://localhost:8000/search/?q=blah . See https://docs.djangoproject.com/en/dev/topics/forms/ '''
 def search(request):
-    #TODO: Do something clever if query string is empty
-    results = {}
     query = request.GET.get('q','')
     if (query == ''):
         return render_to_response('search_results.html', {
@@ -300,7 +298,7 @@ def search(request):
             'next_page' : "#",
             'previous_page' : "#"
             }, context_instance=RequestContext(request))
-        
+
     page_number = int(request.GET.get('page', '1'))
 
     if (page_number > 1):
@@ -311,10 +309,9 @@ def search(request):
 
 
     results = client.searchArtist(query, RESULTS_PER_PAGE, page_number)
-    if (request.GET.get('lucky', 'false') == 'true'):
+    if (request.GET.get('lucky', 'false') == 'true' and results):
         #TODO: Pass ID instead of name once artist_single can handle it
-        #TODO: Parse results correctly
-        return redirect('artist_single', artistname=results[0].name)
+        return redirect('artist_single', results[0].name)
     else:
         return render_to_response('search_results.html', {
             'query':query, 
