@@ -31,7 +31,7 @@ class Artist(DATMObject):
             self.mbid = mbid
             return
         if name is not None:
-            correction = self.correct(name)
+            correction = self.correct(self.config, name)
             self.name = correction[0]
             self.mbid = correction[1] or self.mbid
 
@@ -119,13 +119,12 @@ class Artist(DATMObject):
             raise NoDatabaseObjectException()
 
     @require_db
-    def create(self, price, points, max_available):
+    def create(self, price, max_available):
         """Create a DB Object corresponding to this Artist."""
         self.dbo = models.Artist(
             mbid=self.mbid,
             name=self.name,
             price=price,
-            points=points,
             max_available=max_available
         )
         self.session.add(self.dbo)
