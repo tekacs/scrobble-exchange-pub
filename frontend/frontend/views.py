@@ -29,7 +29,8 @@ def home(request):
     for artistse in api_user_data.stocks:
         a = {'name': artistse.artist.name, 'imgurls': 
                                                     artistse.artist.imgurls}
-        user_data.stocks.append({'artist': a, 'price': artistse.price})
+        user_data.stocks.append({'artist': a, 'price': artistse.price,
+                        'points': artistse.price, 'dividend':artistse.dividend})
         
     user_data.user = {'money': client.getUserMoney(authorized_user).money, 
                     'points': api_user_data.user.points}
