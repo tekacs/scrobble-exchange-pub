@@ -11,7 +11,7 @@ from se_api import ttypes
 
 import random
 
-RESULTS_PER_PAGE = 10;
+RESULTS_PER_PAGE = 9;
 client =  settings.CLIENT
 #TODO: Handle exceptions with the client
 
