@@ -367,7 +367,7 @@ class SEHandler(object):
             u = datm.user(_config, user.name, user.session_key)
             
             return AuthUser(name=User(name=user.name, points=u.points, 
-                                session_key=user.session_key, money=u.money)
+                                session_key=user.session_key, money=u.money))
 
     def getTopUsers(self, n, league, trange):
         """
