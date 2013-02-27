@@ -258,7 +258,7 @@ class SEHandler(object):
 
         results = [a for a in artists if text in a]
         ret = [self.getArtist(Artist(mbid = '', name = a)) for a in results if 
-                                                                result != []]
+                                                                results != []]
        
         return ret
 
