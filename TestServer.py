@@ -1,8 +1,5 @@
 # Python Server
 
-import sys
-sys.path.append('gen-py')
-
 from se_api import ScrobbleExchange
 from se_api.ttypes import *
 from se_api.constants import *
