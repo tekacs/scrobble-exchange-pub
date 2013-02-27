@@ -269,7 +269,8 @@ def search(request):
 
 @json_response
 def price(request, artist_id=None):
-    artist = ttypes.Artist(mbid = artist_id)
+    # artist_name = request.GET.get('artist_name')
+    artist = ttypes.Artist(name = artist_name)
     authuser =  __authuser(request)
     # artist_SE = client.getArtistSE(artist = artist, user = authuser)
     # TODO: Ask Victor why this may be throwing exceptions
@@ -294,22 +295,36 @@ def price(request, artist_id=None):
 @json_response
 def guaranteed_price(request):
     artist_id = request.GET.get('artist_id')
-    artist_price_guarantee = client.getGuarantee(artist = se_api.Artist(mbid = artist_id), user = request.user)
+    artist = ttypes.Artist(mbid = artist_id)
+    artist_price_guarantee = client.getGuarantee(artist = artist, user = __authuser(request)).__dict__
     return artist_price_guarantee
 
 @json_response
 @require_POST
 def sell(request):
     #TODO: Remind Joe to check out https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
-    guarantee = request.POST.get('guarantee')
-    success = client.sell(guarantee=se_api.Guarantee(guarantee), user=se_api.AuthUser(request.user))
+    # guarantee = request.POST.get('guarantee')
+    elephant = request.POST.get('elephant')
+    price = int(request.POST.get('price'))
+    time = int(request.POST.get('time'))
+    artist = ttypes.Artist(mbid=request.POST.get('artist_id')
+
+    guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
+
+    success = client.sell(guarantee=guarantee, user=__authuser(request))
     return success;
 
 @json_response
 @require_POST
 def buy(request):
-    guarantee = request.POST.get('guarantee')
-    success = client.buy(guarantee=se_api.Guarantee(guarantee), user=se_api.AuthUser(request.user))
+    elephant = request.POST.get('elephant')
+    price = int(request.POST.get('price'))
+    time = int(request.POST.get('time'))
+    artist = ttypes.Artist(mbid=request.POST.get('artist_id')
+
+    guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
+
+    success = client.buy(guarantee=guarantee, user=__authuser(request))
     return success;
 
 
