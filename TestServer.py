@@ -345,7 +345,7 @@ class SEHandler(object):
         
         near = ['neil-s','joebateson','rand', 'rand']
         
-        ret = UserLeaderboard(users=[us[t] for n in near])
+        ret = UserLeaderboard(users=[us[n] for n in near])
         
         return ret
    
