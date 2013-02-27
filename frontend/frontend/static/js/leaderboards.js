@@ -27,7 +27,6 @@ window.SE.Leaderboards = {
     adjustColummnsHandler: function() {
         // Fixes problem with column headings displaying incorrectly
         // When a tab is changed, adjust column sizing, but only once for each leaderboard
-        window.console.log(window.SE.Leaderboards);
         // Hash of #leagueX where X is the league number
         var league = parseInt(window.location.hash[window.location.hash.length - 1], 10);
 
