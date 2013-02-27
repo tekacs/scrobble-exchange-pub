@@ -257,7 +257,8 @@ class SEHandler(object):
 ' (and punctuation)']
 
         results = [a for a in artists if text in a]
-        ret = [self.getArtist(Artist(mbid = '', name = a)) for a in results]
+        ret = [self.getArtist(Artist(mbid = '', name = a)) for a in results if 
+                                                                result != []]
        
         return ret
 
