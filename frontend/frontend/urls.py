@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     url(r'^$', 'frontend.views.home', name='home'),
     url(r'^artists/', 'frontend.views.artists', name='artists'),
     # TODO: need to fix for artists with spaces in names
-    url(r'^artist/([^/]+)/$', 'frontend.views.artist_single', name ='artist_single'),
+    url(r'^artist/([^/]*)/?$', 'frontend.views.artist_single', name ='artist_single'),
 
     url(r'^search/autocomplete', 'frontend.views.auto_complete', name='auto_complete'),
     url(r'^search/', 'frontend.views.search', name='search'),
