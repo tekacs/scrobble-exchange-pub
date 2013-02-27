@@ -26,9 +26,7 @@ lastfm_config = {
 }
 
 db_args = {
-    'url': 'sqlite:///db',
-    'pool_size': None,
-    'max_overflow': None
+    'url': 'postgresql://api:Koo4ahBa0chahz@localhost/api',
 }
 
 from functools import wraps as _wraps
@@ -517,6 +515,9 @@ class SEHandler(object):
                 t.sell()
             except StockNotOwnedException:
                 raise TransientError('User cannot sell')
+
+#Create the databases
+SEHandler._config.db.create_all()
 
 processor = ScrobbleExchange.Processor(SEHandler())
 transport = TSocket.TServerSocket(port=9090)
