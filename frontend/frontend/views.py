@@ -54,9 +54,14 @@ def leaderboards(request):
 @json_response
 def get_user_leaderboard(request):
     #given: time_range (0-3, 0-alltime, 1-month, 2-week, 3-day)
-    time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '2'))]
+    unsafe_time_range = int(request.GET.get('time_range', '2'))
+    if (unsafe_time_range < len(TIME_RANGE_TRANSLATION)):
+        time_range = TIME_RANGE_TRANSLATION[unsafe_time_range]
+    else:
+        time_range = TIME_RANGE_TRANSLATION[2]
 
     userdata = client.getUserData(request.user.username)
+
     user_league = userdata.league.__dict__
     user_points = userdata.user.points
 
