@@ -130,7 +130,7 @@ class SEHandler(object):
             'Daft Punk':ArtistSE(artist = self.getArtist(artist), price = 2200,
                 numremaining = 17, points = 420, dividend=100, ownedby = False),
             'Gorillaz':ArtistSE(artist = self.getArtist(artist), price = 2300,
-                numremaining = 167, points = 333, dividend=103 ownedby = False),
+                numremaining = 167, points =333, dividend=103, ownedby = False),
             'Flight of the Conchords':ArtistSE(artist = self.getArtist(artist), 
                 price = 2401, numremaining = 120, points = 309, ownedby = 
                 False, dividend=302),
