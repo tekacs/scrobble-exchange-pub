@@ -88,9 +88,11 @@ class SEHandler(object):
         - artist
         """
         with datm.DATMSession(self._config):
-            if not artist.mbid:
+            if artist.mbid:
+                print 'not artist.mbid'
                 a = datm.Artist(self._config, mbid=artist.mbid)
-            elif not artist.name:
+            elif artist.name:
+                print 'not artist.name'
                 a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
@@ -109,9 +111,9 @@ class SEHandler(object):
         - artist
         """
         with datm.DATMSession(self._config):
-            if not artist.mbid:
+            if artist.mbid:
                 a = datm.Artist(self._config, mbid=artist.mbid)
-            elif not artist.name:
+            elif artist.name:
                 a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
@@ -133,9 +135,9 @@ class SEHandler(object):
         - user
         """
         with datm.DATMSession(self._config):
-            if not artist.mbid:
+            if artist.mbid:
                 a = datm.Artist(self._config, mbid=artist.mbid, user=user)
-            elif not artist.name:
+            elif artist.name:
                 a = datm.Artist(self._config, name=artist.name, user=user)
             else:
                 raise DataError('Incorrect artist data')
@@ -177,10 +179,10 @@ class SEHandler(object):
         - user
         """
         with datm.DATMSession(self._config):
-            if not artist.mbid:
+            if artist.mbid:
                 a = datm.Artist(self._config, mbid=artist.mbid,
                                                 session_key = user.session_key)
-            elif not artist.name:
+            elif artist.name:
                 a = datm.Artist(self._config, name=artist.name,
                                                 session_key = user.session_key)
             else:
@@ -206,9 +208,9 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(self._config):
-            if not artist.mbid:
+            if artist.mbid:
                 a = datm.Artist(self._config, mbid=artist.mbid)
-            elif not artist.name:
+            elif artist.name:
                 a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
@@ -418,9 +420,9 @@ class SEHandler(object):
         - user
         """
         with datm.DATMSession(self._config):
-            if not artist.mbid:
+            if artist.mbid:
                 a = datm.Artist(self._config, mbid=artist.mbid, user=user)
-            elif not artist.name:
+            elif artist.name:
                 a = datm.Artist(self._config, name=artist.name, user=user)
             else:
                 raise DataError('Incorrect artist data')
