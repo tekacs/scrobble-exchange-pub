@@ -20,7 +20,7 @@ TIME_RANGE_TRANSLATION = [0,31,7,1]
 
 def home(request):
     #Done with the API
-    if request.user_is_authenticated:
+    if request.user.is_authenticated():
         authorized_user = __authuser(request)
 
         api_user_data = client.getUserData('fiwl')
@@ -307,7 +307,7 @@ def sell(request):
     elephant = request.POST.get('elephant')
     price = int(request.POST.get('price'))
     time = int(request.POST.get('time'))
-    artist = ttypes.Artist(mbid=request.POST.get('artist_id')
+    artist = ttypes.Artist(mbid=request.POST.get('artist_id'))
 
     guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
 
@@ -320,7 +320,7 @@ def buy(request):
     elephant = request.POST.get('elephant')
     price = int(request.POST.get('price'))
     time = int(request.POST.get('time'))
-    artist = ttypes.Artist(mbid=request.POST.get('artist_id')
+    artist = ttypes.Artist(mbid=request.POST.get('artist_id'))
 
     guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
 
@@ -332,8 +332,8 @@ def buy(request):
 
 def __portfolio(user=None):
     if user is not None:
-        user_data = se_api.get_user_data(server=server, user=user)
-        user_data.current_worth = sum(se_api.getArtistData(x).stockvalue
+        user_data = client.get_user_data(server=server, user=user)
+        user_data.current_worth = sum(client.getArtistData(x).stockvalue
                             for x in user_data.curstocks)
     return user_data
 
