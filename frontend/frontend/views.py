@@ -137,7 +137,8 @@ def artist_single(request, artistname):
             artist_lfm.similar}
     
     artist_sse = {'artist': artist, 'ownedby': artist_se.ownedby, 
-                'price': artist_se.price, 'points': 103, 'dividends': 41}
+                'price': artist_se.price, 'points': artist_se.points, 
+                'dividends': artist_se.dividend}
 
     return render_to_response('artist_single.html', {
         'artist_SE':artist_sse}, context_instance=RequestContext(request))
