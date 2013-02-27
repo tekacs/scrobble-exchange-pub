@@ -126,21 +126,21 @@ class SEHandler(object):
         """
         artists = {
             'Coldplay':ArtistSE(artist = self.getArtist(artist), price = 2500, 
-                numremaining = 10, points = 242, ownedby = True),
+                numremaining = 10, points = 242, dividend=200, ownedby = True),
             'Daft Punk':ArtistSE(artist = self.getArtist(artist), price = 2200,
-                numremaining = 17, points = 420, ownedby = False),
+                numremaining = 17, points = 420, dividend=100, ownedby = False),
             'Gorillaz':ArtistSE(artist = self.getArtist(artist), price = 2300,
-                numremaining = 167, points = 333, ownedby = False),
+                numremaining = 167, points = 333, dividend=103 ownedby = False),
             'Flight of the Conchords':ArtistSE(artist = self.getArtist(artist), 
                 price = 2401, numremaining = 120, points = 309, ownedby = 
-                False),
+                False, dividend=302),
             'The Killers':ArtistSE(artist = self.getArtist(artist), price = 
-                1920, numremaining = 38, points = 523, ownedby = True),
+                1920, numremaining=38, points=523, dividend=12, ownedby = True),
             'Hans Zimmer':ArtistSE(artist = self.getArtist(artist), price = 
-                1605, numremaining = 289, points = 688, ownedby = True),
+                1605, numremaining=289,points=688, dividend=34, ownedby = True),
             'A random band with a missing image and a long name! (and '\
             'punctuation)':ArtistSE(artist = self.getArtist(artist), price = 
-                100, numremaining = 1829, points = 444, ownedby = True)
+                100,numremaining=1829, points=444, dividend=200, ownedby = True)
         }
         
         return artists[artist.name]

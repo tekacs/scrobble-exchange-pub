@@ -356,7 +356,7 @@ class SEHandler(object):
                 #the assumption is that if the stock is listed, then it exists 
                 #in the DB and no databaseobjectexception would be thrown
                 ret.stocks.append(ArtistSE(artist=a, price=t.price, 
-                                           numremaining=no_remaining))
+                                dividend=t.dividend, numremaining=no_remaining))
             
             return ret
         
