@@ -18,7 +18,7 @@ class SEHandler(object):
         """
         Returns the SE API key for sending to last.fm
         """
-        return 'apikey'
+        return '9dd5403b2dccbc443222d331d66b4424'
 
     def login(self, username, token):
         """
