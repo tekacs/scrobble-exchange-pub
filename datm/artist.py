@@ -133,15 +133,16 @@ class Artist(DATMObject):
     @require_lastfm
     def lastfm_info(self):
         """The lastfm get_info data corresponding to this Artist."""
-        if self.mbid is not None:
+        # FIXME: Underscore hack.
+        if self._mbid is not None:
             return lfm.Artist.get_info(lastfm.params(
                 self.config,
-                mbid=self.mbid
+                mbid=self._mbid
             ))
         else:
             return lfm.Artist.get_info(lastfm.params(
                 self.config,
-                artist=self.name
+                artist=self._name
             ))
 
     # Static Methods
