@@ -26,7 +26,9 @@ lastfm_config = {
 }
 
 db_args = {
-    'url': 'postgresql://api:Koo4ahBa0chahz@localhost/api',
+    'url': 'sqlite:///db',
+    'pool_size': None,
+    'max_overflow': None
 }
 
 from functools import wraps as _wraps
