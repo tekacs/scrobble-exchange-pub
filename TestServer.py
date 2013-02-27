@@ -20,7 +20,7 @@ class SEHandler(object):
         """
         return '9dd5403b2dccbc443222d331d66b4424'
 
-    def login(self, username, token):
+    def login(self, token):
         """
         If successful, returns the AuthUser with the user session token
         
