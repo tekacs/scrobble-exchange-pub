@@ -281,9 +281,8 @@ def artist_single(request, artistname):
 ''' Sample URL: http://localhost:8000/search/autocomplete/?q=blah '''
 @json_response
 def auto_complete(request):
-    partial_text = request.GET.get('q')
-    # results = client.searchArtist(partial_text, RESULTS_PER_PAGE, 1)
-    results = {}
+    partial_text = request.GET.get('q','')
+    results = client.searchArtist(partial_text, RESULTS_PER_PAGE, 1)
     return results
 
 ''' Sample URL: http://localhost:8000/search/?q=blah . See https://docs.djangoproject.com/en/dev/topics/forms/ '''
@@ -301,7 +300,7 @@ def search(request):
         return redirect('artist_single', artistname=results[0].name)
     else:
         return render_to_response('search_results.html', {
-            'query':query, 'results': results}, context_instance=RequestContext(request))
+            'query':query, 'results': results, 'page':page_number}, context_instance=RequestContext(request))
 
 
 ############ Buy/Sell ############
