@@ -67,10 +67,10 @@ class SEHandler(object):
         Parameters:
         - token
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             try:
-                user = datm.user(_config)
-                sessiontoken = user.getSession(_config, token)
+                user = datm.user(self._config)
+                sessiontoken = user.getSession(self._config, token)
                 
                 ret = AuthUser(name=User(name=user.name), 
                                                     session_key=sessiontoken)
@@ -87,11 +87,11 @@ class SEHandler(object):
         Parameters:
         - artist
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid=artist.mbid)
+                a = datm.artist(self._config, mbid=artist.mbid)
             elif not artist.name:
-                a = datm.artist(_config, name=artist.name)
+                a = datm.artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
                 
@@ -108,11 +108,11 @@ class SEHandler(object):
         Parameters:
         - artist
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid=artist.mbid)
+                a = datm.artist(self._config, mbid=artist.mbid)
             elif not artist.name:
-                a = datm.artist(_config, name=artist.name)
+                a = datm.artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
@@ -132,15 +132,15 @@ class SEHandler(object):
         - artist
         - user
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid=artist.mbid, user=user)
+                a = datm.artist(self._config, mbid=artist.mbid, user=user)
             elif not artist.name:
-                a = datm.artist(_config, name=artist.name, user=user)
+                a = datm.artist(self._config, name=artist.name, user=user)
             else:
                 raise DataError('Incorrect artist data')
             
-            u = datm.user(_config, user.name)
+            u = datm.user(self._config, user.name)
             
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             
@@ -176,12 +176,12 @@ class SEHandler(object):
         - artist
         - user
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid=artist.mbid,
+                a = datm.artist(self._config, mbid=artist.mbid,
                                                 session_key = user.session_key)
             elif not artist.name:
-                a = datm.artist(_config, name=artist.name,
+                a = datm.artist(self._config, name=artist.name,
                                                 session_key = user.session_key)
             else:
                 raise DataError('Incorrect artist data')
@@ -205,11 +205,11 @@ class SEHandler(object):
         - artist
         - n
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid=artist.mbid)
+                a = datm.artist(self._config, mbid=artist.mbid)
             elif not artist.name:
-                a = datm.artist(_config, name=artist.name)
+                a = datm.artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
@@ -218,11 +218,11 @@ class SEHandler(object):
             
             ret = ArtistHistory()
             try:
-                ret.histvalue = a.history(_config, after=time_utc_old)
+                ret.histvalue = a.history(self._config, after=time_utc_old)
             except NoDatabaseObjectException():
                 #a.create(mechanics.no_remaining, mechanics.points, 
                 #mechanics.price, mechanics.dividend)
-                #ret.histvalue = a.history(_config, after=time_utc_old)
+                #ret.histvalue = a.history(self._config, after=time_utc_old)
                 pass
             
             return ret
@@ -237,8 +237,8 @@ class SEHandler(object):
         - artist
         - n
         """
-        with datm.DATMSession(_config):
-            alist = datm.artist.search(_config, text, limit=n, page=page)
+        with datm.DATMSession(self._config):
+            alist = datm.artist.search(self._config, text, limit=n, page=page)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
@@ -255,12 +255,12 @@ class SEHandler(object):
         - n
         - trange
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             
             time_utc = time.mktime(datetime.utcnow().timetuple())
             time_utc_old = time_utc - trange*24*60*60
             
-            alist = datm.artist.top(_config, limit=n, after=time_utc_old)
+            alist = datm.artist.top(self._config, limit=n, after=time_utc_old)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
@@ -276,9 +276,9 @@ class SEHandler(object):
         - n
         - trange
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             
-            alist = datm.artist.popular(_config, limit=n)
+            alist = datm.artist.popular(self._config, limit=n)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
@@ -293,8 +293,8 @@ class SEHandler(object):
         Parameters:
         - n
         """
-        with datm.DATMSession(_config):
-            alist = datm.artist.most_traded(_config, limit=n)
+        with datm.DATMSession(self._config):
+            alist = datm.artist.most_traded(self._config, limit=n)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
@@ -309,8 +309,8 @@ class SEHandler(object):
         Parameters:
         - n
         """
-        with datm.DATMSession(_config):
-            tlist = datm.trade.recent(_config, limit=n)
+        with datm.DATMSession(self._config):
+            tlist = datm.trade.recent(self._config, limit=n)
             
             ret = [Artist(mbid=t.mbid, name=t.name, imgurls=t.images) for
                                                                     t in tlist]
@@ -325,8 +325,8 @@ class SEHandler(object):
         Parameters:
         - user
         """
-        with datm.DATMSession(_config):
-            u = datm.user(_config, user)
+        with datm.DATMSession(self._config):
+            u = datm.user(self._config, user)
             
             basicu = User(name=u.name, points=u.points)
             
@@ -363,8 +363,8 @@ class SEHandler(object):
         Parameters:
         - user
         """
-        with datm.DATMSession(_config):
-            u = datm.user(_config, user.name, user.session_key)
+        with datm.DATMSession(self._config):
+            u = datm.user(self._config, user.name, user.session_key)
             
             return AuthUser(name=User(name=user.name, points=u.points, 
                                 session_key=user.session_key, money=u.money))
@@ -380,16 +380,16 @@ class SEHandler(object):
         - league
         - trange
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             
             if trange == 1:
-                ulist = datm.user.top(_config, limit=n, league=league.name,
+                ulist = datm.user.top(self._config, limit=n, league=league.name,
                                         period='daily')
             elif trange <= 7:
-                ulist = datm.user.top(_config, limit=n, league=league.name,
+                ulist = datm.user.top(self._config, limit=n, league=league.name,
                                         period='weekly')
             elif trange <= 31:
-                ulist = datm.user.top(_config, limit=n, league=league.name,
+                ulist = datm.user.top(self._config, limit=n, league=league.name,
                                         period='monthly')
             else:
                 raise DataError('Unusual time range selected')
@@ -404,8 +404,8 @@ class SEHandler(object):
         Parameters:
         - user
         """
-        with datm.DATMSession(_config):
-            ulist = datm.user.near(_config, name=user)
+        with datm.DATMSession(self._config):
+            ulist = datm.user.near(self._config, name=user)
             
             return UserLeaderboard(users=[User(name=u.name) for u in ulist])
    
@@ -417,15 +417,15 @@ class SEHandler(object):
         - artist
         - user
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             if not artist.mbid:
-                a = datm.artist(_config, mbid=artist.mbid, user=user)
+                a = datm.artist(self._config, mbid=artist.mbid, user=user)
             elif not artist.name:
-                a = datm.artist(_config, name=artist.name, user=user)
+                a = datm.artist(self._config, name=artist.name, user=user)
             else:
                 raise DataError('Incorrect artist data')
             
-            u = datm.user(_config, user.name)
+            u = datm.user(self._config, user.name)
             
             if (u.owns(a)):
                 price = int(a.price * 0.97)
@@ -435,7 +435,7 @@ class SEHandler(object):
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.auth.secret(_config))
+            m = hmac.new(datm.auth.secret(self._config))
             m.update(str(time_utc))
             m.update(str(price))
             el = m.hexdigest()
@@ -454,12 +454,12 @@ class SEHandler(object):
         - guarantee
         - user
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.auth.secret(_config))
+            m = hmac.new(datm.auth.secret(self._config))
             m.update(str(time_utc))
             m.update(str(guarantee.price))
             el = m.hexdigest() 
@@ -472,11 +472,12 @@ class SEHandler(object):
             if (time_utc - guarantee.time) > 17:
                 raise TransientError('Too late')
             
-            u = datm.user(_config, user=user.name)
-            a = datm.artist(_config, mbid=guarantee.artist.mbid)
+            u = datm.user(self._config, user=user.name)
+            a = datm.artist(self._config, mbid=guarantee.artist.mbid)
             
             try:
-                t = datm.trade(_config, user=u, artist=a, price=guarantee.price)
+                t = datm.trade(self._config, user=u, artist=a, 
+price=guarantee.price)
                 t.buy()
             except NoStockRemainingException:
                 raise TransientError('No stock remaining')
@@ -491,12 +492,12 @@ class SEHandler(object):
         - guarantee
         - user
         """
-        with datm.DATMSession(_config):
+        with datm.DATMSession(self._config):
             
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.auth.secret(_config))
+            m = hmac.new(datm.auth.secret(self._config))
             m.update(str(time_utc))
             m.update(str(guarantee.price))
             el = m.hexdigest() 
@@ -509,17 +510,18 @@ class SEHandler(object):
             if (time_utc - guarantee.time) > 17:
                 raise TransientError('Too late')
             
-            u = datm.user(_config, user=user.name)
-            a = datm.artist(_config, mbid=guarantee.artist.mbid)
+            u = datm.user(self._config, user=user.name)
+            a = datm.artist(self._config, mbid=guarantee.artist.mbid)
             
             try:
-                t = datm.trade(_config, user=u, artist=a, price=guarantee.price)
+                t = datm.trade(self._config, user=u, artist=a, 
+price=guarantee.price)
                 t.sell()
             except StockNotOwnedException:
                 raise TransientError('User cannot sell')
 
 #Create the databases
-SEHandler._config.db.create_all()
+SEHandler.self._config.db.create_all()
 
 processor = ScrobbleExchange.Processor(SEHandler())
 transport = TSocket.TServerSocket(port=9090)
