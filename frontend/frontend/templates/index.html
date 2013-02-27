@@ -4,27 +4,36 @@
 
 {% block title %}Porfolio{% endblock %}
 
-    {% block main %}
-        <h4>Portfolio</h4>
+{% block above_main %}
+    <h1 class="main-header">Portfolio</h1>
+{% endblock above_main %}
 
+    {% block main %}
         {% for artist_SE in user_data.stocks %}
-            <a href="{% url frontend.views.artist_single artist_SE.artist.name|urlencode %}">
-                <div class="portfolio-img" style="background-image: url('{{ artist_SE.artist.imgurls|get_image:'mega' }}');">
-                    <div class="text-over-image bottom">
-                        <span class="primary">{{ artist_SE.artist.name|truncatechars:20 }}</span>
-                        <br>
-                        <span class="secondary">${{ artist_SE.price }}</span>
+            <div class="portfolio-wrapper">
+                <a href="{% url frontend.views.artist_single artist_SE.artist.name|urlencode %}">
+                    <div class="portfolio-img" style="background-image: url('{{ artist_SE.artist.imgurls|get_image:'mega' }}');">
+                        <div class="text-over-image bottom">
+                            <span class="primary">{{ artist_SE.artist.name|truncatechars:20 }}</span>
+                            <br>
+                            <span class="secondary">${{ artist_SE.price }}</span>
+                        </div>
                     </div>
+                </a>
+                <div class="info-below-artist">
+                    <p class="artist-points"><span>{{artist_SE.points}} points</span> per day</p>
+                    <p class="artist-dividends"><span>${{artist_SE.dividend}}</span> per day</p>
                 </div>
-            </a>
+            </div>
         {% endfor %}
     {% endblock main %}
 
     {% block sidebar %}
-        <h2>${{user_data.user.money}}</h2>
-        <p>(+ ${{user_data.portfolio_worth}} in your portfolio)</p>
+        <h2 class="sidebar-red">Current wealth</h2>
+        <p class="sidebar-price joined">${{user_data.user.money}}</p>
+        <p class="bonus-wealth">(+ ${{user_data.portfolio_worth}} in your portfolio)</p>
 
-        <h3>{{user_data.user.points}} points</h3>
+        <p class="sidebar-price">{{user_data.user.points}} points</p>
 
         <hr>
 
