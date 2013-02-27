@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 
+    #TODO: Remove dollar signs
     url(r'^$', 'frontend.views.home', name='home'),
     url(r'^artists/$', 'frontend.views.artists', name='artists'),
     # TODO: need to fix for artists with spaces in names

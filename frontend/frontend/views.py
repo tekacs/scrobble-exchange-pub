@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response, redirect
 from django.views.decorators.http import require_POST
 from django import forms
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 import models
 from utils import json_response
@@ -281,6 +282,7 @@ def artist_single(request, artistname):
 ''' Sample URL: http://localhost:8000/search/autocomplete/?q=blah '''
 @json_response
 def auto_complete(request):
+    #TODO: Change format of data
     partial_text = request.GET.get('q','')
     results = client.searchArtist(partial_text, RESULTS_PER_PAGE, 1)
     return results
@@ -289,10 +291,16 @@ def auto_complete(request):
 def search(request):
     #TODO: Redirect to search results page if query is empty
     results = {}
-    # if request.method == 'POST': # If the form has been submitted...
-
     query = request.GET.get('q','')
     page_number = int(request.GET.get('page', '1'))
+    
+    if (page_number > 1):
+        previous_page = "%s?q=%s&page=%s" % (reverse('frontend.views.search'), query, page_number - 1)
+    else:
+        previous_page = "#"
+    next_page = "%s?q=%s&page=%s" % (reverse('frontend.views.search'), query, page_number + 1)
+
+
     results = client.searchArtist(query, RESULTS_PER_PAGE, page_number)
     if (request.GET.get('lucky', 'false') == 'true'):
         #TODO: Pass ID instead of name once artist_single can handle it
@@ -300,7 +308,11 @@ def search(request):
         return redirect('artist_single', artistname=results[0].name)
     else:
         return render_to_response('search_results.html', {
-            'query':query, 'results': results, 'page':page_number}, context_instance=RequestContext(request))
+            'query':query, 
+            'results': results, 
+            'page':page_number,
+            'next_page':next_page,
+            'previous_page':previous_page}, context_instance=RequestContext(request))
 
 
 ############ Buy/Sell ############
