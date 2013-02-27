@@ -150,10 +150,10 @@ window.SE.startCountdown = function () {
     seconds = (seconds < 1) ? 15 : seconds - 1;
 
     // Reduce knob value and start a new timer
-    $('.dial').val(seconds).trigger('change');
-    $('.timer-text').text(seconds);
+    $('#buy-sell-modal .dial').val(seconds).trigger('change');
+    $('#buy-sell-modal .timer-text').text(seconds);
     if (seconds <= 5){
-        $('.dial').trigger(
+        $('#buy-sell-modal .dial').trigger(
             'configure',
             {
                 'fgColor': '#b40200',
@@ -161,7 +161,7 @@ window.SE.startCountdown = function () {
             }
         );
     } else {
-        $('.dial').trigger(
+        $('#buy-sell-modal .dial').trigger(
             'configure',
             {
                 'fgColor': '#0187c5',
@@ -169,7 +169,7 @@ window.SE.startCountdown = function () {
             }
         );
     }
-    window.SE.price_countdown = setTimeout(window.SE.startCountdown, 1000);
+    window.SE.price_countdown = window.setTimeout(window.SE.startCountdown, 1000);
 };
 
 jQuery(document).ready(function($) {
@@ -205,7 +205,7 @@ jQuery(document).ready(function($) {
           // Order of function calls for knob:
           // open -> opened -> close -> closed
           "open": function() {
-              $('.dial').knob().trigger(
+              $('#buy-sell-modal .dial').knob().trigger(
                   'configure',
                   {
                       'fgColor': '#0187c5',
@@ -217,9 +217,8 @@ jQuery(document).ready(function($) {
               window.SE.startCountdown();
           },
           "closed": function() {
-              clearTimeout(window.price_countdown);
-              $('.dial').val(15).trigger('change');
-              clearTimeout(window.SE.price_countdown);
+              window.clearTimeout(window.SE.price_countdown);
+              $('#buy-sell-modal .dial').val(15).trigger('change');
           }
         });
     });
