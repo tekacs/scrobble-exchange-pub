@@ -214,6 +214,8 @@ def artists(request):
 
 def artist_single(request, artistname):
     #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
+    if (artistname == ''):
+        return redirect('artists')
     example_bio = """Coldplay is a British <a
     href="http://www.last.fm/tag/alternative%20rock"
     class="bbcode_tag" rel="tag">alternative rock</a> band, formed
