@@ -15,6 +15,7 @@ from urllib import quote
 
 RESULTS_PER_PAGE = 9;
 client = settings.CLIENT
+TIME_RANGE_TRANSLATION = [0,31,7,1]
 #TODO: Handle exceptions with the client
 
 def home(request):
@@ -47,21 +48,46 @@ def user_profile(request, username):
 ############ Leaderboards ############
 '''By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX'''
 def leaderboards(request):
-    # leaderboard = client.getNearUsers(request.user)
-    userleaderboard = {}
-    return render_to_response('leaderboards.html',{'leaderboard': 
-           userleaderboard}, context_instance=RequestContext(request))
+    return render_to_response('leaderboards.html',{}, context_instance=RequestContext(request))
+
+'''Sample URL: http://localhost:8000/leaderboards/get/?league_id=1&time_range=3'''
+@json_response
+def get_user_leaderboard(request):
+    #given: time_range (0-3, 0-alltime, 1-month, 2-week, 3-day)
+    time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '7'))]
+
+    userdata = client.getUserData(request.user.username)
+    user_league = userdata.league.__dict__
+    user_points = userdata.user.points
+
+    userleaderboard = client.getNearUsers(request.user.username)
+    #TODO: Remove magic number and use current position of user instead
+    if (userleaderboard.users[3]):
+        next_user = userleaderboard.users[3].__dict__
+    else:
+        next_user = {}
+
+    user_position = userleaderboard.position
+
+    data = {
+    'user_league':user_league, 
+    'user_points': user_points, 
+    'user_position': user_position, 
+    'next_user': next_user}
+    
+    return data
 
 '''See http://localhost:8000/leaderboards/get/?league_id=1&time_range=3 for example'''
 @json_response
 def get_leaderboard(request):
     
     league_id = request.GET.get('league_id','default_league')
-    time_range = request.GET.get('time_range', 'default_time_range')
+    time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '7'))]
     
     # none of the below values make any difference with dummy data 
-    board = client.getTopUsers(n=3, league = ttypes.League(name=league_id), 
-    trange = 70)
+    #TODO: Replace magic number for default users
+    board = client.getTopUsers(n=100, league = ttypes.League(name=league_id), 
+    trange = time_range)
     
     aadata = []
     for i in range(len(board.users)):
@@ -123,6 +149,7 @@ def artists(request):
     })
 
 def artist_single(request, artistname):
+    #TODO: Fix bio
     #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
     if (artistname == ''):
         return redirect('artists')

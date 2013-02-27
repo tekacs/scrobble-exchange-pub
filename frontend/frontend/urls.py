@@ -31,6 +31,7 @@ urlpatterns = patterns('',
     url(r'^search/autocomplete', 'frontend.views.auto_complete', name='auto_complete'),
     url(r'^search/', 'frontend.views.search', name='search'),
 
+    url(r'^leaderboards/get/user', 'frontend.views.get_user_leaderboard', name='get_user_leaderboard'),
     url(r'^leaderboards/get', 'frontend.views.get_leaderboard', name='get_leaderboard'),
     url(r'^leaderboards/', 'frontend.views.leaderboards', name='leaderboards'),
 
