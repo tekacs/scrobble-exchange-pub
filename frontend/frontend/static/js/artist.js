@@ -137,20 +137,86 @@ window.SE.Artist = {
             });
           }
         });
+    },
+    current_price: null,
+    current_guarantee: {},
+    current_seconds_left: 15,
+    getArtistPriceGuarantee: function(mbid) {
+      var url = '/price/guarantee?artist_id=' + mbid;
+      jQuery.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        complete: function(xhr, textStatus) {
+          //called when complete
+        },
+        success: function(data, textStatus, xhr) {
+          var current_timestamp = Math.round(+new Date()/1000);
+
+          window.SE.Artist.current_guarantee = data;
+
+          // window.SE.Artist.current_guarantee.artist.name = data.artist.name;
+          // window.SE.Artist.current_guarantee.price = data.price;
+          // window.SE.Artist.current_guarantee.time = data.time;
+          // window.SE.Artist.current_guarantee.elephant = data.elephant;
+
+          window.SE.Artist.current_seconds_left = data.time - current_timestamp;
+
+          $('#buy-sell-modal .price-text').text(data.price);
+          $('#buy-sell-modal .artist-text').text(data.artist.name);
+
+          window.SE.startCountdown();
+
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          //called when there is an error
+        }
+      });
+    },
+    makeTransaction: function(transaction_type){
+      var url = (transaction_type === 'buy') ? '/buy' : '/sell';
+
+      jQuery.ajax({
+        url: url,
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          artist_id: window.SE.Artist.current_guarantee.artist.mbid,
+          price: window.SE.Artist.current_guarantee.price,
+          time: window.SE.Artist.current_guarantee.time,
+          elephant: window.SE.Artist.current_guarantee.elephant
+        },
+        complete: function(xhr, textStatus) {
+          //called when complete
+          $('#buy-sell-modal').trigger('reveal:close');
+        },
+        success: function(data, textStatus, xhr) {
+          //called when successful
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          //called when there is an error
+        }
+      });
+
     }
 };
 
 window.SE.startCountdown = function () {
-    var seconds = $('.dial').val();
 
     // We have reached the end of the timer, need to get a new price
     // TODO: get new price
-    seconds = (seconds < 1) ? 15 : seconds - 1;
+    if (window.SE.Artist.current_seconds_left < 1){
+      // get new price
+      window.SE.Artist.getArtistPriceGuarantee(window.Artist.mbid);
+      return;
+    } else {
+      window.SE.Artist.current_seconds_left = window.SE.Artist.current_seconds_left - 1;
+    }
 
     // Reduce knob value and start a new timer
-    $('#buy-sell-modal .dial').val(seconds).trigger('change');
-    $('#buy-sell-modal .timer-text').text(seconds);
-    if (seconds <= 5){
+    $('#buy-sell-modal .dial').val(window.SE.Artist.current_seconds_left).trigger('change');
+    $('#buy-sell-modal .timer-text').text(window.SE.Artist.current_seconds_left);
+    if (window.SE.Artist.current_seconds_left <= 5){
         $('#buy-sell-modal .dial').trigger(
             'configure',
             {
@@ -187,6 +253,8 @@ jQuery(document).ready(function($) {
       }
     });
 
+    $('#buy-sell-modal .success').on('click', window.SE.Artist.makeTransaction($('#buy-sell-modal .buy-sell').text()));
+
     $("#buy-button, #sell-button").click(function() {
         var elementID = $(this).attr('id');
         var subText = (elementID === 'buy-button') ? 'buy' : 'sell';
@@ -196,8 +264,6 @@ jQuery(document).ready(function($) {
 
         $('#buy-sell-modal .buy-sell').text(subText);
         $('#buy-sell-modal .label').css('background-color', bgColour);
-        $('#buy-sell-modal .price-text').text(price);
-        $('#buy-sell-modal .artist-text').text(artistname);
 
         $("#buy-sell-modal").reveal({
           // Order of function calls for knob:
@@ -212,11 +278,11 @@ jQuery(document).ready(function($) {
               );
           },
           "opened": function() {
-              window.SE.startCountdown();
+              window.SE.Artist.getArtistPriceGuarantee(window.Artist.mbid);
           },
           "closed": function() {
               window.clearTimeout(window.SE.price_countdown);
-              $('#buy-sell-modal .dial').val(15).trigger('change');
+              $('#buy-sell-modal .dial').val(window.SE.Artist.current_seconds_left).trigger('change');
           }
         });
     });
