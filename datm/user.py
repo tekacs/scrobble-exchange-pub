@@ -93,6 +93,14 @@ class User(DATMObject):
     # Static Methods
 
     @staticmethod
+    @require_lastfm
+    def getSession(config, token):
+        return lfm.Auth.get_session(lastfm.params(
+            config,
+            token=token
+        ))
+
+    @staticmethod
     @require_db
     def count(config):
         """The number of users currently registered."""
