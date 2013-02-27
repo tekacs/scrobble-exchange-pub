@@ -521,7 +521,7 @@ price=guarantee.price)
                 raise TransientError('User cannot sell')
 
 #Create the databases
-SEHandler.self._config.db.create_all()
+SEHandler._config.db.create_all()
 
 processor = ScrobbleExchange.Processor(SEHandler())
 transport = TSocket.TServerSocket(port=9090)
