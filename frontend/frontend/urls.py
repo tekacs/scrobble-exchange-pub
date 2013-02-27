@@ -20,21 +20,21 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', 'frontend.views.home', name='home'),
-    url(r'^artists/', 'frontend.views.artists', name='artists'),
+    url(r'^artists/$', 'frontend.views.artists', name='artists'),
     # TODO: need to fix for artists with spaces in names
     url(r'^artist/([^/]*)/?$', 'frontend.views.artist_single', name ='artist_single'),
 
-    url(r'^search/autocomplete', 'frontend.views.auto_complete', name='auto_complete'),
-    url(r'^search/', 'frontend.views.search', name='search'),
+    url(r'^search/autocomplete$', 'frontend.views.auto_complete', name='auto_complete'),
+    url(r'^search/$', 'frontend.views.search', name='search'),
 
-    url(r'^leaderboards/get', 'frontend.views.get_leaderboard', name='get_leaderboard'),
-    url(r'^leaderboards/', 'frontend.views.leaderboards', name='leaderboards'),
+    url(r'^leaderboards/get$', 'frontend.views.get_leaderboard', name='get_leaderboard'),
+    url(r'^leaderboards/$', 'frontend.views.leaderboards', name='leaderboards'),
 
-    url(r'^sell/', 'frontend.views.sell', name='sell'),
-    url(r'^buy/', 'frontend.views.buy', name='buy'),
+    url(r'^sell/$', 'frontend.views.sell', name='sell'),
+    url(r'^buy/$', 'frontend.views.buy', name='buy'),
 
-    url(r'^price/guarantee/', 'frontend.views.guaranteed_price', name='guaranteed_price'),
-    url(r'^price/', 'frontend.views.price', name='price'),
+    url(r'^price/guarantee/$', 'frontend.views.guaranteed_price', name='guaranteed_price'),
+    url(r'^price/$', 'frontend.views.price', name='price'),
 
     url(r'^lastfmauth/', include('lastfmauth.urls')),
 
