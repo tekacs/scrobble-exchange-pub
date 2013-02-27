@@ -154,15 +154,25 @@ def artist_history(request):
 
     # history = client.getArtistHistory(artist, days)
 
-    history = [
-        {
-            "name": "price",
-            "data": [ { "x": 0, "y": 40 }, { "x": 1, "y": 49 }, { "x": 2, "y": 38 }, { "x": 3, "y": 30 }, { "x": 4, "y": 32 } ]
-        }, {
-            "name": "dividends",
-            "data": [ { "x": 0, "y": 19 }, { "x": 1, "y": 22 }, { "x": 2, "y": 29 }, { "x": 3, "y": 20 }, { "x": 4, "y": 14 } ]
-        }
-    ]
+    field = request.GET.get('field', 'money')
+
+    if (field == 'money'):
+        history = [
+            {
+                "name": "price",
+                "data": [ { "x": 0, "y": 40 }, { "x": 1, "y": 49 }, { "x": 2, "y": 38 }, { "x": 3, "y": 30 }, { "x": 4, "y": 32 } ]
+            }, {
+                "name": "dividends",
+                "data": [ { "x": 0, "y": 19 }, { "x": 1, "y": 22 }, { "x": 2, "y": 29 }, { "x": 3, "y": 20 }, { "x": 4, "y": 14 } ]
+            }
+        ]
+    elif (field == 'points'):
+        history = [
+            {
+                "name": "points",
+                "data": [ { "x": 0, "y": 30 }, { "x": 1, "y": 13 }, { "x": 2, "y": 35 }, { "x": 3, "y": 50 }, { "x": 4, "y": 42 } ]
+            }
+        ]
     return history
 
 ''' Sample URL: http://localhost:8000/search/autocomplete/?q=blah '''
