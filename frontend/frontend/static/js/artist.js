@@ -196,8 +196,8 @@ jQuery(document).ready(function($) {
         var price = $(this).data('price');
         var artistname = $(this).data('artistname');
 
-        $('.buy-sell').text(subText);
-        $('.label').css('background-color', bgColour);
+        $('#buy-sell-modal .buy-sell').text(subText);
+        $('#buy-sell-modal .label').css('background-color', bgColour);
         $('#buy-sell-modal .price-text').text(price);
         $('#buy-sell-modal .artist-text').text(artistname);
 
