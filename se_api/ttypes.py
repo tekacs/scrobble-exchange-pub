@@ -841,17 +841,20 @@ class User(object):
   Attributes:
    - name
    - points
+   - profileimage
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.I32, 'points', None, None, ), # 2
+    (3, TType.STRING, 'profileimage', None, None, ), # 3
   )
 
-  def __init__(self, name=None, points=None,):
+  def __init__(self, name=None, points=None, profileimage=None,):
     self.name = name
     self.points = points
+    self.profileimage = profileimage
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -872,6 +875,11 @@ class User(object):
           self.points = iprot.readI32();
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRING:
+          self.profileimage = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -889,6 +897,10 @@ class User(object):
     if self.points is not None:
       oprot.writeFieldBegin('points', TType.I32, 2)
       oprot.writeI32(self.points)
+      oprot.writeFieldEnd()
+    if self.profileimage is not None:
+      oprot.writeFieldBegin('profileimage', TType.STRING, 3)
+      oprot.writeString(self.profileimage)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
