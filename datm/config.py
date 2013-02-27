@@ -9,9 +9,12 @@ from sqlalchemy.orm import sessionmaker
 import lfm
 from models.base import Base as DeclarativeBase
 
+import pdb # temp
+
 class DATMConfig(object):
     def __init__(self, lastfm=None, db_args=None):
         _lastfm = {}
+
         if lastfm is not None:
             try:
                 request_builder = lfm.RequestBuilder(

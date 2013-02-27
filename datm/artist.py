@@ -53,7 +53,6 @@ class Artist(DATMObject):
         raise AttributeError('Artist object instantiated without name source.')
 
     @memoised_property
-    @require_data_source
     def mbid(self):
         """Return the MBID corresponding to this object.
 
@@ -98,7 +97,8 @@ class Artist(DATMObject):
 
         del self._mbid
 
-        # In theory @require_data_source should prevent this from occurring.
+#       FIXME: Removed @require_data_source due to infinite recursion despite care :/
+#        In theory @require_data_source should prevent this from occurring.
         raise AttributeError('Artist object instantiated without mbid source.')
 
     # Data Accessors
@@ -150,6 +150,7 @@ class Artist(DATMObject):
     @require_lastfm
     def correct(config, name):
         correction = lfm.Artist.get_correction(lastfm.params(
+            config,
             artist=name
         ))
         if 'status' in correction:
