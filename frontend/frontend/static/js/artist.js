@@ -219,6 +219,7 @@ jQuery(document).ready(function($) {
           "closed": function() {
               clearTimeout(window.price_countdown);
               $('.dial').val(15).trigger('change');
+              clearTimeout(window.SE.price_countdown);
           }
         });
     });
