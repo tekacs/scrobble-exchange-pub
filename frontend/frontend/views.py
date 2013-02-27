@@ -13,6 +13,7 @@ import random
 
 RESULTS_PER_PAGE = 10;
 client =  settings.CLIENT
+#TODO: Handle exceptions with the client
 
 def home(request):
     # Dummy artist data
@@ -292,6 +293,7 @@ def search(request):
     results = client.searchArtist(query, RESULTS_PER_PAGE, 1)
     if (request.GET.get('lucky', 'false') == 'true'):
         #TODO: Pass ID instead of name once artist_single can handle it
+        #TODO: Parse results correctly
         return redirect('artist_single', artistname=results[0].name)
     else:
         return render_to_response('search_results.html', {
@@ -349,10 +351,6 @@ def __portfolio(user=None):
         user_data.current_worth = sum(se_api.getArtistData(x).stockvalue
                             for x in user_data.curstocks)
     return user_data
-
-def __authenticated(request):
-    #if request.session['userapitoken'] is not None:
-    return {}
 
 class ArtistSearchForm(forms.Form):
     q = forms.CharField(max_length=100, label='Query: ')

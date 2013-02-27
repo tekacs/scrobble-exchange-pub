@@ -191,8 +191,6 @@ try:
 except Thrift.TException, tx:
     print '%s' % (tx.message)
 
-# LASTFM_API_KEY = "9dd5403b2dccbc443222d331d66b4424"
 LASTFM_API_KEY = CLIENT.apikey()
-# LASTFM_SECRET = "070a2c23f4cff56c14da0a11b6c64f83"
 LASTFM_WS_BASE_URL = "http://ws.audioscrobbler.com/2.0/"
 LASTFM_AUTH_REDIRECT = '/'
