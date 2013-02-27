@@ -14,7 +14,7 @@ class ArtistHistory(base.Base):
     points = Column(Integer, nullable=False)
     dividends = Column(Integer, nullable=False)
 
-    artist_id = Column(Integer, ForeignKey("artists.mbid"))
+    artist_id = Column(String(36), ForeignKey("artists.mbid"))
 
     def __init__(self, artist, date, price, points, dividends):
         self.artist = artist
@@ -52,13 +52,12 @@ class Artist(base.Base):
     history = relationship(
         "ArtistHistory",
         backref=backref("artist", uselist=False),
-        order_by="artist_history.date"
+        order_by=ArtistHistory.date
     )
 
-    def __init__(self, mbid, name, price, points, max_available):
+    def __init__(self, mbid, name, price, max_available):
         self.mbid = mbid
         self.name = name
 
         self.price = price
-        self.points = points
         self.max_available = max_available

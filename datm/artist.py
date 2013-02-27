@@ -196,7 +196,11 @@ class Artist(DATMObject):
 
     max_available = db.dbo_property('max_available')
     price = db.dbo_property('price')
-    points = db.dbo_property('points')
+
+    @property
+    @require_db
+    def points(self):
+        pass
 
     @property
     @require_db
