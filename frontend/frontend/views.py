@@ -20,27 +20,30 @@ TIME_RANGE_TRANSLATION = [0,31,7,1]
 
 def home(request):
     #Done with the API
-    authorized_user = __authuser(request)
+    if request.user_is_authenticated:
+        authorized_user = __authuser(request)
 
-    api_user_data = client.getUserData('fiwl')
-    
-    user_data = models.UserData()
-    user_data.stocks = []
-    
-    for artistse in api_user_data.stocks:
-        a = {'name': artistse.artist.name, 'imgurls': 
-                                                    artistse.artist.imgurls}
-        user_data.stocks.append({'artist': a, 'price': artistse.price,
-                        'points': artistse.price, 'dividend':artistse.dividend})
+        api_user_data = client.getUserData('fiwl')
         
-    user_data.user = {'money': client.getUserMoney(authorized_user).money, 
-                    'points': api_user_data.user.points}
-    user_data.portfolio_worth = sum(artist.price for artist in 
-                                                    api_user_data.stocks)
+        user_data = models.UserData()
+        user_data.stocks = []
+        
+        for artistse in api_user_data.stocks:
+            a = {'name': artistse.artist.name, 'imgurls': 
+                                                        artistse.artist.imgurls}
+            user_data.stocks.append({'artist': a, 'price': artistse.price,
+                            'points': artistse.price, 'dividend':artistse.dividend})
+            
+        user_data.user = {'money': client.getUserMoney(authorized_user).money, 
+                        'points': api_user_data.user.points}
+        user_data.portfolio_worth = sum(artist.price for artist in 
+                                                        api_user_data.stocks)
 
-    return render_to_response('index.html',
-        {'user_data': user_data}, context_instance=RequestContext(request)
-        )
+        return render_to_response('index.html',
+            {'user_data': user_data}, context_instance=RequestContext(request)
+            )
+    else:
+        return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def user_profile(request, username):
     return render_to_response('user_profile.html',{}, context_instance=RequestContext(request))
