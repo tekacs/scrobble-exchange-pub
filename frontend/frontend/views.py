@@ -198,8 +198,8 @@ def artists(request):
         },
     ]
 
-    rising_SE_artists = list(top_SE_artists)
-    random.shuffle(rising_SE_artists)
+    popular_LFM_artists = list(top_SE_artists)
+    random.shuffle(popular_LFM_artists)
 
     recommended_artists = list(top_SE_artists)
     random.shuffle(recommended_artists)
@@ -207,8 +207,8 @@ def artists(request):
     return render_to_response('artists.html', {
         'artistlist': artistlist,
         'top_SE_artists': top_SE_artists,
-        'top_LFM_artists': reversed(top_SE_artists),
-        'rising_SE_artists': rising_SE_artists,
+        'top_traded_artists': reversed(top_SE_artists),
+        'popular_LFM_artists': popular_LFM_artists,
         'recommended_artists': recommended_artists
     })
 
