@@ -19,9 +19,9 @@ client = settings.CLIENT
 
 def home(request):
     #Done with the API
+    authorized_user = __authuser(request)
+
     api_user_data = client.getUserData('fiwl')
-    authorized_user = ttypes.AuthUser(name = ttypes.User(name = 'fiwl'), 
-        session_key = 'thekeyyougot')
     
     user_data = models.UserData()
     user_data.stocks = []
@@ -289,7 +289,7 @@ def __portfolio(user=None):
     return user_data
 
 def __authuser(request):
-    return ttypes.AuthUser(name=request.user.username, session_key=request.user.first_name)
+    return ttypes.AuthUser(name=ttypes.User(request.user.username), session_key=request.user.first_name)
 
 class ArtistSearchForm(forms.Form):
     q = forms.CharField(max_length=100, label='Query: ')
