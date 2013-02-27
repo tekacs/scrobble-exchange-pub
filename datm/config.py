@@ -82,7 +82,6 @@ class DATMDatabase(object):
         DeclarativeBase.metadata.create_all(self._engine)
 
 def has_db(obj):
-    print obj
     return obj.db is not None
 
 def has_lastfm(obj):
