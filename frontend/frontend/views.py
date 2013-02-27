@@ -1,6 +1,6 @@
 from django.template import RequestContext, loader
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.views.decorators.http import require_POST
 from django import forms
 
@@ -67,6 +67,50 @@ def home(request):
         context_instance=RequestContext(request)
         )
 
+############ Leaderboards ############
+'''By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX'''
+def leaderboards(request):
+    # leaderboard = client.getNearUsers(request.user)
+    userleaderboard = {}
+    return render_to_response('leaderboards.html',{'leaderboard': userleaderboard}, context_instance=RequestContext(request))
+
+'''See http://localhost:8000/leaderboards/get/?league_id=1&time_range=3 for example'''
+@json_response
+def get_leaderboard(request):
+    league_id = request.GET.get('league_id','default_league')
+    time_range = request.GET.get('time_range', 'default_time_range')
+    # leaderboard = client.getTopUsers(RESULTS_PER_PAGE, league_id, time_range)
+
+    # Data must be in this format to work with jQuery datatables library, need to craft json into this format
+    leaderboard = {
+        "sEcho": 1,
+        "iTotalRecords": "50",
+        "iTotalDisplayRecords": "50",
+        "aaData":[
+            {
+                "0": "1",
+                "1": "<a href=\"#\"><img src=\"http://lorempixel.com/48/48/\"> neil-s</a>",
+                "2": "70",
+                "DT_RowClass": "place-1"
+            },
+            {
+                "0": "2",
+                "1": "<a href=\"#\"><img src=\"http://lorempixel.com/48/48/\"> joebateson</a>",
+                "2": "40",
+                "DT_RowClass": "place-2 me"
+            },
+            {
+                "0": "3",
+                "1": "<a href=\"#\"><img src=\"http://lorempixel.com/48/48/\"> rand</a>",
+                "2": "20",
+                "DT_RowClass": "place-3"
+            }
+        ]
+    }
+    return leaderboard
+
+
+############ Artist stuff ############
 def artists(request):
     # artistlist = se_api.lastfm.chart.get_top_artists()
     artist1 = models.Artist()
@@ -162,52 +206,8 @@ def artists(request):
         'recommended_artists': recommended_artists
     })
 
-############ Leaderboards ############
-'''By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX'''
-def leaderboards(request):
-    # leaderboard = client.getNearUsers(request.user)
-    userleaderboard = {}
-    return render_to_response('leaderboards.html',{'leaderboard': userleaderboard}, context_instance=RequestContext(request))
-
-'''See http://localhost:8000/leaderboards/get/?league_id=1&time_range=3 for example'''
-@json_response
-def get_leaderboard(request):
-    league_id = request.GET.get('league_id','default_league')
-    time_range = request.GET.get('time_range', 'default_time_range')
-    # leaderboard = client.getTopUsers(RESULTS_PER_PAGE, league_id, time_range)
-
-    # Data must be in this format to work with jQuery datatables library, need to craft json into this format
-    leaderboard = {
-        "sEcho": 1,
-        "iTotalRecords": "50",
-        "iTotalDisplayRecords": "50",
-        "aaData":[
-            {
-                "0": "1",
-                "1": "<a href=\"#\"><img src=\"http://lorempixel.com/48/48/\"> neil-s</a>",
-                "2": "70",
-                "DT_RowClass": "place-1"
-            },
-            {
-                "0": "2",
-                "1": "<a href=\"#\"><img src=\"http://lorempixel.com/48/48/\"> joebateson</a>",
-                "2": "40",
-                "DT_RowClass": "place-2 me"
-            },
-            {
-                "0": "3",
-                "1": "<a href=\"#\"><img src=\"http://lorempixel.com/48/48/\"> rand</a>",
-                "2": "20",
-                "DT_RowClass": "place-3"
-            }
-        ]
-    }
-    return leaderboard
-
-
-############ Artist stuff ############
 def artist_single(request, artistname):
-    #TODO: Change artist name mechanism
+    #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
     example_bio = """Coldplay is a British <a
     href="http://www.last.fm/tag/alternative%20rock"
     class="bbcode_tag" rel="tag">alternative rock</a> band, formed
@@ -269,7 +269,6 @@ def artist_single(request, artistname):
         })();
 
     return render_to_response('artist_single.html', {'artist_SE': artist_SE}, context_instance=RequestContext(request))
-
 
 ''' Sample URL: http://localhost:8000/search/autocomplete/?q=blah '''
 @json_response
