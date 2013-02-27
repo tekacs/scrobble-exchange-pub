@@ -325,7 +325,10 @@ def search(request):
 
 @json_response
 def price(request, artist_id=None):
-    # artist_SE = client.getArtistSE(artist = se_api.Artist(mbid = artist_id), user = request.user)
+    artist = ttypes.Artist(mbid = artist_id)
+    authuser =  __authuser(request)
+    # artist_SE = client.getArtistSE(artist = artist, user = authuser)
+    # TODO: Ask Victor why this may be throwing exceptions
     artist_SE = {
         'artist': {
             'name': 'Coldplay',
@@ -372,6 +375,9 @@ def __portfolio(user=None):
         user_data.current_worth = sum(se_api.getArtistData(x).stockvalue
                             for x in user_data.curstocks)
     return user_data
+
+def __authuser(request):
+    return ttypes.AuthUser(name=request.user.username, session_key=request.user.first_name)
 
 class ArtistSearchForm(forms.Form):
     q = forms.CharField(max_length=100, label='Query: ')
