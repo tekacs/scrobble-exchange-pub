@@ -1,6 +1,7 @@
 window.SE.Leaderboards = {
     options: {
-        'sAjaxSource': '/leaderboards/get/?league_id=1&time_range=0',
+        // time_range = 2, last week
+        'sAjaxSource': '/leaderboards/get/?league_id=1&time_range=2',
         "aoColumns" : [ {sTitle : "Rank"}, {sTitle : "User"}, {sTitle : "Score"}],
         'bDeferRender': true,
         'sDom': '<"H"fr>t<"F"iS>',
@@ -20,7 +21,7 @@ window.SE.Leaderboards = {
         }
     },
 
-    current_timespan: 0,
+    current_timespan: 2,
 
     leaderboards: [],
     needFixing: [true, true, true],
@@ -85,11 +86,38 @@ window.SE.Leaderboards = {
         // Restart handler to fix column problems after new data loaded
         window.SE.Leaderboards.needFixing = [true, true, true];
         $(window).on('hashchange', window.SE.Leaderboards.adjustColummnsHandler);
+    },
+
+    // Update the information on the sidebar via Ajax to keep consistent with currently selected timespan
+    getContextualUserData: function(timespan) {
+        var url = '/leaderboards/get/user/?time_range=' + timespan;
+        var league, position, points, rival_name, rival_points;
+        jQuery.ajax({
+          url: url,
+          type: 'GET',
+          dataType: 'json',
+          success: function(data, textStatus, xhr) {
+            league = data.user_league.name;
+            //position = data.user_position;
+            position = 2;
+            points = data.user_points;
+            rival_name = data.next_user.name;
+            rival_points = data.next_user.points;
+
+            $('.context-user-league').text(league);
+            $('.context-user-position').text(position);
+            $('.context-user-points').text(points);
+            $('.context-next_user-name').text(rival_name);
+            $('.context-next_user-points').text(rival_points);
+          }
+        });
+
     }
 };
 
 $(document).ready(function() {
     $(document).foundationTabs();
+    window.SE.Leaderboards.getContextualUserData(window.SE.Leaderboards.current_timespan);
 
     window.SE.Leaderboards.leaderboards[0] = $('.leaderboard-1').dataTable(window.SE.Leaderboards.options).fadeIn();
     window.SE.Leaderboards.leaderboards[1] = $('.leaderboard-2').dataTable(window.SE.Leaderboards.options).fadeIn();
@@ -138,6 +166,7 @@ $(document).ready(function() {
         newSources[2] = '/leaderboards/get/?league_id=3&time_range=' + timespan;
 
         window.SE.Leaderboards.switchAllDataSources(newSources);
+        window.SE.Leaderboards.getContextualUserData(timespan);
 
     });
 
