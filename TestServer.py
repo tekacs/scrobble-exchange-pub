@@ -249,6 +249,7 @@ class SEHandler(object):
 
     def getArtistHistory(self, artist, n):
         pass
+        
 
     def searchArtist(self, text, n, page):
         

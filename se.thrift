@@ -45,7 +45,8 @@ struct ArtistSE {
     2: required i32 price
     3: required i32 numremaining
     4: required i32 points
-    5: optional bool ownedby
+    5: required i32 dividend
+    6: optional bool ownedby
 }
 
 /** Encapsulates the data from last.fm's artist.getInfo. */

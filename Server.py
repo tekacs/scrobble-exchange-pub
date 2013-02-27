@@ -147,13 +147,16 @@ class SEHandler(object):
             
             try:
                 ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
-                                            points=a.points, ownedby=u.owns(a))
+                               points=a.points, dividend=a.dividend, 
+                               ownedby=u.owns(a))
             except NoDatabaseObjectException():
                 #a.no_remaining = mechanics.no_remaining
                 #a.points = mechanics.points
                 #a.price = mechanics.price
+                #a.dividend = mechanics.dividend
                 #ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
-                #                           points=a.points, ownedby=u.owns(a))
+                #               points=a.points, dividend=a.dividend, 
+                #               ownedby=u.owns(a))
                 pass
             
             if (u.owns(a)):
@@ -222,6 +225,7 @@ class SEHandler(object):
                 #a.no_remaining = mechanics.no_remaining
                 #a.points = mechanics.points
                 #a.price = mechanics.price
+                #a.dividend = mechanics.dividend
                 #ret.histvalue = a.history(_config, after=time_utc_old)
                 pass
             
