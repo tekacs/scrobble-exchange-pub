@@ -205,12 +205,16 @@ def artists(request):
     recommended_artists = list(top_SE_artists)
     random.shuffle(recommended_artists)
 
+    recently_traded_artists = list(top_SE_artists)
+    random.shuffle(recently_traded_artists)
+
     return render_to_response('artists.html', {
         'artistlist': artistlist,
         'top_SE_artists': top_SE_artists,
         'top_traded_artists': reversed(top_SE_artists),
         'popular_LFM_artists': popular_LFM_artists,
-        'recommended_artists': recommended_artists
+        'recommended_artists': recommended_artists,
+        'recently_traded_artists': recently_traded_artists
     })
 
 def artist_single(request, artistname):

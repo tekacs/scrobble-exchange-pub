@@ -205,6 +205,47 @@
 
     </div>
 
+
+    <h2 class="sidebar-red">Recently traded artists</h2>
+    <p>Last artists to be active</p>
+
+    <div class="rank-list">
+
+        <ol class="top-list recently-traded primary sidebar-list">
+
+            {% for traded_artist_SE in recently_traded_artists %}
+
+                <li class="rankItem sidebar-item">
+                    <div class="rankItem-wrap">
+                        <div class="rankItem-wrap2">
+                            <a href="{% url frontend.views.artist_single traded_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
+                                <h4>
+                                    <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
+                                    <span class="rankItem-title">{{traded_artist_SE.artist.name|truncatechars:30}}</span>
+                                </h4>
+                                <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{traded_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                    <div class="rankItem-imageCrop-wrap">
+                                        <img src="{{traded_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <p class="rankItem-bar">
+                            <span class="rankItem-bar-percentage" style="width: 100%">
+                                <span>
+                                    <strong>${{ traded_artist_SE.price }}</strong>
+                                </span>
+                            </span>
+                        </p>
+                    </div>
+                </li>
+
+            {% endfor %}
+
+        </ol>
+
+    </div>
+
 {% endblock sidebar %}
 
 
