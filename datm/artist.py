@@ -136,7 +136,7 @@ class Artist(DATMObject):
         try:
             if self.dbo is not None:
                 return True
-        except NoDatabaseException:
+        except NoDatabaseObjectException:
             del self.dbo
             return False
 
