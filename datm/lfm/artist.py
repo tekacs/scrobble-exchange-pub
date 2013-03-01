@@ -34,7 +34,8 @@ class Artist(LastFMAPIObject):
     }
 
 #    def get_info(json):
-#        """json contains:
+#        """This is an example, simplistic transformer.
+#        json contains:
 #
 #            - bio
 #            - streamable

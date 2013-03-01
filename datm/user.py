@@ -14,6 +14,7 @@ from config import require_lastfm, require_db, require_data_source,\
 from artist import Artist
 from trading import Trade
 from sparkles import Trophy
+from league import League
 
 class User(DATMObject):
     """A last.fm and SE combined user."""
@@ -125,6 +126,15 @@ class User(DATMObject):
 
     # Object Interface
 
+    money = db.dbo_property('money')
+    points = db.dbo_property('points')
+
+    daily_points = db.dbo_property('daily_points')
+    weekly_points = db.dbo_property('weekly_points')
+    monthly_points = db.dbo_property('monthly_points')
+
+    last_reset = db.dbo_property('last_reset')
+
     @memoised_property
     def session_key(self):
         """This object's session_key."""
@@ -165,6 +175,11 @@ class User(DATMObject):
     def trophies(self):
         """Return all trophies currently possessed by this user."""
         return (Trophy(self.config, dbo=o) for o in self.dbo.trophies)
+
+    @property
+    @require_db
+    def league(self):
+        return League(self.config, dbo=self.dbo.league)
 
     @memoised_property
     @require_lastfm

@@ -36,7 +36,7 @@ class Artist(base.Base):
     last_playcount = Column(Integer)
 
     max_available = Column(Integer, nullable=False)
-#   no_remaining = Column(Integer)
+#   no_remaining = Column(Integer) # Not currently in use.
 
     @hybrid_property
     def no_remaining(self):

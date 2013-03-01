@@ -142,7 +142,8 @@ class Artist(DATMObject):
         else:
             return lfm.Artist.get_info(lastfm.params(
                 self.config,
-                artist=self._name
+                artist=self._name,
+                autocorrect=1
             ))
 
     # Static Methods
@@ -160,6 +161,7 @@ class Artist(DATMObject):
             else:
                 raise ValueError('Invalid response from last.fm API server!')
         else:
+            correction = correction['correction']['artist']
             return correction['name'], correction['mbid']
 
     @staticmethod
@@ -170,14 +172,14 @@ class Artist(DATMObject):
             artist=name,
             limit=limit,
             page=page
-        ))['artist']
-        return (partial_artist(a) for a in results)
+        ))['artistmatches']['artist']
+        return (partial_artist(config, a) for a in results)
 
     @staticmethod
     @require_lastfm
     def popular(config, limit=10):
         top_artists = lfm.Chart.get_top_artists(lastfm.params(config))['artist']
-        return (partial_artist(a) for a in top_artists)
+        return (partial_artist(config, a) for a in top_artists)
 
     @staticmethod
     @require_db
@@ -201,7 +203,7 @@ class Artist(DATMObject):
     @property
     @require_db
     def points(self):
-        pass
+        return self.history[0].points
 
     @property
     @require_db
