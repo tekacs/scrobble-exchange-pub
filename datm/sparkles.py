@@ -38,6 +38,7 @@ class Trophy(DATMObject):
         self.dbo = models.Trade(self.name, self.icon, self.description)
         self.session.db.add(self.dbo)
 
+    id = db.dbo_property('id')
     name = db.dbo_property('name')
     description = db.dbo_property('description')
     icon = db.dbo_property('icon')
