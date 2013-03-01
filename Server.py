@@ -73,7 +73,10 @@ class SEHandler(object):
                 session = datm.User.getSession(self._config, token)
                 
                 user = datm.User(self._config, name=session['name'])
-                user.create(money=20000, points=0)
+                
+                if not user.persisted:
+                    user.create(money=20000, points=0)
+                
                 user.vouch_for(session['key'])
                 
                 ret = AuthUser(name=User(name=user.name), 
