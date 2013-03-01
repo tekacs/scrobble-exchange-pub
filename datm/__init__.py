@@ -11,7 +11,8 @@ from config import DATMConfig, NoDataSourceException, NoDatabaseException, \
 from session import DATMSession, InvalidSessionException
 from sparkles import Trophy
 from trading import Trade, StockNotOwnedException, NoStockRemainingException
-from user import User, UserNotAuthenticatedException
+from user import User, InvalidAuthorisationException,\
+    UserNotAuthenticatedException
 from lfm.lastfm import TransientError, AuthenticationError, DataError,\
     ProgrammingError, ServiceError
 
@@ -33,6 +34,7 @@ __all__ = [
     'InvalidSessionException',
     'StockNotOwnedException',
     'NoStockRemainingException',
+    'InvalidAuthorisationException'
     'UserNotAuthenticatedException',
 
     'TransientError',
