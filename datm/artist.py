@@ -244,7 +244,7 @@ class Artist(DATMObject):
     @memoised_property
     @require_lastfm
     def similar(self):
-        return (partial_artist(self.config, lastfm_info=i)
+        return (partial_artist(self.config, i)
             for i in self.lastfm_info['similar']['artist'])
 
     @memoised_property
@@ -254,6 +254,7 @@ class Artist(DATMObject):
 
 def partial_artist(config, partial_info):
     return Artist(
+        config,
         lastfm_info=PartialDict(
             partial_info,
             populator=partial(
