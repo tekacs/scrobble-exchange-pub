@@ -96,7 +96,7 @@ class User(DATMObject):
     @staticmethod
     @require_lastfm
     def getSession(config, token):
-        return lfm.Auth.get_session(lastfm.params(
+        return lfm.Auth.get_session(lastfm.auth_params(
             config,
             token=token
         ))
