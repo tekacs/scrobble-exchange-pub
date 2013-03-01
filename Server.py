@@ -240,7 +240,8 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(self._config):
-            alist = datm.Artist.search(self._config, text, limit=n, page=page)
+            alist = datm.Artist.api_search(self._config, text, limit=n, 
+                                                                    page=page)
             
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
                                                                     a in alist]
