@@ -88,7 +88,6 @@ class User(DATMObject):
             if self.dbo is not None:
                 return True
         except NoDatabaseObjectException:
-            del self.dbo
             return False
 
     @memoised_property
