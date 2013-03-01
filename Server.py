@@ -69,11 +69,15 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config):
             try:
-                user = datm.User(self._config)
-                sessiontoken = user.getSession(self._config, token)
+                
+                session = user.getSession(_config, token)
+                
+                user = datm.user(_config, name=session['name'])
+                user.create(money=20000, points=0)
+                user.vouch_for(session['key'])
                 
                 ret = AuthUser(name=User(name=user.name), 
-                                                    session_key=sessiontoken)
+                               session_key=session['key'])
                 return ret
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
@@ -158,7 +162,10 @@ class SEHandler(object):
                 #ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                 #               points=a.points, dividend=a.dividend, 
                 #               ownedby=u.owns(a))
-                pass
+                a.create(100,500,768,230)
+                ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
+                               points=a.points, dividend=a.dividend, 
+                               ownedby=u.owns(a))
             
             if (u.owns(a)):
                 ret.price = int(a.price * 0.97)
@@ -226,7 +233,8 @@ class SEHandler(object):
                 #a.create(mechanics.no_remaining, mechanics.points, 
                 #mechanics.price, mechanics.dividend)
                 #ret.histvalue = a.history(self._config, after=time_utc_old)
-                pass
+                a.create(100,500,768,230)
+                ret.histvalue = a.history(self._config, after=time_utc_old)
             
             return ret
     
