@@ -96,10 +96,8 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config):
             if artist.mbid:
-                print 'not artist.mbid'
                 a = datm.Artist(self._config, mbid=artist.mbid)
             elif artist.name:
-                print 'not artist.name'
                 a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
@@ -348,11 +346,15 @@ class SEHandler(object):
             ret = UserData(user=basicu)
             ret.trades = []
             ret.stocks = []
-            ret.trophies = [Trophy(name=u.trophies.name,
-                                   description=u.trophies.description)]
+            ret.trophies = []
             ret.league = League(name=u.league.name,
                                 description=u.league.description,
                                 icon=u.league.icon)
+            
+            for t in u.trophies:
+                tr = Trophy(name=t.name, description=t.description)
+                
+                ret.trophies.append(tr)
             
             for t in u.trades:
                 a = Artist(mbid=t.Artist.mbid, name=t.Artist.name,
