@@ -23,7 +23,7 @@ def home(request):
     if request.user.is_authenticated():
         authorized_user = __authuser(request)
 
-        api_user_data = client.getUserData('fiwl')
+        api_user_data = client.getUserData('Sov1etRuss1a')
         
         user_data = models.UserData()
         user_data.stocks = []
