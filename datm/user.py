@@ -8,6 +8,7 @@ import models
 
 from util import db, lastfm
 from util.magic import memoised_property, underscore_property
+from lfm.lastfm import AuthenticationFailure
 from base import DATMObject, datm_setup, NoDatabaseObjectException
 from config import require_lastfm, require_db, require_data_source,\
     NoDatabaseException, NoLastFMException
@@ -24,16 +25,13 @@ class User(DATMObject):
                  config,
                  name=None,
                  dbo=None,
-                 lastfm_info=None,
-                 session_key=None):
+                 lastfm_info=None):
         if lastfm_info is not None:
             self.lastfm_info = lastfm_info
         if dbo is not None:
             self.dbo = dbo
         if name is not None:
             self.name = name
-
-        self.session_key = session_key
 
     # Primary Key
 
@@ -79,8 +77,19 @@ class User(DATMObject):
     @require_db
     def create(self, money, points):
         """Create a new DB Object and prepare it to be saved."""
-        self.dbo = models.User(self.name, self.session_key, money, points)
+        self.dbo = models.User(self.name, money, points)
         self.session.db.add(self.dbo)
+
+    @property
+    @require_db
+    def persisted(self):
+        """Check if a database object exists corresponding to this user."""
+        try:
+            if self.dbo is not None:
+                return True
+        except NoDatabaseException:
+            del self.dbo
+            return False
 
     @memoised_property
     @require_lastfm
@@ -96,10 +105,13 @@ class User(DATMObject):
     @staticmethod
     @require_lastfm
     def getSession(config, token):
-        return lfm.Auth.get_session(lastfm.auth_params(
-            config,
-            token=token
-        ))
+        try:
+            return lfm.Auth.get_session(lastfm.auth_params(
+                config,
+                token=token
+            ))
+        except AuthenticationFailure as e:
+            raise InvalidAuthorisationException(e.message)
 
     @staticmethod
     @require_db

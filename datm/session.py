@@ -36,10 +36,7 @@ class DATMSession(object):
 
     @property
     def db(self):
-        try:
-            return self._db
-        except AttributeError:
-            raise NoDatabaseException()
+        return self._db
 
 class InvalidSessionException(Exception):
     pass

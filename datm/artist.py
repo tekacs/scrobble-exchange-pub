@@ -129,6 +129,17 @@ class Artist(DATMObject):
         )
         self.session.add(self.dbo)
 
+    @property
+    @require_db
+    def persisted(self):
+        """Check if a database object exists corresponding to this artist."""
+        try:
+            if self.dbo is not None:
+                return True
+        except NoDatabaseException:
+            del self.dbo
+            return False
+
     @memoised_property
     @require_lastfm
     def lastfm_info(self):

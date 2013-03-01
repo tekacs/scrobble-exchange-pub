@@ -20,10 +20,7 @@ class DATMObject(object):
         The exception approach catches missing ``_session``s as well as missing
         ``db``s.
         """
-        try:
-            return self._session.db
-        except AttributeError:
-            return self._config.db
+        return self._config.db
 
     @property
     def lastfm(self):
@@ -32,10 +29,7 @@ class DATMObject(object):
         The exception approach catches missing ``_session``s as well as missing
         ``lastfm``s.
         """
-        try:
-            return self._session.db
-        except AttributeError:
-            return self._config.db
+        return self._config.lastfm
 
 def datm_setup(init):
     @wraps(init)
