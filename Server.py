@@ -97,7 +97,8 @@ class SEHandler(object):
             else:
                 raise DataError('Incorrect artist data')
                 
-            ret = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
+            ret = Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
+                         imgurls=a.images)
         
             return ret
     
