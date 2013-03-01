@@ -25,6 +25,8 @@ class League(DATMObject):
             self.icon = icon
             self.description = description
 
+    # Data Accessors & Create
+
     @memoised_property
     @require_db
     def dbo(self):
@@ -38,6 +40,16 @@ class League(DATMObject):
         self.dbo = models.League(self.name, self.icon, self.description)
         self.session.db.add(self.dbo)
 
+    # Static methods
+
+    @staticmethod
+    @require_db
+    def all(config):
+        pass
+
+    # Object interface
+
+    id = db.dbo_property('id')
     name = db.dbo_property('name')
     description = db.dbo_property('description')
     icon = db.dbo_property('icon')
