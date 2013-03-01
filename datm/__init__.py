@@ -8,6 +8,7 @@ from auth import Auth
 from base import DATMObject, UserIsLyingToYouException
 from config import DATMConfig, NoDataSourceException, NoDatabaseException, \
     NoLastFMException
+from league import League
 from session import DATMSession, InvalidSessionException
 from sparkles import Trophy
 from trading import Trade, StockNotOwnedException, NoStockRemainingException
@@ -19,6 +20,7 @@ from lfm.lastfm import TransientError, AuthenticationError, DataError,\
 __all__ = [
     'Artist',
     'Auth',
+    'League',
     'Trophy',
     'Trade',
     'User',
