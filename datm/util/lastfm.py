@@ -17,4 +17,4 @@ def params(config, dictargs=(), **kwargs):
 
 def auth_params(config, dictargs=(), **kwargs):
     kwargs.update(dictargs)
-    return config.lastfm.rb.auth(params(kwargs))
+    return config.lastfm.rb.auth(params(config, kwargs))
