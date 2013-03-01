@@ -70,7 +70,7 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             try:
                 
-                session = user.getSession(_config, token)
+                session = datm.user.getSession(_config, token)
                 
                 user = datm.user(_config, name=session['name'])
                 user.create(money=20000, points=0)
