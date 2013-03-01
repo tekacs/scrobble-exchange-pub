@@ -34,7 +34,7 @@ __all__ = [
     'InvalidSessionException',
     'StockNotOwnedException',
     'NoStockRemainingException',
-    'InvalidAuthorisationException'
+    'InvalidAuthorisationException',
     'UserNotAuthenticatedException',
 
     'TransientError',
