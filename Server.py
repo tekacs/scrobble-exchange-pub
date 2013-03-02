@@ -102,8 +102,7 @@ class SEHandler(object):
                 a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
-            
-            print a.name
+           
             ret = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
         
             return ret
@@ -252,8 +251,8 @@ class SEHandler(object):
             alist = datm.Artist.api_search(self._config, text, limit=n,
                                                                     page=page)
 
-            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
-                            imgurls=a.images) for a in alist]
+            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for a in 
+                                                                        alist]
             
             return ret
     
