@@ -158,7 +158,7 @@ class SEHandler(object):
                 ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                                points=a.points, dividend=a.dividend, 
                                ownedby=u.owns(a))
-            except NoDatabaseObjectException():
+            except datm.NoDatabaseObjectException():
                 #a.create(mechanics.no_remaining, mechanics.points, 
                 #mechanics.price, mechanics.dividend)
                 #ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
@@ -231,7 +231,7 @@ class SEHandler(object):
             ret = ArtistHistory()
             try:
                 ret.histvalue = a.history(self._config, after=time_utc_old)
-            except NoDatabaseObjectException():
+            except datm.NoDatabaseObjectException():
                 #a.create(mechanics.no_remaining, mechanics.points, 
                 #mechanics.price, mechanics.dividend)
                 #ret.histvalue = a.history(self._config, after=time_utc_old)
@@ -497,7 +497,7 @@ class SEHandler(object):
                 t = datm.trade(self._config, user=u, artist=a, 
 price=guarantee.price)
                 t.buy()
-            except NoStockRemainingException:
+            except datm.NoStockRemainingException:
                 raise TransientError('No stock remaining')
         
 
@@ -535,7 +535,7 @@ price=guarantee.price)
                 t = datm.trade(self._config, user=u, artist=a, 
 price=guarantee.price)
                 t.sell()
-            except StockNotOwnedException:
+            except datm.StockNotOwnedException:
                 raise TransientError('User cannot sell')
 
 #Create the databases
