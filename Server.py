@@ -251,11 +251,12 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(self._config):
-            alist = datm.Artist.api_search(self._config, text, limit=n, 
-                                                                    page=page)
+            alist = list(datm.Artist.api_search(self._config, text, limit=n,
+                                                                    page=page))
             first = None
             try:
                 alist.insert(0, datm.Artist(self._config, text))
+                alist.pop(-1)
             except datm.DataError:
                 pass
 
