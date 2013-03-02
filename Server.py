@@ -143,9 +143,9 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config):
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid, user=user)
+                a = datm.Artist(self._config, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name, user=user)
+                a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
@@ -437,9 +437,9 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config):
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid, user=user)
+                a = datm.Artist(self._config, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name, user=user)
+                a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
