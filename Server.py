@@ -187,7 +187,7 @@ class SEHandler(object):
             else:
                 raise DataError('Incorrect artist data')
 
-            b = ArtistBio(summary=a.summary, content=a.content)       
+            b = ArtistBio(summary=a.bio.summary, content=a.bio.content)       
            
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             ret = ArtistLFM(artist=r, streamable=a.streamable,
