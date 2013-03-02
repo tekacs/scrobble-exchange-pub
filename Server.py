@@ -158,9 +158,9 @@ class SEHandler(object):
             
             ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                                points=a.points, dividend=a.dividend, 
-                               ownedby=u.owns(a))
+                               ownedby=u.owns(self._config, a))
             
-            if (u.owns(a)):
+            if (u.owns(self._config,a)):
                 ret.price = int(a.price * 0.97)
             else:
                 ret.price = a.price
@@ -430,7 +430,7 @@ class SEHandler(object):
             
             u = datm.User(self._config, user.name)
             
-            if (u.owns(a)):
+            if (u.owns(self._config,a)):
                 price = int(a.price * 0.97)
             else:
                 price = a.price
