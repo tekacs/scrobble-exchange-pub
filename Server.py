@@ -75,8 +75,153 @@ class SEHandler(object):
                 user = datm.User(self._config, name=session['name'])
                 
                 if not user.persisted:
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+                    league = datm.League.all(_config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+=======
                     league = datm.League.all(self._config)(0)
                     user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
+=======
+                    league = datm.League.all(self._config)(0)
+                    user.create(money=20000, points=0, league=list(league))
+>>>>>>> External Changes
                 
                 user.vouch_for(session['key'])
                 
@@ -143,9 +288,9 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config):
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid, user=user)
+                a = datm.Artist(self._config, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name, user=user)
+                a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
@@ -251,11 +396,228 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(self._config):
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+
+            alist = datm.Artist.api_search(self._config, text, limit=n, 
+=======
             alist = datm.Artist.api_search(self._config, text, limit=n,
+>>>>>>> External Changes
                                                                     page=page)
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+<<<<<<< Local Changes
+            corr = datm.Artist.correct(self._config, )
+=======
+            c = datm.Artist.correct(self._config, )
+>>>>>>> External Changes
+=======
+            c = datm.Artist.correct(self._config, text)
+>>>>>>> External Changes
+=======
+            c = datm.Artist.correct(self._config, text)
+            if c[1]
+>>>>>>> External Changes
+=======
+            c = datm.Artist.correct(self._config, text)
+
+>>>>>>> External Changes
+=======
+            c = datm.Artist.correct(self._config, text)
+
+>>>>>>> External Changes
+=======
+            c = datm.Artist.correct(self._config, text)
+            if c['mbid'] is not None:
+
+>>>>>>> External Changes
+=======
+            c = datm.Artist.correct(self._config, text)
+
+>>>>>>> External Changes
+=======
+            c = datm.Artist.correct(self._config, text)
+            if c['name']
+>>>>>>> External Changes
+=======
+            c = datm.Artist.correct(self._config, text)
+
+>>>>>>> External Changes
+=======
+            try:
+                first = datm.Artist(self._config, text)
+
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+            except
+
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+            except
+
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+            except DataError:
+
+
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+            except datm.DataError:
+
+
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+            except datm.DataError:
+
+
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+            except datm.DataError:
+
+
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+            except datm.DataError:
+                pass
+
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+            except datm.DataError:
+                pass
+>>>>>>> External Changes
+            
+            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
+                            imgurls=a.images) for a in alist]
+=======
+            first = None
+            try:
+                first = datm.Artist(self._config, text)
+            except datm.DataError:
+                pass
+
 
             ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
                             imgurls=a.images) for a in alist]
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                alist.append(datm.Artist(self._config, text))
+            except datm.DataError:
+                pass
+
+            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
+                            imgurls=a.images) for a in alist]
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                alist.insert(datm.Artist(self._config, text))
+            except datm.DataError:
+                pass
+
+            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
+                            imgurls=a.images) for a in alist]
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                alist.insert(0, datm.Artist(self._config, text))
+            except datm.DataError:
+                pass
+
+            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
+                            imgurls=a.images) for a in alist]
+>>>>>>> External Changes
+=======
+            first = None
+            try:
+                alist.insert(0, datm.Artist(self._config, text))
+                alist.pop(-1)
+            except datm.DataError:
+                pass
+
+            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
+                            imgurls=a.images) for a in alist]
+>>>>>>> External Changes
+=======
+            alist = list(datm.Artist.api_search(self._config, text, limit=n,
+                                                                    page=page))
+            first = None
+            try:
+                alist.insert(0, datm.Artist(self._config, text))
+                alist.pop(-1)
+            except datm.DataError:
+                pass
+
+            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
+                            imgurls=a.images) for a in alist]
+>>>>>>> External Changes
+=======
+            alist = list(datm.Artist.api_search(self._config, text, limit=n,
+                                                                    page=page))
+
+            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
+                            imgurls=a.images) for a in alist]
+>>>>>>> External Changes
+=======
+
+            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
+                            imgurls=a.images) for a in alist]
+>>>>>>> External Changes
             
             return ret
     
@@ -272,7 +634,7 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             
             time_utc = time.mktime(datetime.utcnow().timetuple())
-            time_utc_old = time_utc - trange*24*60*60
+                
             
             alist = datm.Artist.top(self._config, limit=n, after=time_utc_old)
             
@@ -437,9 +799,9 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config):
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid, user=user)
+                a = datm.Artist(self._config, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name, user=user)
+                a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
