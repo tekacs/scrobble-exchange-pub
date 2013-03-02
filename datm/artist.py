@@ -32,8 +32,11 @@ class Artist(DATMObject):
             return
         if name is not None:
             correction = self.correct(self.config, name)
-            self.name = correction[0]
-            self.mbid = correction[1] or self.mbid
+            if correction:
+                self.name = correction['name']
+                self.mbid = correction['mbid'] or self.mbid
+            else:
+                self.name = name
 
     # Primary Keys
 
@@ -167,12 +170,11 @@ class Artist(DATMObject):
         ))
         if 'status' in correction:
             if correction['status'] == 'ok':
-                return name, None
+                return None
             else:
                 raise ValueError('Invalid response from last.fm API server!')
         else:
-            correction = correction['correction']['artist']
-            return correction['name'], correction['mbid']
+            return correction['correction']['artist']
 
     @staticmethod
     @require_lastfm
