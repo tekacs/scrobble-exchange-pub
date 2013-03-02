@@ -54,6 +54,9 @@ class UnauthorisedTokenError(AuthenticationError):
 class ExpiredTokenError(AuthenticationError):
     pass
 
+class InvalidParametersError(DataError):
+    pass
+
 class InvalidResourceError(DataError):
     pass
 
@@ -74,9 +77,6 @@ class InvalidMethodError(ProgrammingError):
     pass
 
 class InvalidFormatError(ProgrammingError):
-    pass
-
-class InvalidParametersError(ProgrammingError):
     pass
 
 class InvalidMethodSignatureError(ProgrammingError):
