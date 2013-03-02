@@ -251,14 +251,8 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(self._config):
-            alist = list(datm.Artist.api_search(self._config, text, limit=n,
-                                                                    page=page))
-            first = None
-            try:
-                alist.insert(0, datm.Artist(self._config, text))
-                alist.pop(-1)
-            except datm.DataError:
-                pass
+            alist = datm.Artist.api_search(self._config, text, limit=n,
+                                                                    page=page)
 
             ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
                             imgurls=a.images) for a in alist]
