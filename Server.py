@@ -75,7 +75,7 @@ class SEHandler(object):
                 user = datm.User(self._config, name=session['name'])
                 
                 if not user.persisted:
-                    league = datm.League.all(_config)(0)
+                    league = datm.League.all(self._config)(0)
                     user.create(money=20000, points=0, league=list(league))
                 
                 user.vouch_for(session['key'])
