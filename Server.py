@@ -389,14 +389,11 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             
             if trange == 1:
-                ulist = datm.User.top(self._config, limit=n, league=league.name,
-                                        period='daily')
+                ulist = datm.User.top(self._config, limit=n, period='daily')
             elif trange <= 7:
-                ulist = datm.User.top(self._config, limit=n, league=league.name,
-                                        period='weekly')
+                ulist = datm.User.top(self._config, limit=n, period='weekly')
             elif trange <= 31:
-                ulist = datm.User.top(self._config, limit=n, league=league.name,
-                                        period='monthly')
+                ulist = datm.User.top(self._config, limit=n, period='monthly')
             else:
                 raise DataError('Unusual time range selected')
             
