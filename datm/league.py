@@ -52,7 +52,7 @@ class League(DATMObject):
     @staticmethod
     @require_db
     def all(config):
-        query = db.query(models.League).distinct()
+        query = db.query(config, models.League).distinct()
         return (League(config, dbo=o) for o in query.all())
 
     # Object interface
