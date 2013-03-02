@@ -218,14 +218,12 @@ class SEHandler(object):
             time_utc_old = time_utc - n*24*60*60
             
             ret = ArtistHistory()
-            try:
-                ret.histvalue = a.history(self._config, after=time_utc_old)
-            except datm.NoDatabaseObjectException():
-                #a.create(mechanics.no_remaining, mechanics.points, 
-                #mechanics.price, mechanics.dividend)
-                #ret.histvalue = a.history(self._config, after=time_utc_old)
-                a.create(100,500,768,230)
-                ret.histvalue = a.history(self._config, after=time_utc_old)
+            
+            if not a.persisted:
+                a.create(750,100)
+                #a.create(mechanics.price, mechanics.no_remaining)
+            
+            ret.histvalue = a.history(self._config, after=time_utc_old)
             
             return ret
     
