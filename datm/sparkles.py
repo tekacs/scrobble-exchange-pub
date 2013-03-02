@@ -1,9 +1,12 @@
 __author__ = 'amar'
 
+from sqlalchemy.orm.exc import NoResultFound
+
 import models
 
 from util import db
-from base import DATMObject, datm_setup
+from util.magic import underscore_property
+from base import DATMObject, datm_setup, NoDatabaseObjectException
 from config import require_db
 from util.magic import memoised_property
 
@@ -21,24 +24,34 @@ class Trophy(DATMObject):
         elif id is not None:
             self.id = id
         else:
+            self.id = None
             self.name = name
             self.icon = icon
             self.description = description
 
+    # Data Accessors & Create
+
     @memoised_property
     @require_db
     def dbo(self):
-        return db.query(
-            self.config,
-            models.Trophy
-        ).filter(models.Trophy.id == self.id).one()
+        try:
+            return db.query(
+                self.config,
+                models.Trophy
+            ).filter(models.Trophy.id == self.id).one()
+        except NoResultFound:
+            raise NoDatabaseObjectException()
 
     @require_db
     def create(self):
         self.dbo = models.Trade(self.name, self.icon, self.description)
         self.session.db.add(self.dbo)
 
-    id = db.dbo_property('id')
+    # Static methods
+
+    # Object interface
+
+    id = underscore_property('id')
     name = db.dbo_property('name')
     description = db.dbo_property('description')
     icon = db.dbo_property('icon')

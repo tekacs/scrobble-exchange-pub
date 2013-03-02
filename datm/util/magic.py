@@ -16,8 +16,9 @@ def memoised_property(f):
     @property
     @functools.wraps(f)
     def wrapper(self):
-        v = getattr(self, name, None)
-        if v is None:
+        try:
+            v = getattr(self, name)
+        except AttributeError:
             v = f(self)
             setattr(self, name, v)
         return v
@@ -60,13 +61,11 @@ class PartialDict(dict):
     def __init__(self, partial_dict, populator):
         self.update(partial_dict)
         self.populator = populator
-        self.full = None
-        self.partial_get = super(PartialDict, self).__getitem__
+        self.direct_get = super(PartialDict, self).__getitem__
+        self.full = False
 
     def __getitem__(self, item):
-        if self.full is None:
-            if item in self.keys():
-                return self.partial_get(item)
-            else:
-                self.full = self.populator()
-        return self.full[item]
+        if not self.full:
+            if not item in self.keys():
+                self.update(self.populator())
+        return self.direct_get(item)

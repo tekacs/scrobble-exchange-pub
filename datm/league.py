@@ -1,9 +1,12 @@
 __author__ = 'amar'
 
+from sqlalchemy.orm.exc import NoResultFound
+
 import models
 
 from util import db
-from base import DATMObject, datm_setup
+from util.magic import underscore_property
+from base import DATMObject, datm_setup, NoDatabaseObjectException
 from config import require_db
 from util.magic import memoised_property
 
@@ -21,6 +24,7 @@ class League(DATMObject):
         elif id is not None:
             self.id = id
         else:
+            self.id = None
             self.name = name
             self.icon = icon
             self.description = description
@@ -30,10 +34,13 @@ class League(DATMObject):
     @memoised_property
     @require_db
     def dbo(self):
-        return db.query(
-            self.config,
-            models.League
-        ).filter(models.League.id == self.id).one()
+        try:
+            return db.query(
+                self.config,
+                models.League
+            ).filter(models.League.id == self.id).one()
+        except NoResultFound:
+            raise NoDatabaseObjectException()
 
     @require_db
     def create(self):
@@ -45,11 +52,12 @@ class League(DATMObject):
     @staticmethod
     @require_db
     def all(config):
-        pass
+        query = db.query(models.League).distinct()
+        return (League(config, dbo=o) for o in query.all())
 
     # Object interface
 
-    id = db.dbo_property('id')
+    id = underscore_property('id')
     name = db.dbo_property('name')
     description = db.dbo_property('description')
     icon = db.dbo_property('icon')
