@@ -102,9 +102,9 @@ class SEHandler(object):
                 a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
-                
-            ret = Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
-                         imgurls=a.images)
+            
+            print a.name
+            ret = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
         
             return ret
     
@@ -190,11 +190,9 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config):
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid,
-                                                session_key = user.session_key)
+                a = datm.Artist(self._config, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name,
-                                                session_key = user.session_key)
+                a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
 
