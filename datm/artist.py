@@ -194,7 +194,7 @@ class Artist(DATMObject):
     @staticmethod
     @require_db
     def top(config, limit=10, after=None):
-        query = db.query(models.Artist).order_by(
+        query = db.query(config, models.Artist).order_by(
             models.Artist.points.desc()
         ).limit(limit)
         return (Artist(config, dbo=a) for a in query.all())
