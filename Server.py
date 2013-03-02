@@ -230,8 +230,9 @@ class SEHandler(object):
     @rethrow
     def searchArtist(self, text, n, page):
         """
-        Returns a list of tuples of the price of the artist the past n days.
-        For new artists the empty list is returned.
+        returns a list of possible artists from a partial string. Ordered by 
+        decreasing relevance. List size is limited to n elements, and page 
+        returns the given page of results
 
         Parameters:
         - artist
@@ -311,7 +312,7 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(self._config):
-            tlist = datm.trade.recent(self._config, limit=n)
+            tlist = datm.Trade.recent(self._config, limit=n)
             
             ret = [Artist(mbid=t.mbid, name=t.name, imgurls=t.images) for
                                                                     t in tlist]
