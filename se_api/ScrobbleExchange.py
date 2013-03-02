@@ -3,7 +3,7 @@
 #
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 #
-#  options string: py:new_style
+#  options string: py:utf8strings,new_style
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
@@ -1461,7 +1461,7 @@ class apikey_result(object):
         break
       if fid == 0:
         if ftype == TType.STRING:
-          self.success = iprot.readString();
+          self.success = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -1476,7 +1476,7 @@ class apikey_result(object):
     oprot.writeStructBegin('apikey_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.STRING, 0)
-      oprot.writeString(self.success)
+      oprot.writeString(self.success.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1521,7 +1521,7 @@ class login_args(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.token = iprot.readString();
+          self.token = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -1536,7 +1536,7 @@ class login_args(object):
     oprot.writeStructBegin('login_args')
     if self.token is not None:
       oprot.writeFieldBegin('token', TType.STRING, 1)
-      oprot.writeString(self.token)
+      oprot.writeString(self.token.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2698,7 +2698,7 @@ class searchArtist_args(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.text = iprot.readString();
+          self.text = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -2723,7 +2723,7 @@ class searchArtist_args(object):
     oprot.writeStructBegin('searchArtist_args')
     if self.text is not None:
       oprot.writeFieldBegin('text', TType.STRING, 1)
-      oprot.writeString(self.text)
+      oprot.writeString(self.text.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.n is not None:
       oprot.writeFieldBegin('n', TType.I32, 2)
@@ -3709,7 +3709,7 @@ class getUserData_args(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.user = iprot.readString();
+          self.user = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -3724,7 +3724,7 @@ class getUserData_args(object):
     oprot.writeStructBegin('getUserData_args')
     if self.user is not None:
       oprot.writeFieldBegin('user', TType.STRING, 1)
-      oprot.writeString(self.user)
+      oprot.writeString(self.user.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -4144,7 +4144,7 @@ class getNearUsers_args(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.user = iprot.readString();
+          self.user = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -4159,7 +4159,7 @@ class getNearUsers_args(object):
     oprot.writeStructBegin('getNearUsers_args')
     if self.user is not None:
       oprot.writeFieldBegin('user', TType.STRING, 1)
-      oprot.writeString(self.user)
+      oprot.writeString(self.user.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

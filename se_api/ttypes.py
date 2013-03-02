@@ -3,7 +3,7 @@
 #
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 #
-#  options string: py:new_style
+#  options string: py:utf8strings,new_style
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
@@ -51,12 +51,12 @@ class Artist(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.mbid = iprot.readString();
+          self.mbid = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
-          self.name = iprot.readString();
+          self.name = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 3:
@@ -64,8 +64,8 @@ class Artist(object):
           self.imgurls = {}
           (_ktype1, _vtype2, _size0 ) = iprot.readMapBegin() 
           for _i4 in xrange(_size0):
-            _key5 = iprot.readString();
-            _val6 = iprot.readString();
+            _key5 = iprot.readString().decode('utf-8')
+            _val6 = iprot.readString().decode('utf-8')
             self.imgurls[_key5] = _val6
           iprot.readMapEnd()
         else:
@@ -82,18 +82,18 @@ class Artist(object):
     oprot.writeStructBegin('Artist')
     if self.mbid is not None:
       oprot.writeFieldBegin('mbid', TType.STRING, 1)
-      oprot.writeString(self.mbid)
+      oprot.writeString(self.mbid.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.name is not None:
       oprot.writeFieldBegin('name', TType.STRING, 2)
-      oprot.writeString(self.name)
+      oprot.writeString(self.name.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.imgurls is not None:
       oprot.writeFieldBegin('imgurls', TType.MAP, 3)
       oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.imgurls))
       for kiter7,viter8 in self.imgurls.items():
-        oprot.writeString(kiter7)
-        oprot.writeString(viter8)
+        oprot.writeString(kiter7.encode('utf-8'))
+        oprot.writeString(viter8.encode('utf-8'))
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -229,12 +229,12 @@ class ArtistBio(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.summary = iprot.readString();
+          self.summary = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
-          self.content = iprot.readString();
+          self.content = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -249,11 +249,11 @@ class ArtistBio(object):
     oprot.writeStructBegin('ArtistBio')
     if self.summary is not None:
       oprot.writeFieldBegin('summary', TType.STRING, 1)
-      oprot.writeString(self.summary)
+      oprot.writeString(self.summary.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.content is not None:
       oprot.writeFieldBegin('content', TType.STRING, 2)
-      oprot.writeString(self.content)
+      oprot.writeString(self.content.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -480,7 +480,7 @@ class ArtistLFM(object):
           self.tags = []
           (_etype28, _size25) = iprot.readListBegin()
           for _i29 in xrange(_size25):
-            _elem30 = iprot.readString();
+            _elem30 = iprot.readString().decode('utf-8')
             self.tags.append(_elem30)
           iprot.readListEnd()
         else:
@@ -532,7 +532,7 @@ class ArtistLFM(object):
       oprot.writeFieldBegin('tags', TType.LIST, 5)
       oprot.writeListBegin(TType.STRING, len(self.tags))
       for iter37 in self.tags:
-        oprot.writeString(iter37)
+        oprot.writeString(iter37.encode('utf-8'))
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.similar is not None:
@@ -703,17 +703,17 @@ class Trophy(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.name = iprot.readString();
+          self.name = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
-          self.description = iprot.readString();
+          self.description = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.STRING:
-          self.challenge = iprot.readString();
+          self.challenge = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -728,15 +728,15 @@ class Trophy(object):
     oprot.writeStructBegin('Trophy')
     if self.name is not None:
       oprot.writeFieldBegin('name', TType.STRING, 1)
-      oprot.writeString(self.name)
+      oprot.writeString(self.name.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.description is not None:
       oprot.writeFieldBegin('description', TType.STRING, 2)
-      oprot.writeString(self.description)
+      oprot.writeString(self.description.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.challenge is not None:
       oprot.writeFieldBegin('challenge', TType.STRING, 3)
-      oprot.writeString(self.challenge)
+      oprot.writeString(self.challenge.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -793,17 +793,17 @@ class League(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.name = iprot.readString();
+          self.name = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
-          self.description = iprot.readString();
+          self.description = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.STRING:
-          self.icon = iprot.readString();
+          self.icon = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -818,15 +818,15 @@ class League(object):
     oprot.writeStructBegin('League')
     if self.name is not None:
       oprot.writeFieldBegin('name', TType.STRING, 1)
-      oprot.writeString(self.name)
+      oprot.writeString(self.name.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.description is not None:
       oprot.writeFieldBegin('description', TType.STRING, 2)
-      oprot.writeString(self.description)
+      oprot.writeString(self.description.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.icon is not None:
       oprot.writeFieldBegin('icon', TType.STRING, 3)
-      oprot.writeString(self.icon)
+      oprot.writeString(self.icon.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -881,7 +881,7 @@ class User(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.name = iprot.readString();
+          self.name = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -891,7 +891,7 @@ class User(object):
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.STRING:
-          self.profileimage = iprot.readString();
+          self.profileimage = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -906,7 +906,7 @@ class User(object):
     oprot.writeStructBegin('User')
     if self.name is not None:
       oprot.writeFieldBegin('name', TType.STRING, 1)
-      oprot.writeString(self.name)
+      oprot.writeString(self.name.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.points is not None:
       oprot.writeFieldBegin('points', TType.I32, 2)
@@ -914,7 +914,7 @@ class User(object):
       oprot.writeFieldEnd()
     if self.profileimage is not None:
       oprot.writeFieldBegin('profileimage', TType.STRING, 3)
-      oprot.writeString(self.profileimage)
+      oprot.writeString(self.profileimage.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -975,7 +975,7 @@ class AuthUser(object):
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
-          self.session_key = iprot.readString();
+          self.session_key = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 3:
@@ -999,7 +999,7 @@ class AuthUser(object):
       oprot.writeFieldEnd()
     if self.session_key is not None:
       oprot.writeFieldBegin('session_key', TType.STRING, 2)
-      oprot.writeString(self.session_key)
+      oprot.writeString(self.session_key.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.money is not None:
       oprot.writeFieldBegin('money', TType.I32, 3)
@@ -1300,7 +1300,7 @@ class Guarantee(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.elephant = iprot.readString();
+          self.elephant = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -1331,7 +1331,7 @@ class Guarantee(object):
     oprot.writeStructBegin('Guarantee')
     if self.elephant is not None:
       oprot.writeFieldBegin('elephant', TType.STRING, 1)
-      oprot.writeString(self.elephant)
+      oprot.writeString(self.elephant.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.artist is not None:
       oprot.writeFieldBegin('artist', TType.STRUCT, 2)
@@ -1398,7 +1398,7 @@ class TransientError(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.message = iprot.readString();
+          self.message = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -1413,7 +1413,7 @@ class TransientError(TException):
     oprot.writeStructBegin('TransientError')
     if self.message is not None:
       oprot.writeFieldBegin('message', TType.STRING, 1)
-      oprot.writeString(self.message)
+      oprot.writeString(self.message.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1465,7 +1465,7 @@ class AuthenticationError(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.message = iprot.readString();
+          self.message = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -1480,7 +1480,7 @@ class AuthenticationError(TException):
     oprot.writeStructBegin('AuthenticationError')
     if self.message is not None:
       oprot.writeFieldBegin('message', TType.STRING, 1)
-      oprot.writeString(self.message)
+      oprot.writeString(self.message.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1532,7 +1532,7 @@ class DataError(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.message = iprot.readString();
+          self.message = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -1547,7 +1547,7 @@ class DataError(TException):
     oprot.writeStructBegin('DataError')
     if self.message is not None:
       oprot.writeFieldBegin('message', TType.STRING, 1)
-      oprot.writeString(self.message)
+      oprot.writeString(self.message.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1599,7 +1599,7 @@ class ProgrammingError(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.message = iprot.readString();
+          self.message = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -1614,7 +1614,7 @@ class ProgrammingError(TException):
     oprot.writeStructBegin('ProgrammingError')
     if self.message is not None:
       oprot.writeFieldBegin('message', TType.STRING, 1)
-      oprot.writeString(self.message)
+      oprot.writeString(self.message.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1666,7 +1666,7 @@ class ServiceError(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.message = iprot.readString();
+          self.message = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -1681,7 +1681,7 @@ class ServiceError(TException):
     oprot.writeStructBegin('ServiceError')
     if self.message is not None:
       oprot.writeFieldBegin('message', TType.STRING, 1)
-      oprot.writeString(self.message)
+      oprot.writeString(self.message.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
