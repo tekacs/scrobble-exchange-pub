@@ -152,19 +152,11 @@ class SEHandler(object):
             
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             
+            if not a.persisted:
+                a.create(750, 100)
+                #a.create(mechanics.price, mechanics.no_remaining)
             
-            try:
-                ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
-                               points=a.points, dividend=a.dividend, 
-                               ownedby=u.owns(a))
-            except datm.NoDatabaseObjectException():
-                #a.create(mechanics.no_remaining, mechanics.points, 
-                #mechanics.price, mechanics.dividend)
-                #ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
-                #               points=a.points, dividend=a.dividend, 
-                #               ownedby=u.owns(a))
-                a.create(100,500,768,230)
-                ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
+            ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                                points=a.points, dividend=a.dividend, 
                                ownedby=u.owns(a))
             
