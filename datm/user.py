@@ -190,7 +190,10 @@ class User(DATMObject):
     @property
     @require_db
     def league(self):
-        return League(self.config, dbo=self.dbo.league)
+        o = self.dbo.league
+        if o is None:
+            raise NoDatabaseObjectException()
+        return League(self.config, dbo=o)
 
     @memoised_property
     @require_lastfm
