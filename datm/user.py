@@ -75,7 +75,7 @@ class User(DATMObject):
             raise NoDatabaseObjectException()
 
     @require_db
-    def create(self, money, points, league):
+    def create(self, money, points, league=None):
         """Create a new DB Object and prepare it to be saved."""
         self.dbo = models.User(self.name, money, points)
         self.dbo.league = league
