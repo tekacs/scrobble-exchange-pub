@@ -5,7 +5,8 @@ __email__ = 'mail@amarsood.com'
 
 from artist import Artist
 from auth import Auth
-from base import DATMObject, UserIsLyingToYouException
+from base import DATMObject, UserIsLyingToYouException,\
+    NoDatabaseObjectException
 from config import DATMConfig, NoDataSourceException, NoDatabaseException, \
     NoLastFMException
 from league import League
@@ -30,6 +31,7 @@ __all__ = [
     'DATMSession',
 
     'UserIsLyingToYouException',
+    'NoDatabaseObjectException',
     'NoDataSourceException',
     'NoDatabaseException',
     'NoLastFMException',
