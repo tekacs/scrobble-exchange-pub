@@ -215,7 +215,7 @@ class SEHandler(object):
                 raise DataError('Incorrect artist data')
             
             time_utc = time.mktime(datetime.utcnow().timetuple())
-            time_utc_old = time_utc - n*24*60*60
+            time_utc_old = int(time_utc - n*24*60*60)
             
             ret = ArtistHistory()
             
