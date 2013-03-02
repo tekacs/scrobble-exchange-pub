@@ -10,7 +10,7 @@ class League(base.Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(50), index=True, unique=True, nullable=False)
-    desc = Column(String(255), nullable=False)
+    description = Column(String(255), nullable=False)
     icon = Column(String(255), nullable=False)
 
     users = relationship(
@@ -18,8 +18,8 @@ class League(base.Base):
         backref=backref("league", uselist=False)
     )
 
-    def __init__(self, name, desc, icon):
+    def __init__(self, name, description, icon):
         """Create a new, empty ``League``, ready to contain ``User``s."""
         self.name = name
-        self.desc = desc
+        self.description = description
         self.icon = icon
