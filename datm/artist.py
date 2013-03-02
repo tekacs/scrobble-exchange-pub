@@ -201,7 +201,7 @@ class Artist(DATMObject):
 
     @staticmethod
     @require_db
-    def most_traded(limit=10):
+    def most_traded(config, limit=10):
         # TODO: this! (group by & func.count)
         pass
 
