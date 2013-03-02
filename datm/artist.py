@@ -184,16 +184,34 @@ class Artist(DATMObject):
             artist=name,
             limit=limit,
             page=page
-        ))['artistmatches']['artist']
-        results = results if type(results) is list else [results]
+        ))['artistmatches']
+
+        if type(results) is dict:
+            results = results['artist']
+            if type(results) is list:
+                pass
+            elif type(results) is dict:
+                results = [results]
+        else:
+            results = []
+
         return (partial_artist(config, a) for a in results)
 
     @staticmethod
     @require_lastfm
     def popular(config, limit=10):
-        top_artists = lfm.Chart.get_top_artists(lastfm.params(config))['artist']
-        top_artists = top_artists if type(top_artists) is list else [top_artists]
-        return (partial_artist(config, a) for a in top_artists)
+        results = lfm.Chart.get_top_artists(lastfm.params(config, limit=limit))
+
+        if type(results) is dict:
+            results = results['artist']
+            if type(results) is list:
+                pass
+            elif type(results) is dict:
+                results = [results]
+        else:
+            results = []
+
+        return (partial_artist(config, a) for a in results)
 
     @staticmethod
     @require_db
