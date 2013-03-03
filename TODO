@@ -1,0 +1,5 @@
+- return placeholder image in autocomplete if no image is found for an artist
+- return autocompleted artist based on user's input
+    - remove all artists from search with no mbid (both autocomplete and full search)
+
+- ensure all variables requested inside html templates are passed in from api
