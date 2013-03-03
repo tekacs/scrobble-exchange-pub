@@ -10,12 +10,18 @@
 {% endblock above_main %}
 
 {% block main %}
+
+    <div class="above-graph">
+        <dl class="sub-nav">
+          <dt>Graph view:</dt>
+          <dd class="active" ><a class="chart-switch" data-chart="money" href="#">Prices</a></dd>
+          <dd><a class="chart-switch" data-chart="points" href="#">Points</a></dd>
+        </dl>
+        <div id="legend"></div>
+    </div>
+
 	<div id="chart_container">
 		<div id="chart"></div>
-        <div id="legend"></div>
-        <div class="chart-links">
-            <a href="#" class="chart-switch selected" data-chart="money">Market price &amp; Dividends</a> | <a href="#" class="chart-switch" data-chart="points">Points</a>
-        </div>
 	</div>
 
     <p class="artist-bio">

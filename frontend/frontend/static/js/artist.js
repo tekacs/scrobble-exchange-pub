@@ -82,7 +82,7 @@ window.SE.Artist = {
 
         var graph = new Rickshaw.Graph.Ajax( {
           element: document.getElementById("chart"),
-          width: 620,
+          width: 640,
           height: 300,
           renderer: 'line',
           dataURL: '/artist/history/?artist_id=' + window.SE.Artist.mbid + '&days=7&field=points',
@@ -241,10 +241,10 @@ jQuery(document).ready(function($) {
     window.SE.Artist.drawMoneyGraph();
 
     $('a.chart-switch').on('click', function(){
-      var isSelected = $(this).hasClass('selected');
+      var isSelected = $(this).parent().hasClass('active');
       var field = $(this).data('chart');
       if (!isSelected){
-        $(this).addClass('selected').siblings().removeClass('selected');
+        $(this).parent().addClass('active').siblings().removeClass('active');
         if (field === 'money') {
           window.SE.Artist.drawMoneyGraph();
         } else if (field === 'points') {
@@ -253,7 +253,9 @@ jQuery(document).ready(function($) {
       }
     });
 
-    $('#buy-sell-modal .success').on('click', window.SE.Artist.makeTransaction($('#buy-sell-modal .buy-sell').text()));
+    $('#buy-sell-modal .success').on('click', function(){
+      window.SE.Artist.makeTransaction($('#buy-sell-modal .buy-sell').text());
+    });
 
     $("#buy-button, #sell-button").click(function() {
         var elementID = $(this).attr('id');
@@ -278,7 +280,7 @@ jQuery(document).ready(function($) {
               );
           },
           "opened": function() {
-              window.SE.Artist.getArtistPriceGuarantee(window.Artist.mbid);
+              window.SE.Artist.getArtistPriceGuarantee(window.SE.Artist.mbid);
           },
           "closed": function() {
               window.clearTimeout(window.SE.price_countdown);
