@@ -21,3 +21,15 @@ class Auth(DATMObject):
     def secret(self, value):
         m = db.query(self.config, models.Internal.secret).one()
         m.secret = value
+
+    @property
+    @require_db
+    def destroy(self):
+        q = db.query(self.config, models.Internal)
+        db.delete(self.config, q.one())
+
+    @property
+    @require_db
+    def create(self, secret):
+        o = models.Internal(secret=secret)
+        db.add(self.config, o)
