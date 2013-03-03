@@ -5,7 +5,6 @@ from sqlalchemy.orm.exc import NoResultFound
 import models
 
 from util import db
-from util.magic import underscore_property
 from base import DATMObject, datm_setup, NoDatabaseObjectException
 from config import require_db
 from util.magic import memoised_property
@@ -14,17 +13,15 @@ class League(DATMObject):
     @datm_setup
     def __init__(self,
                  config,
-                 id=None,
+                 uid=None,
                  name=None,
                  icon=None,
                  description=None,
                  dbo=None):
         if dbo is not None:
             self.dbo = dbo
-        elif id is not None:
-            self.id = id
         else:
-            self.id = None
+            self.uid = uid
             self.name = name
             self.icon = icon
             self.description = description
@@ -38,7 +35,7 @@ class League(DATMObject):
             return db.query(
                 self.config,
                 models.League
-            ).filter(models.League.id == self.id).one()
+            ).filter(models.League.uid == self.uid).one()
         except NoResultFound:
             raise NoDatabaseObjectException()
 
@@ -57,7 +54,7 @@ class League(DATMObject):
 
     # Object interface
 
-    id = underscore_property('id')
+    uid = db.dbo_property('uid')
     name = db.dbo_property('name')
     description = db.dbo_property('description')
     icon = db.dbo_property('icon')

@@ -8,7 +8,7 @@ import base
 class League(base.Base):
     __tablename__ = 'leagues'
 
-    id = Column(Integer, primary_key=True)
+    uid = Column(String, primary_key=True)
     name = Column(String(50), index=True, unique=True, nullable=False)
     description = Column(String(255), nullable=False)
     icon = Column(String(255), nullable=False)
@@ -18,8 +18,9 @@ class League(base.Base):
         backref=backref("league", uselist=False)
     )
 
-    def __init__(self, name, description, icon):
+    def __init__(self, uid, name, description, icon):
         """Create a new, empty ``League``, ready to contain ``User``s."""
+        self.uid = uid
         self.name = name
         self.description = description
         self.icon = icon
