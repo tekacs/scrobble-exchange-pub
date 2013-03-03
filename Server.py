@@ -148,8 +148,6 @@ class SEHandler(object):
             else:
                 raise DataError('Incorrect artist data')
             
-            u = datm.User(self._config, user.name)
-            
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             
             if not a.persisted:
@@ -157,13 +155,16 @@ class SEHandler(object):
                 #a.create(mechanics.price, mechanics.no_remaining)
             
             ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
-                               points=a.points, dividend=a.dividend, 
-                               ownedby=u.owns(self._config, a))
+                               points=a.points, dividend=a.dividend)
             
-            if (u.owns(self._config,a)):
-                ret.price = int(a.price * 0.97)
-            else:
+            #Empty user sent, special case to mean not logged in
+            if not user.name:
+                ret.ownedby = False
                 ret.price = a.price
+            else
+                u = datm.User(self._config, user.name)
+                ret.ownedby = u.owns(self._config, a)
+                ret.price = a.price * (1 if u.owns(_config,a) else 0.97)
             
             return ret
     
