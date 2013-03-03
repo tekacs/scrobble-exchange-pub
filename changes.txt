@@ -1,0 +1,3 @@
+Changes required from API:
+1) For all charting functions, return ArtistSE objects rather than Artist objects
+2) Add getRecommendedArtists function
