@@ -46,7 +46,10 @@ def rethrow(f):
         try:
             return f(*args, **kwargs)
         except tuple(exceptions.keys()) as e:
-            raise exceptions[e](e.message)
+            for p in e.mro():
+                if e in exceptions:
+                    raise exceptions[e](e.message)
+            raise e
     
     return inner
 
