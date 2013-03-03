@@ -41,13 +41,25 @@
                 <li class="toggle-topbar"><a href="#"></a></li>
               </ul>
               <ul class="right">
-                <li>
                     {% if user.is_authenticated %}
-                        <a href="#">Logged in as {{ user.username }}</a>
+                    <li class="money">${{ user.money }}</li>
+                    <li class="points">{{ user.points }} points</li>
+                    <li class="has-dropdown">
+                        <div class="user-profile-link">
+                            <a href="http://last.fm/user/{{ user.username }}/"><img src="{{ user.profileimage }}"></a>
+                            <a href="http://last.fm/user/{{ user.username }}/" class="username">{{ user.username }}</a>
+                        </div>
+                        <ul class="dropdown">
+                          <li><a href="#">Reset</a></li>
+                          <li class="divider"></li>
+                          <li><a href="{% url lastfmauth_logout %}">Logout</a></li>
+                        </ul>
+                    </li>
                     {% else %}
-                        <a href="{% url lastfmauth_login%}?next={{current_path}}">Login using your Last.fm account</a>
+                    <li>
+                        <a href="{% url lastfmauth_login %}?next={{current_path}}">Login using your Last.fm account</a>
+                    </li>
                     {% endif %}
-                </li>
               </ul>
               <div class="header-promo"><p>Welcome to Scrobble Exchange!</p></div>
               <div class="header-search">
