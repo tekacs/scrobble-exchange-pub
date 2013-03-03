@@ -31,8 +31,6 @@ db_args = {
     'max_overflow': None
 }
 
-from functools import wraps as _wraps
-
 def rethrow(f):
     exceptions = {
         datm.TransientError: TransientError,
@@ -46,7 +44,10 @@ def rethrow(f):
         try:
             return f(*args, **kwargs)
         except tuple(exceptions.keys()) as e:
-            raise exceptions[e](e.message)
+            for p in e.mro():
+                if p in exceptions:
+                    raise exceptions[p](e.message)
+            raise e
     
     return inner
 
