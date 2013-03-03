@@ -144,35 +144,23 @@ def get_leaderboard(request):
 
 ############ Artist stuff ############
 def artists(request):
-    authorized_user = __authuser(request)
-    artist1 = ttypes.Artist(name = 'Iron Maiden')
-    artist2 = ttypes.Artist(name = 'Foo Fighters')
-    artistlist = [artist1, artist2]
+    NUM_CHARTS = 5
+    TIME_RANGE = 7
+    user = _user(request)
 
-    api_top_artists = client.getSETop(5, 5)
-    top_SE_artists = []
-    for i in api_top_artists:
-        a = client.getArtistSE(i, authorized_user)
-        artist = {'name': i.name, 'imgurls': i.imgurls}
-        top_SE_artists.append({'artist':artist, 'price': a.price, 'points': 
-        a.points})
+    top_SE_artists = client.getSETop(NUM_CHARTS,TIME_RANGE, user) #Returns Artists
+    top_traded_artists = client.getTradedArtists(NUM_CHARTS, user) #Returns Artists
+
+    # TODO: The API needs to implement this function
+    # recommended_artists = client.getRecommendedArtists
     
-    rising_SE_artists = list(top_SE_artists)
-    random.shuffle(rising_SE_artists)
-    
-    recommended_artists = list(top_SE_artists)
-    random.shuffle(recommended_artists)
-    
-    popular_LFM_artists = list(top_SE_artists)
-    random.shuffle(popular_LFM_artists)
-    
-    recently_traded_artists = list(top_SE_artists)
-    random.shuffle(recently_traded_artists)
+    popular_LFM_artists = client.getLFMTop(NUM_CHARTS, user)              #Returns Artists
+    recently_traded_artists = client.getRecentTrades(NUM_CHARTS, user)    #Returns Artists
+
 
     return render_to_response('artists.html', {
-        'artistlist': artistlist,
         'top_SE_artists': top_SE_artists,
-        'top_traded_artists': reversed(top_SE_artists),
+        'top_traded_artists': top_traded_artists,
         'popular_LFM_artists': popular_LFM_artists,
         'recommended_artists': recommended_artists,
         'recently_traded_artists': recently_traded_artists
@@ -181,6 +169,7 @@ def artists(request):
 def artist_single(request, artistname):
     #TODO: Fix bio
     #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
+    #TODO: Check name and redirect if needed
     if (artistname == ''):
         return redirect('artists')
 
@@ -191,9 +180,11 @@ def artist_single(request, artistname):
     artist_se = client.getArtistSE(artist_basic, authorized_user)
     artist_lfm = client.getArtistLFM(artist_basic, authorized_user)
     
-    artist = {'name':artist_basic.name, 
-            'bio':{'summary': artist_lfm.bio.summary}, 'similar': 
-            artist_lfm.similar}
+    artist = {
+                'name':artist_basic.name, 
+                'bio': {'summary': artist_lfm.bio.summary}, 
+                'similar': artist_lfm.similar
+            }
     
     artist_sse = {'artist': artist, 'ownedby': artist_se.ownedby, 
                 'price': artist_se.price, 'points': artist_se.points, 
@@ -358,3 +349,9 @@ def _authuser(request):
         return ttypes.AuthUser(name=ttypes.User(request.user.username), session_key=request.user.first_name)
     else:
         return None
+
+def _user(request):
+    if request.user.is_authenticated:
+        return ttypes.User(request.user.username)
+    else:
+        return ttypes.User('')
