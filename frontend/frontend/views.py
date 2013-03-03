@@ -169,31 +169,38 @@ def artists(request):
     })
 
 def artist_single(request, artistname):
-    #TODO: Fix bio
     #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
     #TODO: Check name and redirect if needed
     if (artistname == ''):
         return redirect('artists')
 
-    authorized_user = _authuser(request)
+    user = _user(request)
 
-    artist_basic = client.getArtist(ttypes.Artist(mbid = '', name = 
-                    artistname))
-    artist_se = client.getArtistSE(artist_basic, authorized_user)
-    artist_lfm = client.getArtistLFM(artist_basic, authorized_user)
+    artist_basic = client.getArtist(ttypes.Artist(mbid = '', name = artistname))
+    artist_se = client.getArtistSE(artist_basic, user)
+    artist_lfm = client.getArtistLFM(artist_basic, user)
+
+    returndata = []
+    returndata.update(vars(artist_basic))
+    returndata.update(vars(artist_se))
+    returndata.update(vars(artist_lfm))
     
-    artist = {
-                'name':artist_basic.name, 
-                'bio': {'summary': artist_lfm.bio.summary}, 
-                'similar': artist_lfm.similar
-            }
+    # artist = {
+    #             'name':artist_basic.name, 
+    #             'bio': {'summary': artist_lfm.bio.summary}, 
+    #             'similar': artist_lfm.similar
+    #         }
     
-    artist_sse = {'artist': artist, 'ownedby': artist_se.ownedby, 
-                'price': artist_se.price, 'points': artist_se.points, 
-                'dividends': artist_se.dividend}
+    # artist_sse = {
+    #                 'artist': artist, 
+    #                 'ownedby': artist_se.ownedby, 
+    #                 'price': artist_se.price, 
+    #                 'points': artist_se.points, 
+    #                 'dividends': artist_se.dividend
+    #             }
 
     return render_to_response('artist_single.html', {
-        'artist_SE':artist_sse}, context_instance=RequestContext(request))
+        'artist':returndata}, context_instance=RequestContext(request))
 
 ''' Sample URL: http://127.0.0.1:8000/artist/history/?artist_id=0383dadf-2a4e-4d10-a46a-e9e041da8eb3&days=2'''
 @json_response()
@@ -366,7 +373,3 @@ def _user(request):
         return ttypes.User(request.user.username)
     else:
         return ttypes.User('')
-
-def authorize_ajax_calls(request):
-    if not request.user.is_authenticated():
-        return HttpResponseForbidden
