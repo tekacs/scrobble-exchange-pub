@@ -265,8 +265,8 @@ class SEHandler(object):
             
             alist = datm.Artist.top(self._config, limit=n, after=time_utc_old)
             
-            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
-                                                                    a in alist]
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), User(''))
+                                                                for a in alist]
 
             return ret
     
@@ -283,8 +283,8 @@ class SEHandler(object):
             
             alist = datm.Artist.popular(self._config, limit=n)
             
-            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
-                                                                    a in alist]
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), User(''))
+                                                                for a in alist]
             
             return ret
     
@@ -299,8 +299,8 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             alist = datm.Artist.most_traded(self._config, limit=n)
             
-            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
-                                                                    a in alist]
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), User(''))
+                                                                for a in alist]
 
             return ret
     
@@ -315,8 +315,8 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             tlist = datm.Trade.recent(self._config, limit=n)
             
-            ret = [Artist(mbid=t.mbid, name=t.name, imgurls=t.images) for
-                                                                    t in tlist]
+            ret = [self.getArtistSE(Artist(mbid=t.mbid, name=t.name), User(''))
+                                                                for t in tlist]
             
             return ret
     

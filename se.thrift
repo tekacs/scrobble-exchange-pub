@@ -213,24 +213,24 @@ DataError d, 4: ProgrammingError p, 5: ServiceError s),
     
     /** Returns a list of the n top SE artists by decreasing value. Trange is 
         the number of days the leaderboard is over */
-    list<Artist> getSETop (1: required i32 n, 2: required i32 trange) throws 
+    list<ArtistSE> getSETop (1: required i32 n, 2: required i32 trange) throws 
 (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
 ProgrammingError p, 5: ServiceError s),
     
     /** Returns a list of the n top last.fm artists by decreasing value. */
-    list<Artist> getLFMTop (1: required i32 n) throws (1: TransientError t, 2: 
-AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: ServiceError 
-s),
+    list<ArtistSE> getLFMTop (1: required i32 n) throws (1: TransientError t, 
+2: AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
+ServiceError s),
     
     /** Returns a list of the n most traded artists by decreasing value. */
-    list<Artist> getTradedArtists (1: required i32 n) throws (1: TransientError 
-t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
-ServiceError s),
+    list<ArtistSE> getTradedArtists (1: required i32 n) throws (1: 
+TransientError t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError 
+p, 5: ServiceError s),
     
     /** Returns a list of the n most recent trades */
-    list<Artist> getRecentTrades (1: required i32 n) throws (1: TransientError 
-t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
-ServiceError s),
+    list<ArtistSE> getRecentTrades (1: required i32 n) throws (1: 
+TransientError t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError 
+p, 5: ServiceError s),
     
     # User
    
