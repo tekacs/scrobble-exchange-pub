@@ -180,13 +180,18 @@ def artists(request):
 
 def artist_single(request, artistname):
     #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
-    #TODO: Check name and redirect if needed
+    
     if (artistname == ''):
         return redirect('artists')
 
     user = _user(request)
 
     artist_basic = client.getArtist(ttypes.Artist(mbid = '', name = artistname))
+
+    # Check name and redirect if needed
+    if artist_basic.name != artistname:
+        return redirect('artist_single', artist_basic, permanent=true)
+
     artist_se = client.getArtistSE(artist_basic, user)
     artist_lfm = client.getArtistLFM(artist_basic, user)
 
