@@ -47,7 +47,10 @@ def dbo_property(name):
     @property
     def prop(self):
         target = failover(self)
-        return getattr(target[0], target[1])
+        try:
+            return getattr(target[0], target[1])
+        except AttributeError:
+            raise NoDatabaseObjectException()
     @prop.setter
     def prop(self, value):
         target = failover(self)
