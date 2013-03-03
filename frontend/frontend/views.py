@@ -29,15 +29,25 @@ def home(request):
         user_data.stocks = []
         
         for artistse in api_user_data.stocks:
-            a = {'name': artistse.artist.name, 'imgurls': 
-                                                        artistse.artist.imgurls}
-            user_data.stocks.append({'artist': a, 'price': artistse.price,
-                            'points': artistse.price, 'dividend':artistse.dividend})
+            a = {
+                    'name': artistse.artist.name, 
+                    'imgurls': artistse.artist.imgurls
+                }
+
+            user_data.stocks.append(
+                {
+                    'artist': a, 
+                    'price': artistse.price,
+                    'points': artistse.price, 
+                    'dividend':artistse.dividend
+                }
+            )
             
-        user_data.user = {'money': client.getUserMoney(authorized_user).money, 
-                        'points': api_user_data.user.points}
-        user_data.portfolio_worth = sum(artist.price for artist in 
-                                                        api_user_data.stocks)
+        user_data.user = {
+                            'money': client.getUserMoney(authorized_user).money, 
+                            'points': api_user_data.user.points
+                        }
+        user_data.portfolio_worth = sum(artist.price for artist in api_user_data.stocks)
 
         return render_to_response('index.html',
             {'user_data': user_data}, context_instance=RequestContext(request)
@@ -76,6 +86,7 @@ def get_user_leaderboard(request):
 
     userdata = client.getUserData(request.user.username)
 
+    #TODO: Replace __dict__ with vars
     user_league = userdata.league.__dict__
     user_points = userdata.user.points
 
