@@ -31,6 +31,14 @@ DATABASES = {
     }
 }
 
+API_SERVER = 'ec2-54-246-25-244.eu-west-1.compute.amazonaws.com'
+API_PORT = 9090
+
+# Set your DSN value
+RAVEN_CONFIG = {
+    'dsn': 'https://44db69ee886344a8a3aff3163c6f81da:231dfa61bb6f4b8aa33ebcb65ecff701@app.getsentry.com/6005',
+}
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -129,6 +137,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'frontend',
     'lastfmauth',
+    'raven.contrib.django.raven_compat',
     #'frontendapp',
     # 'django_url_framework',
     # Uncomment the next line to enable the admin:
@@ -175,9 +184,6 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     )
 
 #TODO: Add database table name prefix to avoid collisions with rest of data
-
-API_SERVER = 'ec2-54-246-25-244.eu-west-1.compute.amazonaws.com'
-API_PORT = 9090
 
 try:
     # Connect to the API server
