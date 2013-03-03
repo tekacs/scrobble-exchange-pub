@@ -33,7 +33,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   searchArtist(string text, i32 n, i32 page)'
   print '   getSETop(i32 n, i32 trange, User user)'
   print '   getLFMTop(i32 n, User user)'
-  print '   getTopArtists(i32 n, AuthUser user)'
+  print '   getRecommendedArtists(i32 n, AuthUser user)'
   print '   getTradedArtists(i32 n, User user)'
   print '   getRecentTrades(i32 n, User user)'
   print '  UserData getUserData(string user)'
@@ -154,11 +154,11 @@ elif cmd == 'getLFMTop':
     sys.exit(1)
   pp.pprint(client.getLFMTop(eval(args[0]),eval(args[1]),))
 
-elif cmd == 'getTopArtists':
+elif cmd == 'getRecommendedArtists':
   if len(args) != 2:
-    print 'getTopArtists requires 2 args'
+    print 'getRecommendedArtists requires 2 args'
     sys.exit(1)
-  pp.pprint(client.getTopArtists(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.getRecommendedArtists(eval(args[0]),eval(args[1]),))
 
 elif cmd == 'getTradedArtists':
   if len(args) != 2:

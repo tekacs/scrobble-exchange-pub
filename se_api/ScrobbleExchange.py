@@ -125,7 +125,7 @@ class Iface(object):
     """
     pass
 
-  def getTopArtists(self, n, user):
+  def getRecommendedArtists(self, n, user):
     """
     Returns the n top recommended artists for a user. *
 
@@ -672,7 +672,7 @@ class Client(Iface):
       raise result.s
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getLFMTop failed: unknown result");
 
-  def getTopArtists(self, n, user):
+  def getRecommendedArtists(self, n, user):
     """
     Returns the n top recommended artists for a user. *
 
@@ -680,26 +680,26 @@ class Client(Iface):
      - n
      - user
     """
-    self.send_getTopArtists(n, user)
-    return self.recv_getTopArtists()
+    self.send_getRecommendedArtists(n, user)
+    return self.recv_getRecommendedArtists()
 
-  def send_getTopArtists(self, n, user):
-    self._oprot.writeMessageBegin('getTopArtists', TMessageType.CALL, self._seqid)
-    args = getTopArtists_args()
+  def send_getRecommendedArtists(self, n, user):
+    self._oprot.writeMessageBegin('getRecommendedArtists', TMessageType.CALL, self._seqid)
+    args = getRecommendedArtists_args()
     args.n = n
     args.user = user
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_getTopArtists(self, ):
+  def recv_getRecommendedArtists(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = getTopArtists_result()
+    result = getRecommendedArtists_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
@@ -714,7 +714,7 @@ class Client(Iface):
       raise result.p
     if result.s is not None:
       raise result.s
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getTopArtists failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getRecommendedArtists failed: unknown result");
 
   def getTradedArtists(self, n, user):
     """
@@ -1089,7 +1089,7 @@ class Processor(Iface, TProcessor):
     self._processMap["searchArtist"] = Processor.process_searchArtist
     self._processMap["getSETop"] = Processor.process_getSETop
     self._processMap["getLFMTop"] = Processor.process_getLFMTop
-    self._processMap["getTopArtists"] = Processor.process_getTopArtists
+    self._processMap["getRecommendedArtists"] = Processor.process_getRecommendedArtists
     self._processMap["getTradedArtists"] = Processor.process_getTradedArtists
     self._processMap["getRecentTrades"] = Processor.process_getRecentTrades
     self._processMap["getUserData"] = Processor.process_getUserData
@@ -1324,13 +1324,13 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_getTopArtists(self, seqid, iprot, oprot):
-    args = getTopArtists_args()
+  def process_getRecommendedArtists(self, seqid, iprot, oprot):
+    args = getRecommendedArtists_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = getTopArtists_result()
+    result = getRecommendedArtists_result()
     try:
-      result.success = self._handler.getTopArtists(args.n, args.user)
+      result.success = self._handler.getRecommendedArtists(args.n, args.user)
     except TransientError as t:
       result.t = t
     except AuthenticationError as a:
@@ -1341,7 +1341,7 @@ class Processor(Iface, TProcessor):
       result.p = p
     except ServiceError as s:
       result.s = s
-    oprot.writeMessageBegin("getTopArtists", TMessageType.REPLY, seqid)
+    oprot.writeMessageBegin("getRecommendedArtists", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3419,7 +3419,7 @@ class getLFMTop_result(object):
   def __ne__(self, other):
     return not (self == other)
 
-class getTopArtists_args(object):
+class getRecommendedArtists_args(object):
   """
   Attributes:
    - n
@@ -3465,7 +3465,7 @@ class getTopArtists_args(object):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('getTopArtists_args')
+    oprot.writeStructBegin('getRecommendedArtists_args')
     if self.n is not None:
       oprot.writeFieldBegin('n', TType.I32, 1)
       oprot.writeI32(self.n)
@@ -3494,7 +3494,7 @@ class getTopArtists_args(object):
   def __ne__(self, other):
     return not (self == other)
 
-class getTopArtists_result(object):
+class getRecommendedArtists_result(object):
   """
   Attributes:
    - success
@@ -3581,7 +3581,7 @@ class getTopArtists_result(object):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('getTopArtists_result')
+    oprot.writeStructBegin('getRecommendedArtists_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
