@@ -1,204 +1,204 @@
-window.SE.Artist = {
-    // TODO: reduce repeated code, make more general
-    drawMoneyGraph: function() {
-        'use strict';
-        var Rickshaw = window.Rickshaw;
+// TODO: make general graph drawing function, remove many lines of duplicated code
+window.SE.Artist.drawMoneyGraph = function() {
+    'use strict';
+    var Rickshaw = window.Rickshaw;
 
-        $('#chart').empty();
-        $('#legend').empty();
+    $('#chart').empty();
+    $('#legend').empty();
 
-        var graph = new Rickshaw.Graph.Ajax( {
-          element: document.getElementById("chart"),
-          width: 620,
-          height: 300,
-          renderer: 'line',
-          dataURL: '/artist/history/?artist_id=' + window.SE.Artist.mbid + '&days=7&field=money',
-          series: [
-            {
-              color: "#dc1303",
-              name: 'price'
-            }, {
-              color: "#0187c5",
-              name: 'dividends'
+    var graph = new Rickshaw.Graph.Ajax( {
+      element: document.getElementById("chart"),
+      width: 620,
+      height: 300,
+      renderer: 'line',
+      dataURL: '/artist/history/?artist_id=' + window.SE.Artist.mbid + '&days=7&field=money',
+      series: [
+        {
+          color: "#dc1303",
+          name: 'price'
+        }, {
+          color: "#0187c5",
+          name: 'dividends'
+        }
+      ],
+      onComplete: function(transport) {
+        var graph = transport.graph;
+
+        var hoverDetail = new Rickshaw.Graph.HoverDetail({
+            graph: graph,
+            formatter: function(series, x, y) {
+                return (series.name === 'price') ? 'Market price: $' + y : 'Dividends: $' + y;
             }
-          ],
-          onComplete: function(transport) {
-            var graph = transport.graph;
-
-            var hoverDetail = new Rickshaw.Graph.HoverDetail({
-                graph: graph,
-                formatter: function(series, x, y) {
-                    return (series.name === 'price') ? 'Market price: $' + y : 'Dividends: $' + y;
-                }
-            });
-
-            var yAxis = new Rickshaw.Graph.Axis.Y({
-                graph: graph,
-                tickFormat: Rickshaw.Fixtures.Number.formatKMBT
-            });
-
-            var time = new Rickshaw.Fixtures.Time();
-            var days = time.unit('day');
-
-            var xAxis = new Rickshaw.Graph.Axis.Time({
-                graph: graph,
-                timeUnit: days
-            });
-
-            var legend = new Rickshaw.Graph.Legend({
-                graph: graph,
-                element: document.querySelector('#legend')
-            });
-
-            var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
-                graph: graph,
-                legend: legend
-            });
-
-            var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
-                graph: graph,
-                legend: legend
-            });
-
-            graph.update();
-
-            $('.rickshaw_legend span.label').each(function(){
-                if ($(this).text() === 'dividends'){
-                    $(this).html('Dividends <strong>($)</strong>');
-                } else if ($(this).text() === 'price'){
-                    $(this).html('Market price <strong>($)</strong>');
-                }
-            });
-          }
         });
-    },
-    drawPointsGraph: function() {
-        'use strict';
 
-        var Rickshaw = window.Rickshaw;
+        var yAxis = new Rickshaw.Graph.Axis.Y({
+            graph: graph,
+            tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+        });
 
-        $('#chart').empty();
-        $('#legend').empty();
+        var time = new Rickshaw.Fixtures.Time();
+        var days = time.unit('day');
 
-        var graph = new Rickshaw.Graph.Ajax( {
-          element: document.getElementById("chart"),
-          width: 640,
-          height: 300,
-          renderer: 'line',
-          dataURL: '/artist/history/?artist_id=' + window.SE.Artist.mbid + '&days=7&field=points',
-          series: [
-            {
-              color: "#dc1303",
-              name: 'points'
+        var xAxis = new Rickshaw.Graph.Axis.Time({
+            graph: graph,
+            timeUnit: days
+        });
+
+        var legend = new Rickshaw.Graph.Legend({
+            graph: graph,
+            element: document.querySelector('#legend')
+        });
+
+        var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+            graph: graph,
+            legend: legend
+        });
+
+        var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+            graph: graph,
+            legend: legend
+        });
+
+        graph.update();
+
+        $('.rickshaw_legend span.label').each(function(){
+            if ($(this).text() === 'dividends'){
+                $(this).html('Dividends <strong>($)</strong>');
+            } else if ($(this).text() === 'price'){
+                $(this).html('Market price <strong>($)</strong>');
             }
-          ],
-          onComplete: function(transport) {
-            var graph = transport.graph;
-
-            var hoverDetail = new Rickshaw.Graph.HoverDetail({
-                graph: graph,
-                formatter: function(series, x, y) {
-                    return 'Points: ' + y;
-                }
-            });
-
-            var yAxis = new Rickshaw.Graph.Axis.Y({
-                graph: graph,
-                tickFormat: Rickshaw.Fixtures.Number.formatKMBT
-            });
-
-            var time = new Rickshaw.Fixtures.Time();
-            var days = time.unit('day');
-
-            var xAxis = new Rickshaw.Graph.Axis.Time({
-                graph: graph,
-                timeUnit: days
-            });
-
-            var legend = new Rickshaw.Graph.Legend({
-                graph: graph,
-                element: document.querySelector('#legend')
-            });
-
-            var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
-                graph: graph,
-                legend: legend
-            });
-
-            var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
-                graph: graph,
-                legend: legend
-            });
-
-            graph.update();
-
-            $('.rickshaw_legend span.label').each(function(){
-                $(this).html('Points');
-            });
-          }
         });
-    },
-    current_price: null,
-    current_guarantee: {},
-    current_seconds_left: 15,
-    getArtistPriceGuarantee: function(mbid) {
-      var url = '/price/guarantee?artist_id=' + mbid;
-      jQuery.ajax({
+      }
+    });
+};
+
+window.SE.Artist.drawPointsGraph =  function() {
+  'use strict';
+
+  var Rickshaw = window.Rickshaw;
+
+  $('#chart').empty();
+  $('#legend').empty();
+
+  var graph = new Rickshaw.Graph.Ajax( {
+    element: document.getElementById("chart"),
+    width: 640,
+    height: 300,
+    renderer: 'line',
+    dataURL: '/artist/history/?artist_id=' + window.SE.Artist.mbid + '&days=7&field=points',
+    series: [
+      {
+        color: "#dc1303",
+        name: 'points'
+      }
+    ],
+    onComplete: function(transport) {
+      var graph = transport.graph;
+
+      var hoverDetail = new Rickshaw.Graph.HoverDetail({
+          graph: graph,
+          formatter: function(series, x, y) {
+              return 'Points: ' + y;
+          }
+      });
+
+      var yAxis = new Rickshaw.Graph.Axis.Y({
+          graph: graph,
+          tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+      });
+
+      var time = new Rickshaw.Fixtures.Time();
+      var days = time.unit('day');
+
+      var xAxis = new Rickshaw.Graph.Axis.Time({
+          graph: graph,
+          timeUnit: days
+      });
+
+      var legend = new Rickshaw.Graph.Legend({
+          graph: graph,
+          element: document.querySelector('#legend')
+      });
+
+      var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+          graph: graph,
+          legend: legend
+      });
+
+      var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+          graph: graph,
+          legend: legend
+      });
+
+      graph.update();
+
+      $('.rickshaw_legend span.label').each(function(){
+          $(this).html('Points');
+      });
+    }
+  });
+};
+
+window.SE.Artist.current_price = null;
+window.SE.Artist.current_guarantee = {};
+window.SE.Artist.current_seconds_left = 15;
+window.SE.Artist.getArtistPriceGuarantee = function(mbid) {
+    var url = '/price/guarantee?artist_id=' + mbid;
+    jQuery.ajax({
         url: url,
         type: 'GET',
         dataType: 'json',
         complete: function(xhr, textStatus) {
-          //called when complete
+            //called when complete
         },
         success: function(data, textStatus, xhr) {
-          var current_timestamp = Math.round(+new Date()/1000);
+            var current_timestamp = Math.round(+new Date()/1000);
 
-          window.SE.Artist.current_guarantee = data;
+            window.SE.Artist.current_guarantee = data;
 
-          // window.SE.Artist.current_guarantee.artist.name = data.artist.name;
-          // window.SE.Artist.current_guarantee.price = data.price;
-          // window.SE.Artist.current_guarantee.time = data.time;
-          // window.SE.Artist.current_guarantee.elephant = data.elephant;
+            // window.SE.Artist.current_guarantee.artist.name = data.artist.name;
+            // window.SE.Artist.current_guarantee.price = data.price;
+            // window.SE.Artist.current_guarantee.time = data.time;
+            // window.SE.Artist.current_guarantee.elephant = data.elephant;
 
-          window.SE.Artist.current_seconds_left = data.time - current_timestamp;
+            window.SE.Artist.current_seconds_left = data.time - current_timestamp;
 
-          $('#buy-sell-modal .price-text').text(data.price);
-          $('#buy-sell-modal .artist-text').text(data.artist.name);
+            $('#buy-sell-modal .price-text').text(data.price);
+            $('#buy-sell-modal .artist-text').text(data.artist.name);
 
-          window.SE.startCountdown();
+            window.SE.startCountdown();
 
         },
         error: function(xhr, textStatus, errorThrown) {
-          //called when there is an error
+            //called when there is an error
         }
-      });
-    },
-    makeTransaction: function(transaction_type){
-      var url = (transaction_type === 'buy') ? '/buy' : '/sell';
+    });
+};
 
-      jQuery.ajax({
+window.SE.Artist.makeTransaction = function(transaction_type){
+    var url = (transaction_type === 'buy') ? '/buy' : '/sell';
+
+    jQuery.ajax({
         url: url,
         type: 'POST',
         dataType: 'json',
         data: {
-          artist_id: window.SE.Artist.current_guarantee.artist.mbid,
-          price: window.SE.Artist.current_guarantee.price,
-          time: window.SE.Artist.current_guarantee.time,
-          elephant: window.SE.Artist.current_guarantee.elephant
+            artist_id: window.SE.Artist.current_guarantee.artist.mbid,
+            price: window.SE.Artist.current_guarantee.price,
+            time: window.SE.Artist.current_guarantee.time,
+            elephant: window.SE.Artist.current_guarantee.elephant
         },
         complete: function(xhr, textStatus) {
-          //called when complete
-          $('#buy-sell-modal').trigger('reveal:close');
+            //called when complete
+            $('#buy-sell-modal').trigger('reveal:close');
         },
         success: function(data, textStatus, xhr) {
-          //called when successful
+            //called when successful
         },
         error: function(xhr, textStatus, errorThrown) {
-          //called when there is an error
+            //called when there is an error
         }
-      });
-
-    }
+    });
 };
 
 window.SE.startCountdown = function () {
@@ -280,6 +280,7 @@ jQuery(document).ready(function($) {
               );
           },
           "opened": function() {
+              window.console.log(window.SE.Artist.mbid);
               window.SE.Artist.getArtistPriceGuarantee(window.SE.Artist.mbid);
           },
           "closed": function() {
