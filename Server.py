@@ -289,6 +289,25 @@ class SEHandler(object):
             return ret
     
     @rethrow
+    def getTopArtist(self, n, user):
+        """
+        Returns the n top recommended artists for a user
+        
+        Parameters:
+        - n
+        - user
+        """
+        with datm.DATMSession(self._config):
+            
+            u = datm.User(self._config, name=user.name.name)
+            alist = datm.User.top_artists
+            
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name),
+                                    User=user.name) for a in alist]
+            
+            return ret
+    
+    @rethrow
     def getTradedArtists(self, n):
         """
         Returns a list of the n most traded artists by decreasing value.
