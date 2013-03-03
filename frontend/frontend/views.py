@@ -148,6 +148,7 @@ def artists(request):
     TIME_RANGE = 7
     user = _user(request)
 
+    #TODO: Flatten ArtistSE objects
     top_SE_artists = client.getSETop(NUM_CHARTS,TIME_RANGE, user) #Returns Artists
     top_traded_artists = client.getTradedArtists(NUM_CHARTS, user) #Returns Artists
 
@@ -156,6 +157,7 @@ def artists(request):
     
     popular_LFM_artists = client.getLFMTop(NUM_CHARTS, user)              #Returns Artists
     recently_traded_artists = client.getRecentTrades(NUM_CHARTS, user)    #Returns Artists
+
 
 
     return render_to_response('artists.html', {
