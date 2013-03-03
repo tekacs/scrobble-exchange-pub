@@ -3,3 +3,4 @@
     - remove all artists from search with no mbid (both autocomplete and full search)
 
 - ensure all variables requested inside html templates are passed in from api
+- redirect to artists page on first login
