@@ -38,8 +38,8 @@ urlpatterns = patterns('',
     url(r'^sell/', 'frontend.views.sell', name='sell'),
     url(r'^buy/', 'frontend.views.buy', name='buy'),
 
-    url(r'^price/guarantee/', 'frontend.views.guaranteed_price', name='guaranteed_price'),
-    url(r'^price/', 'frontend.views.price', name='price'),
+    url(r'^price/guarantee/?', 'frontend.views.guaranteed_price', name='guaranteed_price'),
+    url(r'^price/?', 'frontend.views.price', name='price'),
 
     url(r'^lastfmauth/', include('lastfmauth.urls')),
 
