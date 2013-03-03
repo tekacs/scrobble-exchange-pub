@@ -40,6 +40,22 @@ body {
             font-weight: bold;
         }
 
+        .above-graph {
+            height: 75px;
+
+            dl.sub-nav {
+                margin-top: 10px;
+                float: left;
+                width: 50%;
+            }
+
+            .rickshaw_legend {
+                margin-top: 0;
+                margin-right: 26px;
+                float: right;
+            }
+        }
+
         #chart {
             height: 300px;
         }
@@ -59,7 +75,6 @@ body {
             p {
                 &:first-child {
                     clear: left;
-                    //margin-right: 10px;
                 }
                 margin-top: 0;
                 text-align: center;
@@ -122,11 +137,6 @@ body {
         div.artist-img {
             width: 140px;
             height: 140px;
-        }
-
-        p.artist-bio {
-            clear: right;
-            padding-top: 40px;
         }
 
         div.chart-links {
