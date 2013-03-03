@@ -9,12 +9,12 @@
 {% endblock above_main %}
 
     {% block main %}
-        {% for artist_SE in user_data.stocks %}
+        {% for artist_SE in user.stocks %}
             <div class="portfolio-wrapper">
-                <a href="{% url frontend.views.artist_single artist_SE.artist.name|urlencode %}">
-                    <div class="portfolio-img" style="background-image: url('{{ artist_SE.artist.imgurls|get_image:'mega' }}');">
+                <a href="{% url frontend.views.artist_single artist_SE.name|urlencode %}">
+                    <div class="portfolio-img" style="background-image: url('{{ artist_SE.imgurls|get_image:'mega' }}');">
                         <div class="text-over-image bottom">
-                            <span class="primary">{{ artist_SE.artist.name|truncatechars:20 }}</span>
+                            <span class="primary">{{ artist_SE.name|truncatechars:20 }}</span>
                             <br>
                             <span class="secondary">${{ artist_SE.price }}</span>
                         </div>
@@ -30,10 +30,10 @@
 
     {% block sidebar %}
         <h2 class="sidebar-red">Current wealth</h2>
-        <p class="sidebar-price joined">${{user_data.user.money}}</p>
-        <p class="bonus-wealth">(+ ${{user_data.portfolio_worth}} in your portfolio)</p>
+        <p class="sidebar-price joined">${{user.money}}</p>
+        <p class="bonus-wealth">(+ ${{user.portfolio_worth}} in your portfolio)</p>
 
-        <p class="sidebar-price">{{user_data.user.points}} points</p>
+        <p class="sidebar-price">{{user.points}} points</p>
 
         <hr>
 

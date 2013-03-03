@@ -31,21 +31,21 @@
                     <li class="rankItem">
                         <div class="rankItem-wrap">
                             <div class="rankItem-wrap2">
-                                <a href="{% url frontend.views.artist_single valuable_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
+                                <a href="{% url frontend.views.artist_single valuable_artist_SE.name|urlencode %}" class="rankItem-blockLink">
                                     <h4>
                                         <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
-                                        <span class="rankItem-title">{{valuable_artist_SE.artist.name}}</span>
+                                        <span class="rankItem-title">{{valuable_artist_SE.name}}</span>
                                     </h4>
                                     {% if forloop.counter == 1 %}
-                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{valuable_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{valuable_artist_SE.imgurls|get_image:'mega'}}');">
                                             <div class="rankItem-imageCrop-wrap">
-                                                <img src="{{valuable_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                                <img src="{{valuable_artist_SE.imgurls|get_image:'mega'}}">
                                             </div>
                                         </div>
                                     {% else %}
-                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{valuable_artist_SE.artist.imgurls|get_image:'large'}}');">
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{valuable_artist_SE.imgurls|get_image:'large'}}');">
                                             <div class="rankItem-imageCrop-wrap">
-                                                <img src="{{valuable_artist_SE.artist.imgurls|get_image:'large'}}">
+                                                <img src="{{valuable_artist_SE.imgurls|get_image:'large'}}">
                                             </div>
                                         </div>
                                     {% endif %}
@@ -76,21 +76,21 @@
                     <li class="rankItem">
                         <div class="rankItem-wrap">
                             <div class="rankItem-wrap2">
-                                <a href="{% url frontend.views.artist_single traded_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
+                                <a href="{% url frontend.views.artist_single traded_artist_SE.name|urlencode %}" class="rankItem-blockLink">
                                     <h4>
                                         <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
-                                        <span class="rankItem-title">{{traded_artist_SE.artist.name}}</span>
+                                        <span class="rankItem-title">{{traded_artist_SE.name}}</span>
                                     </h4>
                                     {% if forloop.counter == 1 %}
-                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{traded_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{traded_artist_SE.imgurls|get_image:'mega'}}');">
                                             <div class="rankItem-imageCrop-wrap">
-                                                <img src="{{traded_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                                <img src="{{traded_artist_SE.imgurls|get_image:'mega'}}">
                                             </div>
                                         </div>
                                     {% else %}
-                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{traded_artist_SE.artist.imgurls|get_image:'large'}}');">
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{traded_artist_SE.imgurls|get_image:'large'}}');">
                                             <div class="rankItem-imageCrop-wrap">
-                                                <img src="{{traded_artist_SE.artist.imgurls|get_image:'large'}}">
+                                                <img src="{{traded_artist_SE.imgurls|get_image:'large'}}">
                                             </div>
                                         </div>
                                     {% endif %}
@@ -125,21 +125,21 @@
                     <li class="rankItem">
                         <div class="rankItem-wrap">
                             <div class="rankItem-wrap2">
-                                <a href="{% url frontend.views.artist_single popular_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
+                                <a href="{% url frontend.views.artist_single popular_artist_SE.name|urlencode %}" class="rankItem-blockLink">
                                     <h4>
                                         <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
-                                        <span class="rankItem-title">{{popular_artist_SE.artist.name}}</span>
+                                        <span class="rankItem-title">{{popular_artist_SE.name}}</span>
                                     </h4>
                                     {% if forloop.counter == 1 %}
-                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{popular_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{popular_artist_SE.imgurls|get_image:'mega'}}');">
                                             <div class="rankItem-imageCrop-wrap">
-                                                <img src="{{popular_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                                <img src="{{popular_artist_SE.imgurls|get_image:'mega'}}">
                                             </div>
                                         </div>
                                     {% else %}
-                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{popular_artist_SE.artist.imgurls|get_image:'large'}}');">
+                                        <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{popular_artist_SE.imgurls|get_image:'large'}}');">
                                             <div class="rankItem-imageCrop-wrap">
-                                                <img src="{{popular_artist_SE.artist.imgurls|get_image:'large'}}">
+                                                <img src="{{popular_artist_SE.imgurls|get_image:'large'}}">
                                             </div>
                                         </div>
                                     {% endif %}
@@ -177,14 +177,14 @@
                 <li class="rankItem sidebar-item">
                     <div class="rankItem-wrap">
                         <div class="rankItem-wrap2">
-                            <a href="{% url frontend.views.artist_single recommended_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
+                            <a href="{% url frontend.views.artist_single recommended_artist_SE.name|urlencode %}" class="rankItem-blockLink">
                                 <h4>
                                     <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
-                                    <span class="rankItem-title">{{recommended_artist_SE.artist.name|truncatechars:30}}</span>
+                                    <span class="rankItem-title">{{recommended_artist_SE.name|truncatechars:30}}</span>
                                 </h4>
-                                <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.imgurls|get_image:'mega'}}');">
                                     <div class="rankItem-imageCrop-wrap">
-                                        <img src="{{recommended_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                        <img src="{{recommended_artist_SE.imgurls|get_image:'mega'}}">
                                     </div>
                                 </div>
                             </a>
@@ -218,14 +218,14 @@
                 <li class="rankItem sidebar-item">
                     <div class="rankItem-wrap">
                         <div class="rankItem-wrap2">
-                            <a href="{% url frontend.views.artist_single traded_artist_SE.artist.name|urlencode %}" class="rankItem-blockLink">
+                            <a href="{% url frontend.views.artist_single traded_artist_SE.name|urlencode %}" class="rankItem-blockLink">
                                 <h4>
                                     <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
-                                    <span class="rankItem-title">{{traded_artist_SE.artist.name|truncatechars:30}}</span>
+                                    <span class="rankItem-title">{{traded_artist_SE.name|truncatechars:30}}</span>
                                 </h4>
-                                <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{traded_artist_SE.artist.imgurls|get_image:'mega'}}');">
+                                <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{traded_artist_SE.imgurls|get_image:'mega'}}');">
                                     <div class="rankItem-imageCrop-wrap">
-                                        <img src="{{traded_artist_SE.artist.imgurls|get_image:'mega'}}">
+                                        <img src="{{traded_artist_SE.imgurls|get_image:'mega'}}">
                                     </div>
                                 </div>
                             </a>
