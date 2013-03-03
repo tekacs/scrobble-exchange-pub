@@ -75,7 +75,7 @@ def leaderboards(request):
     return render_to_response('leaderboards.html',{}, context_instance=RequestContext(request))
 
 '''Sample URL: http://localhost:8000/leaderboards/get/user?time_range=3'''
-@json_response
+@json_response()
 def get_user_leaderboard(request):
     #given: time_range (0-3, 0-alltime, 1-month, 2-week, 3-day)
     unsafe_time_range = int(request.GET.get('time_range', '2'))
@@ -109,7 +109,7 @@ def get_user_leaderboard(request):
     return data
 
 '''See http://localhost:8000/leaderboards/get/?league_id=1&time_range=3 for example'''
-@json_response
+@json_response()
 def get_leaderboard(request):
     
     league_id = request.GET.get('league_id','default_league')
@@ -196,7 +196,7 @@ def artist_single(request, artistname):
         'artist_SE':artist_sse}, context_instance=RequestContext(request))
 
 ''' Sample URL: http://127.0.0.1:8000/artist/history/?artist_id=0383dadf-2a4e-4d10-a46a-e9e041da8eb3&days=2'''
-@json_response
+@json_response()
 def artist_history(request):
     # artist_id = request.GET.get('artist_id')
     # artist = ttypes.Artist(mbid=artist_id)
@@ -227,7 +227,7 @@ def artist_history(request):
     return history
 
 ''' Sample URL: http://localhost:8000/search/autocomplete/?q=blah '''
-@json_response
+@json_response()
 def auto_complete(request):
     #TODO: Change format of data
     partial_text = request.GET.get('q','')
