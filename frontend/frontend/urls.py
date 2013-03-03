@@ -44,5 +44,6 @@ urlpatterns = patterns('',
     url(r'^lastfmauth/', include('lastfmauth.urls')),
 
     url(r'^user/([^/]+)/', 'frontend.views.user_profile', name ='user_profile'),
+    url(r'^reset/','frontend.views.reset_portfolio', name = 'reset_portfolio'),
     # (r'^', include(django_url_framework.site.urls) ),
 )

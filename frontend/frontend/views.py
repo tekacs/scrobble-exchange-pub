@@ -48,6 +48,17 @@ def home(request):
 def user_profile(request, username):
     return render_to_response('user_profile.html',{}, context_instance=RequestContext(request))
 
+def reset_portfolio(request):
+    if not request.user.is_authenticated():
+        return redirect('lastfmauth_login', next=current_path)
+
+    if request.method == 'POST':
+        #TODO: Reset the user's portfolio
+        pass
+    else:
+        return render_to_response('reset_page.html',{},context_instance=RequestContext(request))
+
+
 ############ Leaderboards ############
 '''By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX'''
 def leaderboards(request):
