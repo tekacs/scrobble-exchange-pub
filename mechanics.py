@@ -30,7 +30,7 @@ class User(object):
         if self.user.money < price:
             raise NotEnoughMoneyError()
         if artist.no_remaining <= 0:
-            raise NoStockRemainingException()
+            raise NoStockRemainingException((artist.name, artist.max_available, artist.no_remaining))
 
         t = datm.Trade(self.config, user=self.user, artist=artist, price=price)
         t.create(purchase=True)
@@ -48,10 +48,10 @@ class User(object):
 
         self.user.money += price
 
-    @property
-    def count(self):
+    @staticmethod
+    def count(config):
         """Actively count the number of users in the database."""
-        return datm.User.count(self.config)
+        return datm.User.count(config)
 
     @property
     def initial_money(self):
@@ -79,7 +79,7 @@ class Artist(object):
         """Daily Score = 0.0005 * ∆S + 0.05 * ∆L"""
         artist = self.artist
         listener_delta = artist.listeners - artist.last_listeners
-        playcount_delta = artist.playcount - artist.last_playcount
+        playcount_delta = artist.plays - artist.last_playcount
         base = (D('0.0005') * playcount_delta) + (D('0.05') * listener_delta)
         return int(D.round_even(base))
 
@@ -88,7 +88,7 @@ class Artist(object):
         """Dividends = 0.01 * (3 * ∆√S + 0.05 * ∆L)"""
         artist = self.artist
         listener_delta = artist.listeners - artist.last_listeners
-        playcount_delta = artist.playcount - artist.last_playcount
+        playcount_delta = artist.plays - artist.last_playcount
         base = (3 * D(playcount_delta).sqrt()) + (D('0.05') * listener_delta)
         base = D('0.01') * base
         return int(D.round_even(base))
@@ -97,19 +97,17 @@ class Artist(object):
     def initial_price(self):
         """Initial Price = 0.07 * S / √L"""
         artist = self.artist
-        base = D('0.07') * D(artist.playcount) / D(artist.listeners).sqrt()
+        base = D('0.07') * D(artist.plays) / D(artist.listeners).sqrt()
         return int(D.round_even(base))
-
-    @property
-    def listener_ratio(self):
-        """Ratio of listeners relative to the Artist with the most listeners."""
-        return int(D.round_even(D(self.artist.listeners / self.max_listeners)))
 
     @property
     def max_shares(self):
         """Max. shares = ceil(0.1 * n * L / L_max)"""
-        base = D(0.1) * self.no_players * self.listener_ratio
-        return int(D.round_up(base))
+        top = list(datm.Artist.popular(self.config, limit=1))[0]
+        max_listeners = D(top.listeners)
+        base = D(0.1) * User.count(self.config) * self.artist.listeners
+        base = base / max_listeners
+        return int(D.ceil(base))
 
 class PurchaseError(Exception):
     pass
