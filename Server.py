@@ -31,8 +31,6 @@ db_args = {
     'max_overflow': None
 }
 
-from functools import wraps as _wraps
-
 def rethrow(f):
     exceptions = {
         datm.TransientError: TransientError,
