@@ -671,26 +671,25 @@ class Trade(object):
 
 class Trophy(object):
   """
-  User trophies. Challenge is a possible arbitrary `difficulty to obtain'
-  measurement, and is most likely not returned.
+  User trophies.
 
   Attributes:
    - name
    - description
-   - challenge
+   - icon
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.STRING, 'challenge', None, None, ), # 3
+    (3, TType.STRING, 'icon', None, None, ), # 3
   )
 
-  def __init__(self, name=None, description=None, challenge=None,):
+  def __init__(self, name=None, description=None, icon=None,):
     self.name = name
     self.description = description
-    self.challenge = challenge
+    self.icon = icon
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -713,7 +712,7 @@ class Trophy(object):
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.STRING:
-          self.challenge = iprot.readString().decode('utf-8')
+          self.icon = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       else:
@@ -734,9 +733,9 @@ class Trophy(object):
       oprot.writeFieldBegin('description', TType.STRING, 2)
       oprot.writeString(self.description.encode('utf-8'))
       oprot.writeFieldEnd()
-    if self.challenge is not None:
-      oprot.writeFieldBegin('challenge', TType.STRING, 3)
-      oprot.writeString(self.challenge.encode('utf-8'))
+    if self.icon is not None:
+      oprot.writeFieldBegin('icon', TType.STRING, 3)
+      oprot.writeString(self.icon.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -744,8 +743,6 @@ class Trophy(object):
   def validate(self):
     if self.name is None:
       raise TProtocol.TProtocolException(message='Required field name is unset!')
-    if self.description is None:
-      raise TProtocol.TProtocolException(message='Required field description is unset!')
     return
 
 

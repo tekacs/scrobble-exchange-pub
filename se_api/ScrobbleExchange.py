@@ -856,6 +856,8 @@ class Client(Iface):
       return result.success
     if result.d is not None:
       raise result.d
+    if result.a is not None:
+      raise result.a
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserMoney failed: unknown result");
 
   def getTopUsers(self, n, league, trange):
@@ -1388,6 +1390,8 @@ class Processor(Iface, TProcessor):
       result.success = self._handler.getUserMoney(args.user)
     except DataError as d:
       result.d = d
+    except AuthenticationError as a:
+      result.a = a
     oprot.writeMessageBegin("getUserMoney", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -4172,16 +4176,19 @@ class getUserMoney_result(object):
   Attributes:
    - success
    - d
+   - a
   """
 
   thrift_spec = (
     (0, TType.STRUCT, 'success', (AuthUser, AuthUser.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 2
   )
 
-  def __init__(self, success=None, d=None,):
+  def __init__(self, success=None, d=None, a=None,):
     self.success = success
     self.d = d
+    self.a = a
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -4204,6 +4211,12 @@ class getUserMoney_result(object):
           self.d.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.a = AuthenticationError()
+          self.a.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4221,6 +4234,10 @@ class getUserMoney_result(object):
     if self.d is not None:
       oprot.writeFieldBegin('d', TType.STRUCT, 1)
       self.d.write(oprot)
+      oprot.writeFieldEnd()
+    if self.a is not None:
+      oprot.writeFieldBegin('a', TType.STRUCT, 2)
+      self.a.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
