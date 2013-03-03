@@ -42,7 +42,7 @@ class Trophy(DATMObject):
 
     @require_db
     def create(self):
-        self.dbo = models.Trade(
+        self.dbo = models.Trophy(
             self.uid,
             self.name,
             self.icon,
