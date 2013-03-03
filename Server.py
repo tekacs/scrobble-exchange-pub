@@ -350,6 +350,10 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             u = datm.User(self._config, user)
             
+            if not u.persisted:
+                print 'Trying a get data on non-existent user ' + user
+                raise DataError('User doesn`t exist in database')
+            
             basicu = User(name=u.name, points=u.points)
             
             ret = UserData(user=basicu)
@@ -391,6 +395,10 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config):
             u = datm.User(self._config, user.name.name)
+            
+            if not u.persisted:
+                print 'Trying to get money on a non-existent user ' + user
+                raise DataError('User doesn`t exist in database')
             
             try:
                 u.authenticate(user.session_key)
