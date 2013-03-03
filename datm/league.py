@@ -22,6 +22,7 @@ class League(DATMObject):
             self.dbo = dbo
         else:
             self.uid = uid
+        if any((name, icon, description)):
             self.name = name
             self.icon = icon
             self.description = description
