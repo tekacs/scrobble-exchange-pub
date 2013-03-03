@@ -1,3 +1,6 @@
 [submodule "gen-py"]
 	path = gen-py
 	url = git@github.com:tekacs/scrobble-exchange
+[submodule "datm"]
+	path = datm
+	url = git@github.com:tekacs/scrobble-exchange
