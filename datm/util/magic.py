@@ -1,3 +1,4 @@
+import threading
 import functools
 
 __author__ = 'amar'
@@ -12,6 +13,7 @@ def memoised_property(f):
     for pre/external-calculation to be performed and the value set in such a
     fashion and to allow for forced recalculation (just ``del`` the attribute!)
     """
+    # FIXME: This is currently NOT THREADSAFE (due to None recur fix). Lock!
     name = '_{}'.format(f.__name__)
     @property
     @functools.wraps(f)
@@ -19,7 +21,11 @@ def memoised_property(f):
         try:
             v = getattr(self, name)
         except AttributeError:
-            v = f(self)
+            setattr(self, name, None)
+            try:
+                v = f(self)
+            finally:
+                delattr(self, name)
             setattr(self, name, v)
         return v
 
