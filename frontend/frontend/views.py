@@ -268,6 +268,12 @@ def search(request):
 
 
     results = client.searchArtist(query, RESULTS_PER_PAGE, page_number)
+    if not results:
+        try:
+            results = [client.getArtist(ttypes.Artist(mbid='', name=query))]
+        except DataError:
+            results = []
+
     if (request.GET.get('lucky', 'false') == 'true' and results):
         #TODO: Pass ID instead of name once artist_single can handle it
         return redirect('artist_single', results[0].name)
