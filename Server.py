@@ -78,8 +78,8 @@ class SEHandler(object):
                 user = datm.User(self._config, name=session['name'])
                 
                 if not user.persisted:
-                    league = datm.League.all(self._config)(0)
-                    user.create(money=20000, points=0, league=list(league))
+                    user.create(money=20000, points=0, 
+                                league=datm.League(self._config, name='bronze'))
                 
                 user.vouch_for(session['key'])
                 
@@ -136,8 +136,8 @@ class SEHandler(object):
         """
         Returns the data from our db. If the artist isn't there, the data 
         gets on-demand pulled. If either artist or mbid are unknown, then the 
-        empty string should be sent. User sets the `ownedby' bool, by default it
-        should be an empty string
+        empty string should be sent. User sets the `ownedby' bool, by default 
+        the user name should be an empty string
         
         Parameters:
         - artist
@@ -151,8 +151,6 @@ class SEHandler(object):
             else:
                 raise DataError('Incorrect artist data')
             
-            u = datm.User(self._config, user.name)
-            
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             
             if not a.persisted:
@@ -160,27 +158,27 @@ class SEHandler(object):
                 #a.create(mechanics.price, mechanics.no_remaining)
             
             ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
-                               points=a.points, dividend=a.dividend, 
-                               ownedby=u.owns(self._config, a))
+                               points=a.points, dividend=a.dividend)
             
-            if (u.owns(self._config,a)):
-                ret.price = int(a.price * 0.97)
-            else:
+            #Empty user sent, special case to mean not logged in (anonymous)
+            if not user.name:
+                ret.ownedby = False
                 ret.price = a.price
+            else:
+                u = datm.User(self._config, user.name)
+                ret.ownedby = u.owns(self._config, a)
+                ret.price = a.price * (1 if u.owns(self._config,a) else 0.97)
             
             return ret
     
     @rethrow
-    def getArtistLFM(self, artist, user):
+    def getArtistLFM(self, artist):
         """
         Returns the artist info from last.fm for the artist. If either artist
-        or mbid are unknown, then the empty string should be sent. An
-        authenticated user is required to return recommended artists, otherwise
-        the parameter should be set to none
+        or mbid are unknown, then the empty string should be sent.
 
         Parameters:
         - artist
-        - user
         """
         with datm.DATMSession(self._config):
             if artist.mbid:
@@ -195,7 +193,7 @@ class SEHandler(object):
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             ret = ArtistLFM(artist=r, streamable=a.streamable,
                             listeners=a.listeners, plays=a.plays,
-                            tags=a.tags, similar = a.similar, bio=b)
+                            tags=a.tags, similar=a.similar, bio=b)
             
             return ret
     
@@ -251,14 +249,16 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def getSETop(self, n, trange):
+    def getSETop(self, n, trange, user):
         """
-        Returns a list of the n top SE artists by decreasing value. Range is
-        the number of days the leaderboard is over
+        Returns a list of the n top SE artists by decreasing value. Trange is
+        the number of days the leaderboard is over. User returns relevant 
+        prices for each artist, otherwise buy price for anonymous users.
 
         Parameters:
         - n
         - trange
+        - user
         """
         with datm.DATMSession(self._config):
             
@@ -267,58 +267,84 @@ class SEHandler(object):
             
             alist = datm.Artist.top(self._config, limit=n, after=time_utc_old)
             
-            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
-                                                                    a in alist]
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
+                                                                for a in alist]
 
             return ret
     
     @rethrow
-    def getLFMTop(self, n):
+    def getLFMTop(self, n, user):
         """
-        Returns a list of the n top last.fm artists by decreasing value.
+        Returns a list of the n top last.fm artists by decreasing value. User 
+        returns relevant prices for each artist, otherwise buy price for 
+        anonymous users
 
         Parameters:
         - n
         - trange
+        - user
         """
         with datm.DATMSession(self._config):
-            
             alist = datm.Artist.popular(self._config, limit=n)
             
-            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
-                                                                    a in alist]
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
+                                                                for a in alist]
             
             return ret
     
     @rethrow
-    def getTradedArtists(self, n):
+    def getTopArtist(self, n, user):
         """
-        Returns a list of the n most traded artists by decreasing value.
+        Returns the n top recommended artists for a user
+        
+        Parameters:
+        - n
+        - user
+        """
+        with datm.DATMSession(self._config):
+            
+            u = datm.User(self._config, name=user.name.name)
+            alist = datm.User.top_artists
+            
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name),
+                                    user.name) for a in alist]
+            
+            return ret
+    
+    @rethrow
+    def getTradedArtists(self, n, user):
+        """
+        Returns a list of the n most traded artists by decreasing value. User 
+        returns relevant prices for each artist, otherwise buy price for 
+        anonymous users.
 
         Parameters:
         - n
+        - user
         """
         with datm.DATMSession(self._config):
             alist = datm.Artist.most_traded(self._config, limit=n)
             
-            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for
-                                                                    a in alist]
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
+                                                                for a in alist]
 
             return ret
     
     @rethrow 
-    def getRecentTrades(self, n):
+    def getRecentTrades(self, n, user):
         """
-        Returns a list of the n most recent trades
+        Returns a list of the n most recent trades. User returns relevant 
+        prices for each artist, otherwise buy price for anonymous users.
 
         Parameters:
         - n
+        - user
         """
         with datm.DATMSession(self._config):
             tlist = datm.Trade.recent(self._config, limit=n)
             
-            ret = [Artist(mbid=t.mbid, name=t.name, imgurls=t.images) for
-                                                                    t in tlist]
+            ret = [self.getArtistSE(Artist(mbid=t.mbid, name=t.name), user)
+                                                                for t in tlist]
             
             return ret
     
@@ -333,6 +359,10 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             u = datm.User(self._config, user)
             
+            if not u.persisted:
+                print 'Trying a get data on non-existent user ' + user
+                raise DataError('User doesn`t exist in database')
+            
             basicu = User(name=u.name, points=u.points)
             
             ret = UserData(user=basicu)
@@ -344,24 +374,24 @@ class SEHandler(object):
                                 icon=u.league.icon)
             
             for t in u.trophies:
-                tr = Trophy(name=t.name, description=t.description)
+                tr = Trophy(name=t.name, description=t.description,
+                            icon=t.icon)
                 
                 ret.trophies.append(tr)
             
             for t in u.trades:
-                a = Artist(mbid=t.Artist.mbid, name=t.Artist.name,
-                           imgurls=t.Artist.images)
+                a = Artist(mbid=t.artist.mbid, name=t.artist.name,
+                           imgurls=t.artist.images)
                 
                 ret.trades.append(Trade(artist=a, price=t.price, time=t.time))
             
-            for t in u.stocks:
-                a = Artist(mbid=t.Artist.mbid, name=t.Artist.name,
-                           imgurls=t.Artist.images)
+            for s in u.stocks:
+                a = Artist(mbid=s.mbid, name=s.name, imgurls=s.images)
                 
                 #the assumption is that if the stock is listed, then it exists 
                 #in the DB and no databaseobjectexception would be thrown
-                ret.stocks.append(ArtistSE(artist=a, price=t.price, 
-                                dividend=t.dividend, numremaining=no_remaining))
+                ret.stocks.append(ArtistSE(artist=a, price=s.price, 
+                            dividend=s.dividend, numremaining=s.no_remaining))
             
             return ret
         
@@ -375,8 +405,17 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             u = datm.User(self._config, user.name.name)
             
+            if not u.persisted:
+                print 'Trying to get money on a non-existent user ' + user
+                raise DataError('User doesn`t exist in database')
+            
+            try:
+                u.authenticate(user.session_key)
+            except datm.InvalidAuthorisationException:
+                raise AuthenticationError('User not authenticated')
+            
             return AuthUser(name=User(name=user.name.name, points=u.points), 
-                                session_key=user.session_key, money=u.money)
+                            session_key=user.session_key, money=u.money)
 
     def getTopUsers(self, n, league, trange):
         """
@@ -433,6 +472,11 @@ class SEHandler(object):
             
             u = datm.User(self._config, user.name)
             
+            try:
+                u.authenticate(user.session_key)
+            except datm.InvalidAuthorisationException:
+                raise AuthenticationError('User not authenticated')
+            
             if (u.owns(self._config,a)):
                 price = int(a.price * 0.97)
             else:
@@ -441,16 +485,15 @@ class SEHandler(object):
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.Auth.secret(self._config))
+            m = hmac.new(datm.Auth(self._config).secret)
             m.update(str(time_utc))
             m.update(str(price))
             el = m.hexdigest()
             
-            return Guarantee(elephant = el, artist = Artist(mbid=a.mbid, 
+            return Guarantee(elephant=el, artist=Artist(mbid=a.mbid, 
                             name=a.name, imgurls=a.images), price=price,   
                             time=time_utc)
-        
-
+       
     def buy(self, guarantee, user):
         """
         Buys artist for user, and returns a bool as to whether it was
@@ -465,7 +508,7 @@ class SEHandler(object):
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.Auth.secret(self._config))
+            m = hmac.new(datm.Auth(self._config).secret)
             m.update(str(time_utc))
             m.update(str(guarantee.price))
             el = m.hexdigest() 
@@ -479,11 +522,17 @@ class SEHandler(object):
                 raise TransientError('Too late')
             
             u = datm.User(self._config, user=user.name)
+            
+            try:
+                u.authenticate(user.session_key)
+            except datm.InvalidAuthorisationException:
+                raise AuthenticationError('User not authenticated')
+            
             a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
             
             try:
-                t = datm.trade(self._config, user=u, artist=a, 
-price=guarantee.price)
+                t = datm.Trade(self._config, user=u, artist=a, 
+                                                        price=guarantee.price)
                 t.buy()
             except datm.NoStockRemainingException:
                 raise TransientError('No stock remaining')
@@ -503,7 +552,7 @@ price=guarantee.price)
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.Auth.secret(self._config))
+            m = hmac.new(datm.Auth(self._config).secret)
             m.update(str(time_utc))
             m.update(str(guarantee.price))
             el = m.hexdigest() 
@@ -517,11 +566,17 @@ price=guarantee.price)
                 raise TransientError('Too late')
             
             u = datm.User(self._config, user=user.name)
+            
+            try:
+                u.authenticate(user.session_key)
+            except datm.InvalidAuthorisationException:
+                raise AuthenticationError('User not authenticated')
+            
             a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
             
             try:
-                t = datm.trade(self._config, user=u, artist=a, 
-price=guarantee.price)
+                t = datm.Trade(self._config, user=u, artist=a, 
+                                                        price=guarantee.price)
                 t.sell()
             except datm.StockNotOwnedException:
                 raise TransientError('User cannot sell')

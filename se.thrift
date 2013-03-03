@@ -10,7 +10,7 @@ namespace py se_api
 # Minor is for backwards-compatible ones (e.g. adding optional parameters)
 # Patch is for small bugfixes and similar
 
-const string VERSION = "2.0.0"
+const string VERSION = "3.0.0"
 
 ## Structs
 
@@ -69,12 +69,11 @@ struct Trade {
     3: required i32 time
 }
 
-/** User trophies. Challenge is a possible arbitrary `difficulty to obtain' 
-    measurement, and is most likely not returned. */
+/** User trophies. */
 struct Trophy {
     1: required string name
-    2: required string description
-    3: optional string challenge
+    2: optional string description
+    3: optional string icon
 }
 
 /** User leagues. */
@@ -184,19 +183,17 @@ ServiceError s),
     
     /** Returns the data from our db. If the artist isn't there, the data gets 
         on-demand pulled. If either artist or mbid are unknown, then the empty 
-        string should be sent. User sets the `ownedby' bool, by default it 
-        should be an empty string the name */
+        string should be sent. User sets the `ownedby' bool, by default the 
+        user name should be an empty string */
     ArtistSE getArtistSE (1: required Artist artist, 2: required User user) 
 throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d,4: 
 ProgrammingError p, 5: ServiceError s),
     
     /** Returns the artist info from last.fm for the artist. If either artist 
-        or mbid are unknown, then the empty string should be sent. An 
-        authenticated user is required to return recommended artists, otherwise 
-        the parameter should be set to none */
-    ArtistLFM getArtistLFM (1: required Artist artist, 2: required AuthUser 
-user) throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
-ProgrammingError p, 5: ServiceError s),
+        or mbid are unknown, then the empty string should be sent. */
+    ArtistLFM getArtistLFM (1: required Artist artist) throws (1: 
+TransientError t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError 
+p, 5: ServiceError s),
 
     /** Returns a list of tuples of the price of the artist the past n days. 
         For new artists the empty list is returned. */
@@ -206,31 +203,42 @@ ProgrammingError p, 5: ServiceError s),
     
     /** returns a list of possible artists from a partial string. Ordered by 
         decreasing relevance. List size is limited to n elements, and page 
-        returns the given page of results */
+        returns the given page of results. */
     list<Artist> searchArtist (1: required string text, 2: required i32 n, 3: 
 required i32 page) throws (1: TransientError t, 2: AuthenticationError a, 3: 
 DataError d, 4: ProgrammingError p, 5: ServiceError s),
     
     /** Returns a list of the n top SE artists by decreasing value. Trange is 
-        the number of days the leaderboard is over */
-    list<Artist> getSETop (1: required i32 n, 2: required i32 trange) throws 
+        the number of days the leaderboard is over. User returns relevant 
+        prices for each artist, otherwise buy price for anonymous users. */
+    list<ArtistSE> getSETop (1: required i32 n, 2: required i32 trange, 3: 
+required User user) throws (1: TransientError t, 2: AuthenticationError a, 3: 
+DataError d, 4: ProgrammingError p, 5: ServiceError s),
+    
+    /** Returns a list of the n top last.fm artists by decreasing value. User 
+        returns relevant prices for each artist, otherwise buy price for 
+        anonymous users */
+    list<ArtistSE> getLFMTop (1: required i32 n, 2: required User user) throws 
 (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
 ProgrammingError p, 5: ServiceError s),
+
+    /** Returns the n top recommended artists for a user. **/
+    list<ArtistSE> getTopArtists (1: required i32 n, 2: AuthUser user) throws 
+(1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
+ProgrammingError p, 5: ServiceError s)
     
-    /** Returns a list of the n top last.fm artists by decreasing value. */
-    list<Artist> getLFMTop (1: required i32 n) throws (1: TransientError t, 2: 
-AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: ServiceError 
-s),
+    /** Returns a list of the n most traded artists by decreasing value. User 
+        returns relevant prices for each artist, otherwise buy price for 
+        anonymous users. */
+    list<ArtistSE> getTradedArtists (1: required i32 n, 2: required User user) 
+throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
+ProgrammingError p, 5: ServiceError s),
     
-    /** Returns a list of the n most traded artists by decreasing value. */
-    list<Artist> getTradedArtists (1: required i32 n) throws (1: TransientError 
-t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
-ServiceError s),
-    
-    /** Returns a list of the n most recent trades */
-    list<Artist> getRecentTrades (1: required i32 n) throws (1: TransientError 
-t, 2: AuthenticationError a, 3: DataError d, 4: ProgrammingError p, 5: 
-ServiceError s),
+    /** Returns a list of the n most recent trades. User returns relevant 
+        prices for each artist, otherwise buy price for anonymous users. */
+    list<ArtistSE> getRecentTrades (1: required i32 n, 2: required User user) 
+throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
+ProgrammingError p, 5: ServiceError s),
     
     # User
    
@@ -238,7 +246,8 @@ ServiceError s),
     UserData getUserData (1: required string user) throws (1: DataError d),
     
     /** Returns the current user with money. Requires AuthUser to auth */
-    AuthUser getUserMoney (1: required AuthUser user) throws (1: DataError d),
+    AuthUser getUserMoney (1: required AuthUser user) throws (1: DataError d, 
+2: AuthenticationError a),
     
     /** Returns the n top users by decreasing value in the given league. Trange 
         is the number of days the leaderboard is over, rounded to the nearest 
@@ -255,16 +264,16 @@ DataError d),
     
     /** Returns the guarantee token (elephant) to the front end */
     Guarantee getGuarantee (1: required Artist artist, 2: required AuthUser 
-user) throws (1: DataError d, 2: TransientError t),
+user) throws (1: DataError d, 2: TransientError t, 3: AuthenticationError a),
     
     /** Buys artist for user, and returns a bool as to whether it was 
         successful or not */
     bool buy (1: required Guarantee guarantee, 2: required AuthUser 
-user) throws (1: DataError d, 2: TransientError t),
+user) throws (1: DataError d, 2: TransientError t, 3: AuthenticationError a),
     
     /** Sells artist for user, and returns a bool as to whether it was 
         successful or not */
     bool sell (1: required Guarantee guarantee, 2: required AuthUser 
-user) throws (1: DataError d, 2: TransientError t)
+user) throws (1: DataError d, 2: TransientError t, 3: AuthenticationError a)
    
 }
