@@ -3,10 +3,10 @@
 {% load static %}
 {% load extras %}
 
-{% block title %}{{artist_SE.artist.name}}{% endblock title %}
+{% block title %}{{artist.name}}{% endblock title %}
 
 {% block above_main %}
-    <h1 class="main-header">{{artist_SE.artist.name}}</h1>
+    <h1 class="main-header">{{artist.name}}</h1>
 {% endblock above_main %}
 
 {% block main %}
@@ -25,12 +25,12 @@
 	</div>
 
     <p class="artist-bio">
-        {{artist_SE.artist.bio.summary|safe}}
+        {{artist.bio.summary|safe}}
         <!-- TODO: read more link for full bio -->
     <p>
 
     <h3 class="artist-subheader">Similar Artists</h3>
-    {% for similar_artist in artist_SE.artist.similar %}
+    {% for similar_artist in artist.similar %}
         <a href="{% url frontend.views.artist_single similar_artist.name|urlencode %}">
             <div class="artist-img" style="background-image: url('{{ similar_artist.imgurls|get_image:'mega' }}');">
                 <div class="text-over-image bottom">
@@ -43,17 +43,17 @@
 
 {% block sidebar %}
     <h2 class="sidebar-red">Current market price</h2>
-    <p class="sidebar-price">${{ artist_SE.price }}</p>
+    <p class="sidebar-price">${{ artist.price }}</p>
 
     <div class="sub-info">
-        <p><span>{{ artist_SE.points }} points</span> per day</p>
-        <p><span>${{ artist_SE.dividends }}</span> per day (dividends)</p>
+        <p><span>{{ artist.points }} points</span> per day</p>
+        <p><span>${{ artist.dividends }}</span> per day (dividends)</p>
     </div>
 
-    {% if artist_SE.ownedby %}
-        <a class="button large" id="sell-button" href="#" data-price="{{ artist_SE.price }}" data-artistname="{{ artist_SE.artist.name }}">Sell</a>
+    {% if artist.ownedby %}
+        <a class="button large" id="sell-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Sell</a>
     {% else %}
-        <a class="button large" id="buy-button" href="#" data-price="{{ artist_SE.price }}" data-artistname="{{ artist_SE.artist.name }}">Buy</a>
+        <a class="button large" id="buy-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Buy</a>
     {% endif %}
 
 {% endblock sidebar %}
@@ -71,8 +71,8 @@
 	<script type="text/javascript">
         // Pass in artist name and mbid here for JS access
         window.SE.Artist = {};
-		window.SE.Artist.name = '{{artist_SE.artist.name}}';
-        window.SE.Artist.mbid = '{{artist_SE.artist.mbid}}';
+		window.SE.Artist.name = '{{artist.name}}';
+        window.SE.Artist.mbid = '{{artist.mbid}}';
 	</script>
     <script type="text/javascript" src="{% static "js/artist.js" %}"></script>
 {% endblock body_additional_js %}
