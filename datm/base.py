@@ -31,6 +31,15 @@ class DATMObject(object):
         """
         return self._config.lastfm
 
+    @property
+    def persisted(self):
+        """Check if a database object exists corresponding to this object."""
+        try:
+            if self.dbo is not None:
+                return True
+        except NoDatabaseObjectException:
+            return False
+
 def datm_setup(init):
     @wraps(init)
     def inner(self, config, *args, **kwargs):
