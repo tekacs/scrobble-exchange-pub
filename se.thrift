@@ -69,12 +69,11 @@ struct Trade {
     3: required i32 time
 }
 
-/** User trophies. Challenge is a possible arbitrary `difficulty to obtain' 
-    measurement, and is most likely not returned. */
+/** User trophies. */
 struct Trophy {
     1: required string name
-    2: required string description
-    3: optional string challenge
+    2: optional string description
+    3: optional string icon
 }
 
 /** User leagues. */
@@ -243,7 +242,8 @@ p, 5: ServiceError s),
     UserData getUserData (1: required string user) throws (1: DataError d),
     
     /** Returns the current user with money. Requires AuthUser to auth */
-    AuthUser getUserMoney (1: required AuthUser user) throws (1: DataError d),
+    AuthUser getUserMoney (1: required AuthUser user) throws (1: DataError d, 
+2: AuthenticationError a),
     
     /** Returns the n top users by decreasing value in the given league. Trange 
         is the number of days the leaderboard is over, rounded to the nearest 
