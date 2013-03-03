@@ -12,7 +12,7 @@ from lfm.lastfm import AuthenticationFailure
 from base import DATMObject, datm_setup, NoDatabaseObjectException
 from config import require_lastfm, require_db, require_data_source,\
     NoDatabaseException, NoLastFMException
-from artist import Artist
+from artist import Artist, partial_artist
 from trading import Trade
 from sparkles import Trophy
 from league import League
@@ -100,6 +100,19 @@ class User(DATMObject):
             user=self.name
         ))
 
+    @property
+    @require_lastfm
+    @require_db
+    def top_artists(self):
+        """Return the top artists from this user's last.fm Library"""
+        lfm_data = lfm.Chart.get_top_artists(lastfm.auth_params(
+            self.config,
+            user=self.name
+        ))
+        if lfm_data.get('status', False) == 'ok':
+            return []
+        return (partial_artist(self.config, a) for a in lfm_data['artist'])
+
     # Static Methods
 
     @staticmethod
@@ -135,6 +148,12 @@ class User(DATMObject):
             getattr(User, period).desc()
         ).limit(limit)
         return (User(u) for u in query.all())
+
+    @staticmethod
+    @require_db
+    def near(config):
+        # FIXME: Complete this!
+        pass
 
     # Object Interface
 
