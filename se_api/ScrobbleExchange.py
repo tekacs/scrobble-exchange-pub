@@ -2978,7 +2978,7 @@ class getSETop_result(object):
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(Artist, Artist.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(ArtistSE, ArtistSE.thrift_spec)), None, ), # 0
     (1, TType.STRUCT, 't', (TransientError, TransientError.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 2
     (3, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 3
@@ -3008,7 +3008,7 @@ class getSETop_result(object):
           self.success = []
           (_etype77, _size74) = iprot.readListBegin()
           for _i78 in xrange(_size74):
-            _elem79 = Artist()
+            _elem79 = ArtistSE()
             _elem79.read(iprot)
             self.success.append(_elem79)
           iprot.readListEnd()
@@ -3173,7 +3173,7 @@ class getLFMTop_result(object):
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(Artist, Artist.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(ArtistSE, ArtistSE.thrift_spec)), None, ), # 0
     (1, TType.STRUCT, 't', (TransientError, TransientError.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 2
     (3, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 3
@@ -3203,7 +3203,7 @@ class getLFMTop_result(object):
           self.success = []
           (_etype84, _size81) = iprot.readListBegin()
           for _i85 in xrange(_size81):
-            _elem86 = Artist()
+            _elem86 = ArtistSE()
             _elem86.read(iprot)
             self.success.append(_elem86)
           iprot.readListEnd()
@@ -3368,7 +3368,7 @@ class getTradedArtists_result(object):
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(Artist, Artist.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(ArtistSE, ArtistSE.thrift_spec)), None, ), # 0
     (1, TType.STRUCT, 't', (TransientError, TransientError.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 2
     (3, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 3
@@ -3398,7 +3398,7 @@ class getTradedArtists_result(object):
           self.success = []
           (_etype91, _size88) = iprot.readListBegin()
           for _i92 in xrange(_size88):
-            _elem93 = Artist()
+            _elem93 = ArtistSE()
             _elem93.read(iprot)
             self.success.append(_elem93)
           iprot.readListEnd()
@@ -3563,7 +3563,7 @@ class getRecentTrades_result(object):
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(Artist, Artist.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(ArtistSE, ArtistSE.thrift_spec)), None, ), # 0
     (1, TType.STRUCT, 't', (TransientError, TransientError.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 2
     (3, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 3
@@ -3593,7 +3593,7 @@ class getRecentTrades_result(object):
           self.success = []
           (_etype98, _size95) = iprot.readListBegin()
           for _i99 in xrange(_size95):
-            _elem100 = Artist()
+            _elem100 = ArtistSE()
             _elem100.read(iprot)
             self.success.append(_elem100)
           iprot.readListEnd()
