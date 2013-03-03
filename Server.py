@@ -529,6 +529,8 @@ class SEHandler(object):
             a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
             
             try:
+                #t = mechanics.Trade(user=u)
+                #t.sell(artist=a, price=guarantee.price)
                 t = datm.Trade(self._config, user=u, artist=a, 
                                                         price=guarantee.price)
                 t.buy()
@@ -573,6 +575,8 @@ class SEHandler(object):
             a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
             
             try:
+                #t = mechanics.Trade(user=u)
+                #t.sell(artist=a, price=guarantee.price)
                 t = datm.Trade(self._config, user=u, artist=a, 
                                                         price=guarantee.price)
                 t.sell()
