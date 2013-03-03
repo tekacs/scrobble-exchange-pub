@@ -290,9 +290,11 @@ def search(request):
 
 ############ Buy/Sell ############
 
-@json_response
+@json_response(auth_needed = True)
 def price(request, artist_id=None):
-    # artist_name = request.GET.get('artist_name')
+    authorize_ajax_calls(request)
+
+    artist_name = request.GET.get('artist_name')
     artist = ttypes.Artist(name = artist_name)
     authuser =  _authuser(request)
     # artist_SE = client.getArtistSE(artist = artist, user = authuser)
@@ -315,14 +317,15 @@ def price(request, artist_id=None):
     }
     return artist_SE
 
-@json_response
+@json_response(auth_needed = True)
 def guaranteed_price(request):
+    authorize_ajax_calls(request)
     artist_id = request.GET.get('artist_id')
     artist = ttypes.Artist(mbid = artist_id)
     artist_price_guarantee = client.getGuarantee(artist = artist, user = _authuser(request)).__dict__
     return artist_price_guarantee
 
-@json_response
+@json_response(auth_needed = True)
 @require_POST
 def sell(request):
     #TODO: Remind Joe to check out https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
@@ -337,7 +340,7 @@ def sell(request):
     success = client.sell(guarantee=guarantee, user=_authuser(request))
     return success;
 
-@json_response
+@json_response(auth_needed = True)
 @require_POST
 def buy(request):
     elephant = request.POST.get('elephant')
@@ -363,3 +366,7 @@ def _user(request):
         return ttypes.User(request.user.username)
     else:
         return ttypes.User('')
+
+def authorize_ajax_calls(request):
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden

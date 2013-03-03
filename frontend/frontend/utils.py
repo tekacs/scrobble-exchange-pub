@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 import json
 
 # Import thrift stuff
@@ -9,13 +9,16 @@ from thrift.transport import TSocket, TTransport
 from thrift.protocol import TBinaryProtocol
 # End of thrift
 
-def json_response(func):
+def json_response(func, auth_needed = False):
     """
     A decorator thats takes a view response and turns it
     into json. If a callback is added through GET or POST
     the response is JSONP.
     """
     def decorator(request, *args, **kwargs):
+        if auth_needed and not request.user.is_authenticated():
+            return HttpResponseForbidden()
+
         objects = func(request, *args, **kwargs)
         if isinstance(objects, HttpResponse):
             return objects
