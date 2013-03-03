@@ -180,7 +180,7 @@ def artist_single(request, artistname):
     artist_se = client.getArtistSE(artist_basic, user)
     artist_lfm = client.getArtistLFM(artist_basic, user)
 
-    returndata = []
+    returndata = {}
     returndata.update(vars(artist_basic))
     returndata.update(vars(artist_se))
     returndata.update(vars(artist_lfm))
