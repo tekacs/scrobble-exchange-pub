@@ -14,6 +14,12 @@ header {
             color: #FFF;
             text-shadow: rgb(135, 8, 2) 0px 1px 0px;
 
+            &.name {
+                a {
+                    padding-left: 0;
+                }
+            }
+
             &:not(.name){
                 height: 42px;
                 margin-top: 1px;
@@ -34,10 +40,42 @@ header {
         }
 
         ul.right > li {
+            text-shadow: rgb(135, 8, 2) 0px 1px 0px;
+            padding: 0 15px;
+            border-right: 1px solid darken($mainBarRed, 5%);
+
+            &:last-child {
+                border-right: none;
+                &:not(.has-dropdown){
+                    padding-right: 0;
+                }
+            }
 
             a {
                 color: #eee;
+            }
+
+            div.user-profile-link a:not(.username) {
+                padding: 0;
                 font-size: 11px;
+            }
+
+            div.user-profile-link {
+                height: 45px;
+
+                a {
+                    float: left;
+                    padding-left: 0;
+                    padding-right: 15px;
+                }
+
+                img {
+                    height: 16px;
+                    width: 16px;
+                    margin-top: 14px;
+                    margin-left: 0;
+                    margin-right: 5px;
+                }
             }
 
             &:hover, &.active, &:focus {
@@ -55,7 +93,6 @@ header {
                 font-size: 11px;
                 line-height: 23px;
             }
-            margin-left: 15px;
         }
 
         div.header-promo {
@@ -70,7 +107,6 @@ header {
         div.header-search {
             width: 300px;
             float: right;
-            margin-right: 15px;
             form.search-form {
 
                 input[type="text"] {
