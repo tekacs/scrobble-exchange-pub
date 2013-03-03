@@ -38,7 +38,7 @@ class User(base.Base):
         backref="possessors"
     )
 
-    league_id = Column(Integer, ForeignKey("leagues.id"))
+    league_uid = Column(String, ForeignKey("leagues.uid"))
 
     def __init__(self, name, money, points):
         """Create a new, blank ``User``."""
@@ -65,6 +65,6 @@ assoc_artist_user = Table(
 assoc_trophy_user = Table(
     'assoc_trophy_user',
     base.Base.metadata,
-    Column('trophy_id', Integer, ForeignKey('trophies.id')),
+    Column('trophy_uid', String, ForeignKey('trophies.uid')),
     Column('user_id', Integer, ForeignKey('users.id'))
 )
