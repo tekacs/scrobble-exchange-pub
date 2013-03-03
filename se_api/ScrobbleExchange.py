@@ -123,6 +123,16 @@ class Iface(object):
     """
     pass
 
+  def getTopArtists(self, n, user):
+    """
+    Returns the n top recommended artists for a user *
+
+    Parameters:
+     - n
+     - user
+    """
+    pass
+
   def getTradedArtists(self, n):
     """
     Returns a list of the n most traded artists by decreasing value.
@@ -652,6 +662,50 @@ class Client(Iface):
       raise result.s
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getLFMTop failed: unknown result");
 
+  def getTopArtists(self, n, user):
+    """
+    Returns the n top recommended artists for a user *
+
+    Parameters:
+     - n
+     - user
+    """
+    self.send_getTopArtists(n, user)
+    return self.recv_getTopArtists()
+
+  def send_getTopArtists(self, n, user):
+    self._oprot.writeMessageBegin('getTopArtists', TMessageType.CALL, self._seqid)
+    args = getTopArtists_args()
+    args.n = n
+    args.user = user
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getTopArtists(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getTopArtists_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.t is not None:
+      raise result.t
+    if result.a is not None:
+      raise result.a
+    if result.d is not None:
+      raise result.d
+    if result.p is not None:
+      raise result.p
+    if result.s is not None:
+      raise result.s
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getTopArtists failed: unknown result");
+
   def getTradedArtists(self, n):
     """
     Returns a list of the n most traded artists by decreasing value.
@@ -1010,6 +1064,7 @@ class Processor(Iface, TProcessor):
     self._processMap["searchArtist"] = Processor.process_searchArtist
     self._processMap["getSETop"] = Processor.process_getSETop
     self._processMap["getLFMTop"] = Processor.process_getLFMTop
+    self._processMap["getTopArtists"] = Processor.process_getTopArtists
     self._processMap["getTradedArtists"] = Processor.process_getTradedArtists
     self._processMap["getRecentTrades"] = Processor.process_getRecentTrades
     self._processMap["getUserData"] = Processor.process_getUserData
@@ -1240,6 +1295,28 @@ class Processor(Iface, TProcessor):
     except ServiceError as s:
       result.s = s
     oprot.writeMessageBegin("getLFMTop", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getTopArtists(self, seqid, iprot, oprot):
+    args = getTopArtists_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getTopArtists_result()
+    try:
+      result.success = self._handler.getTopArtists(args.n, args.user)
+    except TransientError as t:
+      result.t = t
+    except AuthenticationError as a:
+      result.a = a
+    except DataError as d:
+      result.d = d
+    except ProgrammingError as p:
+      result.p = p
+    except ServiceError as s:
+      result.s = s
+    oprot.writeMessageBegin("getTopArtists", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3294,6 +3371,214 @@ class getLFMTop_result(object):
   def __ne__(self, other):
     return not (self == other)
 
+class getTopArtists_args(object):
+  """
+  Attributes:
+   - n
+   - user
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'n', None, None, ), # 1
+    (2, TType.STRUCT, 'user', (AuthUser, AuthUser.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, n=None, user=None,):
+    self.n = n
+    self.user = user
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.n = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.user = AuthUser()
+          self.user.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getTopArtists_args')
+    if self.n is not None:
+      oprot.writeFieldBegin('n', TType.I32, 1)
+      oprot.writeI32(self.n)
+      oprot.writeFieldEnd()
+    if self.user is not None:
+      oprot.writeFieldBegin('user', TType.STRUCT, 2)
+      self.user.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.n is None:
+      raise TProtocol.TProtocolException(message='Required field n is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getTopArtists_result(object):
+  """
+  Attributes:
+   - success
+   - t
+   - a
+   - d
+   - p
+   - s
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(ArtistSE, ArtistSE.thrift_spec)), None, ), # 0
+    (1, TType.STRUCT, 't', (TransientError, TransientError.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 3
+    (4, TType.STRUCT, 'p', (ProgrammingError, ProgrammingError.thrift_spec), None, ), # 4
+    (5, TType.STRUCT, 's', (ServiceError, ServiceError.thrift_spec), None, ), # 5
+  )
+
+  def __init__(self, success=None, t=None, a=None, d=None, p=None, s=None,):
+    self.success = success
+    self.t = t
+    self.a = a
+    self.d = d
+    self.p = p
+    self.s = s
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype91, _size88) = iprot.readListBegin()
+          for _i92 in xrange(_size88):
+            _elem93 = ArtistSE()
+            _elem93.read(iprot)
+            self.success.append(_elem93)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.t = TransientError()
+          self.t.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.a = AuthenticationError()
+          self.a.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.d = DataError()
+          self.d.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRUCT:
+          self.p = ProgrammingError()
+          self.p.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRUCT:
+          self.s = ServiceError()
+          self.s.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getTopArtists_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter94 in self.success:
+        iter94.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.t is not None:
+      oprot.writeFieldBegin('t', TType.STRUCT, 1)
+      self.t.write(oprot)
+      oprot.writeFieldEnd()
+    if self.a is not None:
+      oprot.writeFieldBegin('a', TType.STRUCT, 2)
+      self.a.write(oprot)
+      oprot.writeFieldEnd()
+    if self.d is not None:
+      oprot.writeFieldBegin('d', TType.STRUCT, 3)
+      self.d.write(oprot)
+      oprot.writeFieldEnd()
+    if self.p is not None:
+      oprot.writeFieldBegin('p', TType.STRUCT, 4)
+      self.p.write(oprot)
+      oprot.writeFieldEnd()
+    if self.s is not None:
+      oprot.writeFieldBegin('s', TType.STRUCT, 5)
+      self.s.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class getTradedArtists_args(object):
   """
   Attributes:
@@ -3396,11 +3681,11 @@ class getTradedArtists_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype91, _size88) = iprot.readListBegin()
-          for _i92 in xrange(_size88):
-            _elem93 = ArtistSE()
-            _elem93.read(iprot)
-            self.success.append(_elem93)
+          (_etype98, _size95) = iprot.readListBegin()
+          for _i99 in xrange(_size95):
+            _elem100 = ArtistSE()
+            _elem100.read(iprot)
+            self.success.append(_elem100)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3447,8 +3732,8 @@ class getTradedArtists_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter94 in self.success:
-        iter94.write(oprot)
+      for iter101 in self.success:
+        iter101.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.t is not None:
@@ -3591,11 +3876,11 @@ class getRecentTrades_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype98, _size95) = iprot.readListBegin()
-          for _i99 in xrange(_size95):
-            _elem100 = ArtistSE()
-            _elem100.read(iprot)
-            self.success.append(_elem100)
+          (_etype105, _size102) = iprot.readListBegin()
+          for _i106 in xrange(_size102):
+            _elem107 = ArtistSE()
+            _elem107.read(iprot)
+            self.success.append(_elem107)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3642,8 +3927,8 @@ class getRecentTrades_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter101 in self.success:
-        iter101.write(oprot)
+      for iter108 in self.success:
+        iter108.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.t is not None:
