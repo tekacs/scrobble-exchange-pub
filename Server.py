@@ -102,9 +102,8 @@ class SEHandler(object):
                 a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
-                
-            ret = Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
-                         imgurls=a.images)
+           
+            ret = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
         
             return ret
     
@@ -153,23 +152,15 @@ class SEHandler(object):
             
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             
+            if not a.persisted:
+                a.create(750, 100)
+                #a.create(mechanics.price, mechanics.no_remaining)
             
-            try:
-                ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
+            ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                                points=a.points, dividend=a.dividend, 
-                               ownedby=u.owns(a))
-            except datm.NoDatabaseObjectException():
-                #a.create(mechanics.no_remaining, mechanics.points, 
-                #mechanics.price, mechanics.dividend)
-                #ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
-                #               points=a.points, dividend=a.dividend, 
-                #               ownedby=u.owns(a))
-                a.create(100,500,768,230)
-                ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
-                               points=a.points, dividend=a.dividend, 
-                               ownedby=u.owns(a))
+                               ownedby=u.owns(self._config, a))
             
-            if (u.owns(a)):
+            if (u.owns(self._config,a)):
                 ret.price = int(a.price * 0.97)
             else:
                 ret.price = a.price
@@ -190,15 +181,13 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config):
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid,
-                                                session_key = user.session_key)
+                a = datm.Artist(self._config, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name,
-                                                session_key = user.session_key)
+                a = datm.Artist(self._config, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
 
-            b = ArtistBio(summary=a.summary, content=a.content)       
+            b = ArtistBio(summary=a.bio.summary, content=a.bio.content)       
            
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             ret = ArtistLFM(artist=r, streamable=a.streamable,
@@ -226,25 +215,24 @@ class SEHandler(object):
                 raise DataError('Incorrect artist data')
             
             time_utc = time.mktime(datetime.utcnow().timetuple())
-            time_utc_old = time_utc - n*24*60*60
+            time_utc_old = int(time_utc - n*24*60*60)
             
             ret = ArtistHistory()
-            try:
-                ret.histvalue = a.history(self._config, after=time_utc_old)
-            except datm.NoDatabaseObjectException():
-                #a.create(mechanics.no_remaining, mechanics.points, 
-                #mechanics.price, mechanics.dividend)
-                #ret.histvalue = a.history(self._config, after=time_utc_old)
-                a.create(100,500,768,230)
-                ret.histvalue = a.history(self._config, after=time_utc_old)
+            
+            if not a.persisted:
+                a.create(750,100)
+                #a.create(mechanics.price, mechanics.no_remaining)
+            
+            ret.histvalue = a.history(self._config, after=time_utc_old)
             
             return ret
     
     @rethrow
     def searchArtist(self, text, n, page):
         """
-        Returns a list of tuples of the price of the artist the past n days.
-        For new artists the empty list is returned.
+        returns a list of possible artists from a partial string. Ordered by 
+        decreasing relevance. List size is limited to n elements, and page 
+        returns the given page of results
 
         Parameters:
         - artist
@@ -254,8 +242,8 @@ class SEHandler(object):
             alist = datm.Artist.api_search(self._config, text, limit=n,
                                                                     page=page)
 
-            ret = [Artist(mbid=a.mbid, name=a.name.encode('utf-8'), 
-                            imgurls=a.images) for a in alist]
+            ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for a in 
+                                                                        alist]
             
             return ret
     
@@ -324,7 +312,7 @@ class SEHandler(object):
         - n
         """
         with datm.DATMSession(self._config):
-            tlist = datm.trade.recent(self._config, limit=n)
+            tlist = datm.Trade.recent(self._config, limit=n)
             
             ret = [Artist(mbid=t.mbid, name=t.name, imgurls=t.images) for
                                                                     t in tlist]
@@ -401,14 +389,11 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             
             if trange == 1:
-                ulist = datm.User.top(self._config, limit=n, league=league.name,
-                                        period='daily')
+                ulist = datm.User.top(self._config, limit=n, period='daily')
             elif trange <= 7:
-                ulist = datm.User.top(self._config, limit=n, league=league.name,
-                                        period='weekly')
+                ulist = datm.User.top(self._config, limit=n, period='weekly')
             elif trange <= 31:
-                ulist = datm.User.top(self._config, limit=n, league=league.name,
-                                        period='monthly')
+                ulist = datm.User.top(self._config, limit=n, period='monthly')
             else:
                 raise DataError('Unusual time range selected')
             
@@ -445,7 +430,7 @@ class SEHandler(object):
             
             u = datm.User(self._config, user.name)
             
-            if (u.owns(a)):
+            if (u.owns(self._config,a)):
                 price = int(a.price * 0.97)
             else:
                 price = a.price
