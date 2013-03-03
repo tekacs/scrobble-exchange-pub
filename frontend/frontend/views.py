@@ -21,7 +21,7 @@ TIME_RANGE_TRANSLATION = [0,31,7,1]
 def home(request):
     #Done with the API
     if request.user.is_authenticated():
-        authorized_user = __authuser(request)
+        authorized_user = _authuser(request)
 
         api_user_data = client.getUserData('fiwl')
         
@@ -183,7 +183,9 @@ def artist_single(request, artistname):
     #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
     if (artistname == ''):
         return redirect('artists')
-    authorized_user = __authuser(request)
+
+    authorized_user = _authuser(request)
+
     artist_basic = client.getArtist(ttypes.Artist(mbid = '', name = 
                     artistname))
     artist_se = client.getArtistSE(artist_basic, authorized_user)
@@ -293,7 +295,7 @@ def search(request):
 def price(request, artist_id=None):
     # artist_name = request.GET.get('artist_name')
     artist = ttypes.Artist(name = artist_name)
-    authuser =  __authuser(request)
+    authuser =  _authuser(request)
     # artist_SE = client.getArtistSE(artist = artist, user = authuser)
     # TODO: Ask Victor why this may be throwing exceptions
     # Throws errors because the test backend currently only looks stuff up by 
@@ -318,7 +320,7 @@ def price(request, artist_id=None):
 def guaranteed_price(request):
     artist_id = request.GET.get('artist_id')
     artist = ttypes.Artist(mbid = artist_id)
-    artist_price_guarantee = client.getGuarantee(artist = artist, user = __authuser(request)).__dict__
+    artist_price_guarantee = client.getGuarantee(artist = artist, user = _authuser(request)).__dict__
     return artist_price_guarantee
 
 @json_response
@@ -333,7 +335,7 @@ def sell(request):
 
     guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
 
-    success = client.sell(guarantee=guarantee, user=__authuser(request))
+    success = client.sell(guarantee=guarantee, user=_authuser(request))
     return success;
 
 @json_response
@@ -346,7 +348,7 @@ def buy(request):
 
     guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
 
-    success = client.buy(guarantee=guarantee, user=__authuser(request))
+    success = client.buy(guarantee=guarantee, user=_authuser(request))
     return success;
 
 
