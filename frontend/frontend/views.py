@@ -14,6 +14,7 @@ import random
 from urllib import quote
 
 RESULTS_PER_PAGE = 9;
+NUM_CHARTS = 5
 client = settings.CLIENT
 TIME_RANGE_TRANSLATION = [0,31,7,1]
 #TODO: Handle exceptions with the client
@@ -22,32 +23,42 @@ def home(request):
     #Done with the API
     if request.user.is_authenticated():
         authorized_user = _authuser(request)
+        user = _user(request)
 
-        api_user_data = client.getUserData('Sov1etRuss1a')
+        api_user_data = client.getUserData(user.name)
+        api_user_money = client.getUserMoney(authorized_user)
         
-        user_data = models.UserData()
-        user_data.stocks = []
-        
-        for artistse in api_user_data.stocks:
-            a = {
-                    'name': artistse.artist.name, 
-                    'imgurls': artistse.artist.imgurls
-                }
+        user_data = {}
+        user_data.update(vars(api_user_data))
+        user_data.update(vars(api_user_money))
 
-            user_data.stocks.append(
-                {
-                    'artist': a, 
-                    'price': artistse.price,
-                    'points': artistse.price, 
-                    'dividend':artistse.dividend
-                }
-            )
+        # user_data = models.UserData()
+        # user_data.stocks = []
+        
+        # for artistse in api_user_data.stocks:
+        #     a = {
+        #             'name': artistse.artist.name, 
+        #             'imgurls': artistse.artist.imgurls
+        #         }
+
+        #     user_data.stocks.append(
+        #         {
+        #             'artist': a, 
+        #             'price': artistse.price,
+        #             'points': artistse.price, 
+        #             'dividend':artistse.dividend
+        #         }
+        #     )
             
-        user_data.user = {
-                            'money': client.getUserMoney(authorized_user).money, 
-                            'points': api_user_data.user.points
-                        }
-        user_data.portfolio_worth = sum(artist.price for artist in api_user_data.stocks)
+        # user_data.user = {
+        #                     'money': client.getUserMoney(authorized_user).money, 
+        #                     'points': api_user_data.user.points
+        #                 }
+        user_data['portfolio_worth'] = sum(artist.price for artist in api_user_data.stocks)
+
+        # TODO: Uncomment when the API supports this
+        # recommended_artists = client.getTopArtists(NUM_CHARTS, user)
+        recommended_artists = {}
 
         return render_to_response('index.html',
             {'user_data': user_data}, context_instance=RequestContext(request)
@@ -144,7 +155,6 @@ def get_leaderboard(request):
 
 ############ Artist stuff ############
 def artists(request):
-    NUM_CHARTS = 5
     TIME_RANGE = 7
     user = _user(request)
 
@@ -153,7 +163,7 @@ def artists(request):
     top_traded_artists = client.getTradedArtists(NUM_CHARTS, user) #Returns Artists
 
     # TODO: The API needs to implement this function
-    # recommended_artists = client.getRecommendedArtists
+    recommended_artists = client.getTopArtists(NUM_CHARTS, user)
     
     popular_LFM_artists = client.getLFMTop(NUM_CHARTS, user)              #Returns Artists
     recently_traded_artists = client.getRecentTrades(NUM_CHARTS, user)    #Returns Artists
@@ -164,7 +174,7 @@ def artists(request):
         'top_SE_artists': top_SE_artists,
         'top_traded_artists': top_traded_artists,
         'popular_LFM_artists': popular_LFM_artists,
-        'recommended_artists': recommended_artists,
+        'recommended_artists': top_artists,
         'recently_traded_artists': recently_traded_artists
     })
 
@@ -184,20 +194,6 @@ def artist_single(request, artistname):
     returndata.update(vars(artist_basic))
     returndata.update(vars(artist_se))
     returndata.update(vars(artist_lfm))
-    
-    # artist = {
-    #             'name':artist_basic.name, 
-    #             'bio': {'summary': artist_lfm.bio.summary}, 
-    #             'similar': artist_lfm.similar
-    #         }
-    
-    # artist_sse = {
-    #                 'artist': artist, 
-    #                 'ownedby': artist_se.ownedby, 
-    #                 'price': artist_se.price, 
-    #                 'points': artist_se.points, 
-    #                 'dividends': artist_se.dividend
-    #             }
 
     return render_to_response('artist_single.html', {
         'artist':returndata}, context_instance=RequestContext(request))
