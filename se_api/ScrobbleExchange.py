@@ -971,6 +971,8 @@ class Client(Iface):
       raise result.d
     if result.t is not None:
       raise result.t
+    if result.a is not None:
+      raise result.a
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getGuarantee failed: unknown result");
 
   def buy(self, guarantee, user):
@@ -1010,6 +1012,8 @@ class Client(Iface):
       raise result.d
     if result.t is not None:
       raise result.t
+    if result.a is not None:
+      raise result.a
     raise TApplicationException(TApplicationException.MISSING_RESULT, "buy failed: unknown result");
 
   def sell(self, guarantee, user):
@@ -1049,6 +1053,8 @@ class Client(Iface):
       raise result.d
     if result.t is not None:
       raise result.t
+    if result.a is not None:
+      raise result.a
     raise TApplicationException(TApplicationException.MISSING_RESULT, "sell failed: unknown result");
 
 
@@ -1436,6 +1442,8 @@ class Processor(Iface, TProcessor):
       result.d = d
     except TransientError as t:
       result.t = t
+    except AuthenticationError as a:
+      result.a = a
     oprot.writeMessageBegin("getGuarantee", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -1452,6 +1460,8 @@ class Processor(Iface, TProcessor):
       result.d = d
     except TransientError as t:
       result.t = t
+    except AuthenticationError as a:
+      result.a = a
     oprot.writeMessageBegin("buy", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -1468,6 +1478,8 @@ class Processor(Iface, TProcessor):
       result.d = d
     except TransientError as t:
       result.t = t
+    except AuthenticationError as a:
+      result.a = a
     oprot.writeMessageBegin("sell", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -4640,18 +4652,21 @@ class getGuarantee_result(object):
    - success
    - d
    - t
+   - a
   """
 
   thrift_spec = (
     (0, TType.STRUCT, 'success', (Guarantee, Guarantee.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 't', (TransientError, TransientError.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 3
   )
 
-  def __init__(self, success=None, d=None, t=None,):
+  def __init__(self, success=None, d=None, t=None, a=None,):
     self.success = success
     self.d = d
     self.t = t
+    self.a = a
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -4680,6 +4695,12 @@ class getGuarantee_result(object):
           self.t.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.a = AuthenticationError()
+          self.a.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4701,6 +4722,10 @@ class getGuarantee_result(object):
     if self.t is not None:
       oprot.writeFieldBegin('t', TType.STRUCT, 2)
       self.t.write(oprot)
+      oprot.writeFieldEnd()
+    if self.a is not None:
+      oprot.writeFieldBegin('a', TType.STRUCT, 3)
+      self.a.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -4804,18 +4829,21 @@ class buy_result(object):
    - success
    - d
    - t
+   - a
   """
 
   thrift_spec = (
     (0, TType.BOOL, 'success', None, None, ), # 0
     (1, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 't', (TransientError, TransientError.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 3
   )
 
-  def __init__(self, success=None, d=None, t=None,):
+  def __init__(self, success=None, d=None, t=None, a=None,):
     self.success = success
     self.d = d
     self.t = t
+    self.a = a
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -4843,6 +4871,12 @@ class buy_result(object):
           self.t.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.a = AuthenticationError()
+          self.a.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4864,6 +4898,10 @@ class buy_result(object):
     if self.t is not None:
       oprot.writeFieldBegin('t', TType.STRUCT, 2)
       self.t.write(oprot)
+      oprot.writeFieldEnd()
+    if self.a is not None:
+      oprot.writeFieldBegin('a', TType.STRUCT, 3)
+      self.a.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -4967,18 +5005,21 @@ class sell_result(object):
    - success
    - d
    - t
+   - a
   """
 
   thrift_spec = (
     (0, TType.BOOL, 'success', None, None, ), # 0
     (1, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 't', (TransientError, TransientError.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 3
   )
 
-  def __init__(self, success=None, d=None, t=None,):
+  def __init__(self, success=None, d=None, t=None, a=None,):
     self.success = success
     self.d = d
     self.t = t
+    self.a = a
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -5006,6 +5047,12 @@ class sell_result(object):
           self.t.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.a = AuthenticationError()
+          self.a.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -5027,6 +5074,10 @@ class sell_result(object):
     if self.t is not None:
       oprot.writeFieldBegin('t', TType.STRUCT, 2)
       self.t.write(oprot)
+      oprot.writeFieldEnd()
+    if self.a is not None:
+      oprot.writeFieldBegin('a', TType.STRUCT, 3)
+      self.a.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
