@@ -9,8 +9,8 @@ D.round_even = partial(D.to_integral, rounding=decimal.ROUND_HALF_EVEN)
 import datm
 
 class User(object):
-    def __init__(self, config, user):
-        self.config = config
+    def __init__(self, user):
+        self.config = user.config
         self.user = user
 
     def daily(self):
@@ -23,6 +23,8 @@ class User(object):
         self.user.money = self.initial_money
 
     def buy(self, artist, price):
+        if isinstance(artist, Artist):
+            artist = artist.artist
         if self.user.owns(artist):
             raise ArtistAlreadyOwnedError()
         if self.user.money < price:
@@ -36,6 +38,8 @@ class User(object):
         self.user.money -= price
 
     def sell(self, artist, price):
+        if isinstance(artist, Artist):
+            artist = artist.artist
         if not self.user.owns(artist):
             raise ArtistNotOwnedError()
 
@@ -43,8 +47,6 @@ class User(object):
         t.create(purchase=False)
 
         self.user.money += price
-
-    @property
 
     @property
     def count(self):
@@ -60,8 +62,8 @@ class User(object):
         return 0
 
 class Artist(object):
-    def __init__(self, config, artist):
-        self.config = config
+    def __init__(self, artist):
+        self.config = artist.config
         self.artist = artist
 
     def daily(self):
