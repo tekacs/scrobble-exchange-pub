@@ -40,12 +40,20 @@ class APIClient(object):
         request_kind = getattr(requests, http_method)
         params.update(cls._base_params)
         params.update(method=method)
+
         if params.pop('_debug', False):
             pprint.pprint(locals())
+        print_json = params.pop('_print_json', False)
+
         if sign:
             cls._sign(params)
-        r = request_kind(cls._base_endpoint, params=params).json()
-        return r
+
+        r = request_kind(cls._base_endpoint, params=params)
+
+        if print_json:
+            pprint.pprint(r.text)
+
+        return r.json()
 
 class APIError(Exception):
     pass
