@@ -260,16 +260,16 @@ DataError d),
     
     /** Returns the guarantee token (elephant) to the front end */
     Guarantee getGuarantee (1: required Artist artist, 2: required AuthUser 
-user) throws (1: DataError d, 2: TransientError t),
+user) throws (1: DataError d, 2: TransientError t, 3: AuthenticationError a),
     
     /** Buys artist for user, and returns a bool as to whether it was 
         successful or not */
     bool buy (1: required Guarantee guarantee, 2: required AuthUser 
-user) throws (1: DataError d, 2: TransientError t),
+user) throws (1: DataError d, 2: TransientError t, 3: AuthenticationError a),
     
     /** Sells artist for user, and returns a bool as to whether it was 
         successful or not */
     bool sell (1: required Guarantee guarantee, 2: required AuthUser 
-user) throws (1: DataError d, 2: TransientError t)
+user) throws (1: DataError d, 2: TransientError t, 3: AuthenticationError a)
    
 }
