@@ -13,6 +13,15 @@ def query(config, *args, **kwargs):
 def add(config, *args, **kwargs):
     return config.session.db.add(*args, **kwargs)
 
+def delete(config, *args, **kwargs):
+    return config.session.db.delete(*args, **kwargs)
+
+def dirty(config):
+    return config.session.db.dirty
+
+def commit(config):
+    config.session.db.commit()
+
 def abs_name(obj):
     if isinstance(obj, InstrumentedAttribute):
         return str(obj.__clause_element__())
@@ -40,9 +49,12 @@ def dbo_property(name):
 
     def failover(self):
         try:
-            return self.dbo, name
+            dbo = self.dbo
+            if dbo is not None:
+                return self.dbo, name
         except (NoDatabaseException, NoDatabaseObjectException):
-            return self, underscore
+            pass
+        return self, underscore
 
     @property
     def prop(self):
