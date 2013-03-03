@@ -290,7 +290,7 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def getTopArtist(self, n, user):
+    def getRecommendedArtists(self, n, user):
         """
         Returns the n top recommended artists for a user
         
