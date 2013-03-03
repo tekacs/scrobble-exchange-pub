@@ -133,8 +133,8 @@ class SEHandler(object):
         """
         Returns the data from our db. If the artist isn't there, the data 
         gets on-demand pulled. If either artist or mbid are unknown, then the 
-        empty string should be sent. User sets the `ownedby' bool, by default it
-        should be an empty string
+        empty string should be sent. User sets the `ownedby' bool, by default 
+        the user name should be an empty string
         
         Parameters:
         - artist
@@ -169,16 +169,13 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def getArtistLFM(self, artist, user):
+    def getArtistLFM(self, artist):
         """
         Returns the artist info from last.fm for the artist. If either artist
-        or mbid are unknown, then the empty string should be sent. An
-        authenticated user is required to return recommended artists, otherwise
-        the parameter should be set to none
+        or mbid are unknown, then the empty string should be sent.
 
         Parameters:
         - artist
-        - user
         """
         with datm.DATMSession(self._config):
             if artist.mbid:
@@ -249,14 +246,16 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def getSETop(self, n, trange):
+    def getSETop(self, n, trange, user):
         """
-        Returns a list of the n top SE artists by decreasing value. Range is
-        the number of days the leaderboard is over
+        Returns a list of the n top SE artists by decreasing value. Trange is
+        the number of days the leaderboard is over. User returns relevant 
+        prices for each artist, otherwise buy price for anonymous users.
 
         Parameters:
         - n
         - trange
+        - user
         """
         with datm.DATMSession(self._config):
             
@@ -265,25 +264,27 @@ class SEHandler(object):
             
             alist = datm.Artist.top(self._config, limit=n, after=time_utc_old)
             
-            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), User(''))
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
                                                                 for a in alist]
 
             return ret
     
     @rethrow
-    def getLFMTop(self, n):
+    def getLFMTop(self, n, user):
         """
-        Returns a list of the n top last.fm artists by decreasing value.
+        Returns a list of the n top last.fm artists by decreasing value. User 
+        returns relevant prices for each artist, otherwise buy price for 
+        anonymous users
 
         Parameters:
         - n
         - trange
+        - user
         """
         with datm.DATMSession(self._config):
-            
             alist = datm.Artist.popular(self._config, limit=n)
             
-            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), User(''))
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
                                                                 for a in alist]
             
             return ret
@@ -308,33 +309,38 @@ class SEHandler(object):
             return ret
     
     @rethrow
-    def getTradedArtists(self, n):
+    def getTradedArtists(self, n, user):
         """
-        Returns a list of the n most traded artists by decreasing value.
+        Returns a list of the n most traded artists by decreasing value. User 
+        returns relevant prices for each artist, otherwise buy price for 
+        anonymous users.
 
         Parameters:
         - n
+        - user
         """
         with datm.DATMSession(self._config):
             alist = datm.Artist.most_traded(self._config, limit=n)
             
-            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), User(''))
+            ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
                                                                 for a in alist]
 
             return ret
     
     @rethrow 
-    def getRecentTrades(self, n):
+    def getRecentTrades(self, n, user):
         """
-        Returns a list of the n most recent trades
+        Returns a list of the n most recent trades. User returns relevant 
+        prices for each artist, otherwise buy price for anonymous users.
 
         Parameters:
         - n
+        - user
         """
         with datm.DATMSession(self._config):
             tlist = datm.Trade.recent(self._config, limit=n)
             
-            ret = [self.getArtistSE(Artist(mbid=t.mbid, name=t.name), User(''))
+            ret = [self.getArtistSE(Artist(mbid=t.mbid, name=t.name), user)
                                                                 for t in tlist]
             
             return ret
