@@ -340,16 +340,8 @@ def buy(request):
 
 
 ############ Helper Functions ############
-
-def __portfolio(user=None):
-    if user is not None:
-        user_data = client.get_user_data(server=server, user=user)
-        user_data.current_worth = sum(client.getArtistData(x).stockvalue
-                            for x in user_data.curstocks)
-    return user_data
-
-def __authuser(request):
-    return ttypes.AuthUser(name=ttypes.User(request.user.username), session_key=request.user.first_name)
-
-class ArtistSearchForm(forms.Form):
-    q = forms.CharField(max_length=100, label='Query: ')
+def _authuser(request):
+    if request.user.is_authenticated:
+        return ttypes.AuthUser(name=ttypes.User(request.user.username), session_key=request.user.first_name)
+    else:
+        return None
