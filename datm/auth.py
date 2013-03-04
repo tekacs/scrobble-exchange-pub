@@ -9,7 +9,8 @@ from config import require_data_source, require_lastfm, require_db
 class Auth(DATMObject):
     @datm_setup
     def __init__(self, config):
-        pass
+        """datm_setup does everything necessary for this constructor."""
+        pass # Unneeded, but pretty. :)
 
     @property
     @require_db
@@ -28,7 +29,6 @@ class Auth(DATMObject):
         q = db.query(self.config, models.Internal)
         db.delete(self.config, q.one())
 
-    @property
     @require_db
     def create(self, secret):
         o = models.Internal(secret=secret)
