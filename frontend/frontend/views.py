@@ -87,8 +87,7 @@ def leaderboards(request):
 @json_response()
 def get_user_leaderboard(request):
     """Sample URL: http://localhost:8000/leaderboards/get/user?time_range=3"""
-    #TODO: Remove return when getNearUsers is implemented in the API
-    return {}
+
     #given: time_range (0-3, 0-alltime, 1-month, 2-week, 3-day)
     unsafe_time_range = int(request.GET.get('time_range', '2'))
     if (unsafe_time_range < len(TIME_RANGE_TRANSLATION)):
@@ -101,15 +100,13 @@ def get_user_leaderboard(request):
     user_league = vars(userdata.league)
     user_points = userdata.user.points
 
-    #TODO: Uncomment when its implemented in the API
+    #TODO: Needs to be implemented in the API
     userleaderboard = client.getNearUsers(request.user.username, time_range)
-    #TODO: Remove magic number and use current position of user instead
-    if (userleaderboard.users[3]):
-        next_user = vars(userleaderboard.users[3])
+    user_position = userleaderboard.position
+    if (userleaderboard.users[user_position - 1]):
+        next_user = vars(userleaderboard.users[user_position - 1])
     else:
         next_user = {}
-
-    user_position = userleaderboard.position
 
     data = {
         'user_league': user_league,
