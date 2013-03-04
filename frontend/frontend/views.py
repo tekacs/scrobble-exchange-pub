@@ -1,23 +1,20 @@
-from django.template import RequestContext, loader
-from django.http import HttpResponse
+from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 from django.views.decorators.http import require_POST
-from django import forms
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-import models
 from utils import json_response
 from se_api import ttypes
 
-import random
 from urllib import quote
 
-RESULTS_PER_PAGE = 9;
+RESULTS_PER_PAGE = 9
 NUM_CHARTS = 5
 client = settings.CLIENT
-TIME_RANGE_TRANSLATION = [0,31,7,1]
+TIME_RANGE_TRANSLATION = [0, 31, 7, 1]
 #TODO: Handle exceptions with the client
+
 
 def home(request):
     #Done with the API
@@ -27,67 +24,48 @@ def home(request):
 
         api_user_data = client.getUserData(user.name)
         api_user_money = client.getUserMoney(authorized_user)
-        
+
         user_data = {}
         user_data.update(vars(api_user_data))
         user_data.update(vars(api_user_money))
 
-        # user_data = models.UserData()
-        # user_data.stocks = []
-        
-        # for artistse in api_user_data.stocks:
-        #     a = {
-        #             'name': artistse.artist.name, 
-        #             'imgurls': artistse.artist.imgurls
-        #         }
-
-        #     user_data.stocks.append(
-        #         {
-        #             'artist': a, 
-        #             'price': artistse.price,
-        #             'points': artistse.price, 
-        #             'dividend':artistse.dividend
-        #         }
-        #     )
-            
-        # user_data.user = {
-        #                     'money': client.getUserMoney(authorized_user).money, 
-        #                     'points': api_user_data.user.points
-        #                 }
         user_data['portfolio_worth'] = sum(artist.price for artist in api_user_data.stocks)
 
         # TODO: Uncomment when the API supports this
-        # recommended_artists = client.getTopArtists(NUM_CHARTS, user)
-        recommended_artists = {}
+        # user_data['recommended_artists'] = client.getTopArtists(NUM_CHARTS, user)
+        user_data['recommended_artists'] = {}
 
-        return render_to_response('index.html',
-            {'user_data': user_data}, context_instance=RequestContext(request)
-            )
+        return render_to_response('index.html', {'user_data': user_data}, context_instance=RequestContext(request))
     else:
         return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
+
 def user_profile(request, username):
-    return render_to_response('user_profile.html',{}, context_instance=RequestContext(request))
+    return render_to_response('user_profile.html', {}, context_instance=RequestContext(request))
+
 
 def reset_portfolio(request):
     if not request.user.is_authenticated():
-        return redirect('lastfmauth_login', next=current_path)
+        return redirect('lastfmauth_login', next=request.path)
 
     if request.method == 'POST':
         #TODO: Reset the user's portfolio
         pass
     else:
-        return render_to_response('reset_page.html',{},context_instance=RequestContext(request))
+        return render_to_response('reset_page.html', {}, context_instance=RequestContext(request))
 
 
 ############ Leaderboards ############
-'''By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX'''
+"""By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX"""
 def leaderboards(request):
-    return render_to_response('leaderboards.html',{}, context_instance=RequestContext(request))
+    return render_to_response('leaderboards.html', {}, context_instance=RequestContext(request))
+
 
 '''Sample URL: http://localhost:8000/leaderboards/get/user?time_range=3'''
 @json_response()
 def get_user_leaderboard(request):
+    #TODO: Remove return when getNearUsers is implemented in the API
+    return {}
     #given: time_range (0-3, 0-alltime, 1-month, 2-week, 3-day)
     unsafe_time_range = int(request.GET.get('time_range', '2'))
     if (unsafe_time_range < len(TIME_RANGE_TRANSLATION)):
@@ -97,23 +75,23 @@ def get_user_leaderboard(request):
 
     userdata = client.getUserData(request.user.username)
 
-    #TODO: Replace __dict__ with vars
-    user_league = userdata.league.__dict__
+    user_league = vars(userdata.league)
     user_points = userdata.user.points
 
-    userleaderboard = client.getNearUsers(request.user.username)
+    #TODO: Uncomment when its implemented in the API
+    # userleaderboard = client.getNearUsers(request.user.username)
     #TODO: Remove magic number and use current position of user instead
     if (userleaderboard.users[3]):
-        next_user = userleaderboard.users[3].__dict__
+        next_user = vars(userleaderboard.users[3])
     else:
         next_user = {}
 
     user_position = userleaderboard.position
 
     data = {
-        'user_league':user_league, 
-        'user_points': user_points, 
-        'user_position': user_position, 
+        'user_league': user_league,
+        'user_points': user_points,
+        'user_position': user_position,
         'next_user': next_user
     }
 
@@ -122,15 +100,14 @@ def get_user_leaderboard(request):
 '''See http://localhost:8000/leaderboards/get/?league_id=1&time_range=3 for example'''
 @json_response()
 def get_leaderboard(request):
-    
-    league_id = request.GET.get('league_id','default_league')
+
+    league_id = request.GET.get('league_id', 'default_league')
     time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '2'))]
-    
-    # none of the below values make any difference with dummy data 
+
+    # none of the below values make any difference with dummy data
     #TODO: Replace magic number for default users
-    board = client.getTopUsers(n=100, league = ttypes.League(name=league_id), 
-    trange = time_range)
-    
+    board = client.getTopUsers(n=100, league=ttypes.League(name=league_id), trange=time_range)
+
     aadata = []
     for i in range(len(board.users)):
         aa = {
@@ -329,8 +306,8 @@ def price(request, artist_id=None):
 def guaranteed_price(request):
     authorize_ajax_calls(request)
     artist_id = request.GET.get('artist_id')
-    artist = ttypes.Artist(mbid = artist_id)
-    artist_price_guarantee = client.getGuarantee(artist = artist, user = _authuser(request)).__dict__
+    artist = ttypes.Artist(mbid=artist_id)
+    artist_price_guarantee = vars(client.getGuarantee(artist = artist, user = _authuser(request))
     return artist_price_guarantee
 
 @json_response(auth_needed = True)
