@@ -361,7 +361,7 @@ class SEHandler(object):
                 print 'Trying a get data on non-existent user ' + user
                 raise DataError('User doesn`t exist in database')
             
-            basicu = User(name=u.name, points=u.points)
+            basicu = User(name=u.name, points=u.points, profileimage=u.images)
             
             ret = UserData(user=basicu)
             ret.trades = []
@@ -412,8 +412,9 @@ class SEHandler(object):
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
             
-            return AuthUser(name=User(name=user.name.name, points=u.points), 
-                            session_key=user.session_key, money=u.money)
+            return AuthUser(name=User(name=user.name.name, points=u.points,
+                        profileimage=u.images),session_key=user.session_key, 
+                                                                money=u.money)
 
     def getTopUsers(self, n, league, trange):
         """
@@ -437,7 +438,13 @@ class SEHandler(object):
             else:
                 raise DataError('Unusual time range selected')
             
-            return UserLeaderboard(users=[User(name=u.name) for u in ulist])
+            ret = UserLeaderboard(users=[])
+            
+            for u in ulist:
+                ret.users.append(User(name=u.name, points=u.points,
+                                                        profileimage=u.images))
+           
+            return ret
 
     def getNearUsers(self, user):
         """
@@ -450,7 +457,12 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             ulist = datm.User.near(self._config, name=user)
             
-            return UserLeaderboard(users=[User(name=u.name) for u in ulist])
+            ret = UserLeaderboard(users=[])
+            for u in ulist:
+                ret.users.append(User(name=u.name, points=u.points,
+                                                        profileimage=u.images))
+            
+            return ret
    
     def getGuarantee(self, artist, user):
         """
