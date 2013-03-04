@@ -78,18 +78,8 @@ class User(DATMObject):
     def create(self, money, points, league=None):
         """Create a new DB Object and prepare it to be saved."""
         self.dbo = models.User(self.name, money, points)
-        self.dbo.league = league
+        self.dbo.league = league.dbo
         self.session.db.add(self.dbo)
-
-    @property
-    @require_db
-    def persisted(self):
-        """Check if a database object exists corresponding to this user."""
-        try:
-            if self.dbo is not None:
-                return True
-        except NoDatabaseObjectException:
-            return False
 
     @memoised_property
     @require_lastfm
@@ -100,14 +90,14 @@ class User(DATMObject):
             user=self.name
         ))
 
-    @property
     @require_lastfm
     @require_db
-    def top_artists(self):
+    def top_artists(self, limit=10):
         """Return the top artists from this user's last.fm Library"""
-        lfm_data = lfm.Chart.get_top_artists(lastfm.auth_params(
+        lfm_data = lfm.User.get_top_artists(lastfm.auth_params(
             self.config,
-            user=self.name
+            user=self.name,
+            limit=limit
         ))
         if lfm_data.get('status', False) == 'ok':
             return []
@@ -134,7 +124,7 @@ class User(DATMObject):
 
     @staticmethod
     @require_db
-    def top(config, limit=10, period=None):
+    def top(config, limit=10, period=None, league=None):
         """Return the ``limit`` users with the most points over ``period``.
 
         period from options
@@ -147,6 +137,10 @@ class User(DATMObject):
         query = db.query(config, models.User).filter(models.User).order_by(
             getattr(User, period).desc()
         ).limit(limit)
+
+        if league is not None:
+            league.filter(models.User.league == league.dbo)
+
         return (User(u) for u in query.all())
 
     @staticmethod
@@ -183,7 +177,6 @@ class User(DATMObject):
     def vouch_for(self, session_key):
         self.dbo.session_key = session_key
 
-    @property
     @require_db
     def owns(self, artist):
         """Determine whether a user owns a given artist."""
@@ -195,17 +188,30 @@ class User(DATMObject):
         """Return stocks owned by this user."""
         return (Artist(self.config, dbo=o) for o in self.dbo.artists)
 
-    @property
     @require_db
     def trades(self, limit=None):
         """Return trades ever made by this user."""
         return (Trade(self.config, dbo=o) for o in self.dbo.trades)
 
-    @property
     @require_db
-    def trophies(self):
+    def bought(self, artist):
+        """Act on a vouched-for purchase of this artist by this user."""
+        self.dbo.artists.append(artist.dbo)
+
+    @require_db
+    def sold(self, artist):
+        """Act on a vouched-for sale of this artist by this user."""
+        self.dbo.artists.remove(artist.dbo)
+
+    @require_db
+    def trophies(self, limit=None):
         """Return all trophies currently possessed by this user."""
         return (Trophy(self.config, dbo=o) for o in self.dbo.trophies)
+
+    @require_db
+    def add_trophy(self, trophy):
+        """Add a Trophy to this user's trophies."""
+        self.dbo.trophies.append(trophy.dbo)
 
     @property
     @require_db
