@@ -80,7 +80,7 @@ class SEHandler(object):
                 if not user.persisted:
                     u = mechanics.User(user)
                     user.create(money=u.initial_money, points=u.initial_points, 
-                                league=datm.League(self._config, name='bronze'))
+                                league=datm.League(self._config, uid='bronze'))
                     
                     ret = AuthUser(name=User(name=user.name), 
                                     session_key=session['key'], newuser=True)
@@ -172,7 +172,7 @@ class SEHandler(object):
             else:
                 u = datm.User(self._config, user.name)
                 ret.ownedby = u.owns(a)
-                ret.price = a.price * (1 if u.owns(a) else 0.97)
+                ret.price = a.price * (1 if u.owns(a) else 0.98)
             
             return ret
     
@@ -530,7 +530,7 @@ class SEHandler(object):
                 raise AuthenticationError('User not authenticated')
             
             if (u.owns(a)):
-                price = int(a.price * 0.97)
+                price = int(a.price * 0.98)
             else:
                 price = a.price
            
@@ -582,12 +582,15 @@ class SEHandler(object):
             
             a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
             
-            try:
-                t = mechanics.User(user=u)
-                t.buy(artist=a, price=guarantee.price)
-                return True
-            except:
-                return False
+            if not u.owns(a):
+                try:
+                    t = mechanics.User(user=u)
+                    t.buy(artist=a, price=guarantee.price)
+                    return True
+                except:
+                    return False
+            else:
+                raise TransientError('User already owns artist')
         
 
     def sell(self, guarantee, user):
@@ -626,12 +629,15 @@ class SEHandler(object):
             
             a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
             
-            try:
-                t = mechanics.User(user=u)
-                t.sell(artist=a, price=guarantee.price)
-                return True
-            except:
-                return False
+            if u.owns(a):
+                try:
+                    t = mechanics.User(user=u)
+                    t.sell(artist=a, price=guarantee.price)
+                    return True
+                except:
+                    return False
+            else:
+                raise TransientError('User doesn\'t own artist')
 
     def reset(self, user):
         """
