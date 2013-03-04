@@ -213,6 +213,11 @@ class Artist(DATMObject):
 
     @property
     @require_db
+    def dividend(self):
+        return self.history(count=1)[0].dividend
+
+    @property
+    @require_db
     def no_remaining(self):
         """Return the number of artists remaining to be sold. Read-only."""
         return self.dbo.no_remaining
