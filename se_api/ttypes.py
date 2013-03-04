@@ -118,20 +118,26 @@ class Artist(object):
 
 class ArtistHistory(object):
   """
-  Ordered list by date of artist values (oldest to newest). Formatted as
+  Dictionary by date of artist values (oldest to newest). Formatted as
   (date,price) pairs.
 
   Attributes:
-   - histvalue
+   - histprice
+   - histpoints
+   - histdividends
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.LIST, 'histvalue', (TType.MAP,(TType.I32,None,TType.I32,None)), None, ), # 1
+    (1, TType.MAP, 'histprice', (TType.I32,None,TType.I32,None), None, ), # 1
+    (2, TType.MAP, 'histpoints', (TType.I32,None,TType.I32,None), None, ), # 2
+    (3, TType.MAP, 'histdividends', (TType.I32,None,TType.I32,None), None, ), # 3
   )
 
-  def __init__(self, histvalue=None,):
-    self.histvalue = histvalue
+  def __init__(self, histprice=None, histpoints=None, histdividends=None,):
+    self.histprice = histprice
+    self.histpoints = histpoints
+    self.histdividends = histdividends
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -143,19 +149,36 @@ class ArtistHistory(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.LIST:
-          self.histvalue = []
-          (_etype12, _size9) = iprot.readListBegin()
+        if ftype == TType.MAP:
+          self.histprice = {}
+          (_ktype10, _vtype11, _size9 ) = iprot.readMapBegin() 
           for _i13 in xrange(_size9):
-            _elem14 = {}
-            (_ktype16, _vtype17, _size15 ) = iprot.readMapBegin() 
-            for _i19 in xrange(_size15):
-              _key20 = iprot.readI32();
-              _val21 = iprot.readI32();
-              _elem14[_key20] = _val21
-            iprot.readMapEnd()
-            self.histvalue.append(_elem14)
-          iprot.readListEnd()
+            _key14 = iprot.readI32();
+            _val15 = iprot.readI32();
+            self.histprice[_key14] = _val15
+          iprot.readMapEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.MAP:
+          self.histpoints = {}
+          (_ktype17, _vtype18, _size16 ) = iprot.readMapBegin() 
+          for _i20 in xrange(_size16):
+            _key21 = iprot.readI32();
+            _val22 = iprot.readI32();
+            self.histpoints[_key21] = _val22
+          iprot.readMapEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.MAP:
+          self.histdividends = {}
+          (_ktype24, _vtype25, _size23 ) = iprot.readMapBegin() 
+          for _i27 in xrange(_size23):
+            _key28 = iprot.readI32();
+            _val29 = iprot.readI32();
+            self.histdividends[_key28] = _val29
+          iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       else:
@@ -168,23 +191,40 @@ class ArtistHistory(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('ArtistHistory')
-    if self.histvalue is not None:
-      oprot.writeFieldBegin('histvalue', TType.LIST, 1)
-      oprot.writeListBegin(TType.MAP, len(self.histvalue))
-      for iter22 in self.histvalue:
-        oprot.writeMapBegin(TType.I32, TType.I32, len(iter22))
-        for kiter23,viter24 in iter22.items():
-          oprot.writeI32(kiter23)
-          oprot.writeI32(viter24)
-        oprot.writeMapEnd()
-      oprot.writeListEnd()
+    if self.histprice is not None:
+      oprot.writeFieldBegin('histprice', TType.MAP, 1)
+      oprot.writeMapBegin(TType.I32, TType.I32, len(self.histprice))
+      for kiter30,viter31 in self.histprice.items():
+        oprot.writeI32(kiter30)
+        oprot.writeI32(viter31)
+      oprot.writeMapEnd()
+      oprot.writeFieldEnd()
+    if self.histpoints is not None:
+      oprot.writeFieldBegin('histpoints', TType.MAP, 2)
+      oprot.writeMapBegin(TType.I32, TType.I32, len(self.histpoints))
+      for kiter32,viter33 in self.histpoints.items():
+        oprot.writeI32(kiter32)
+        oprot.writeI32(viter33)
+      oprot.writeMapEnd()
+      oprot.writeFieldEnd()
+    if self.histdividends is not None:
+      oprot.writeFieldBegin('histdividends', TType.MAP, 3)
+      oprot.writeMapBegin(TType.I32, TType.I32, len(self.histdividends))
+      for kiter34,viter35 in self.histdividends.items():
+        oprot.writeI32(kiter34)
+        oprot.writeI32(viter35)
+      oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.histvalue is None:
-      raise TProtocol.TProtocolException(message='Required field histvalue is unset!')
+    if self.histprice is None:
+      raise TProtocol.TProtocolException(message='Required field histprice is unset!')
+    if self.histpoints is None:
+      raise TProtocol.TProtocolException(message='Required field histpoints is unset!')
+    if self.histdividends is None:
+      raise TProtocol.TProtocolException(message='Required field histdividends is unset!')
     return
 
 
@@ -478,21 +518,21 @@ class ArtistLFM(object):
       elif fid == 5:
         if ftype == TType.LIST:
           self.tags = []
-          (_etype28, _size25) = iprot.readListBegin()
-          for _i29 in xrange(_size25):
-            _elem30 = iprot.readString().decode('utf-8')
-            self.tags.append(_elem30)
+          (_etype39, _size36) = iprot.readListBegin()
+          for _i40 in xrange(_size36):
+            _elem41 = iprot.readString().decode('utf-8')
+            self.tags.append(_elem41)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 6:
         if ftype == TType.LIST:
           self.similar = []
-          (_etype34, _size31) = iprot.readListBegin()
-          for _i35 in xrange(_size31):
-            _elem36 = Artist()
-            _elem36.read(iprot)
-            self.similar.append(_elem36)
+          (_etype45, _size42) = iprot.readListBegin()
+          for _i46 in xrange(_size42):
+            _elem47 = Artist()
+            _elem47.read(iprot)
+            self.similar.append(_elem47)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -531,15 +571,15 @@ class ArtistLFM(object):
     if self.tags is not None:
       oprot.writeFieldBegin('tags', TType.LIST, 5)
       oprot.writeListBegin(TType.STRING, len(self.tags))
-      for iter37 in self.tags:
-        oprot.writeString(iter37.encode('utf-8'))
+      for iter48 in self.tags:
+        oprot.writeString(iter48.encode('utf-8'))
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.similar is not None:
       oprot.writeFieldBegin('similar', TType.LIST, 6)
       oprot.writeListBegin(TType.STRUCT, len(self.similar))
-      for iter38 in self.similar:
-        iter38.write(oprot)
+      for iter49 in self.similar:
+        iter49.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.bio is not None:
@@ -1108,33 +1148,33 @@ class UserData(object):
       elif fid == 2:
         if ftype == TType.LIST:
           self.trades = []
-          (_etype42, _size39) = iprot.readListBegin()
-          for _i43 in xrange(_size39):
-            _elem44 = Trade()
-            _elem44.read(iprot)
-            self.trades.append(_elem44)
+          (_etype53, _size50) = iprot.readListBegin()
+          for _i54 in xrange(_size50):
+            _elem55 = Trade()
+            _elem55.read(iprot)
+            self.trades.append(_elem55)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.LIST:
           self.stocks = []
-          (_etype48, _size45) = iprot.readListBegin()
-          for _i49 in xrange(_size45):
-            _elem50 = ArtistSE()
-            _elem50.read(iprot)
-            self.stocks.append(_elem50)
+          (_etype59, _size56) = iprot.readListBegin()
+          for _i60 in xrange(_size56):
+            _elem61 = ArtistSE()
+            _elem61.read(iprot)
+            self.stocks.append(_elem61)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.trophies = []
-          (_etype54, _size51) = iprot.readListBegin()
-          for _i55 in xrange(_size51):
-            _elem56 = Trophy()
-            _elem56.read(iprot)
-            self.trophies.append(_elem56)
+          (_etype65, _size62) = iprot.readListBegin()
+          for _i66 in xrange(_size62):
+            _elem67 = Trophy()
+            _elem67.read(iprot)
+            self.trophies.append(_elem67)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1161,22 +1201,22 @@ class UserData(object):
     if self.trades is not None:
       oprot.writeFieldBegin('trades', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.trades))
-      for iter57 in self.trades:
-        iter57.write(oprot)
+      for iter68 in self.trades:
+        iter68.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.stocks is not None:
       oprot.writeFieldBegin('stocks', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.stocks))
-      for iter58 in self.stocks:
-        iter58.write(oprot)
+      for iter69 in self.stocks:
+        iter69.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.trophies is not None:
       oprot.writeFieldBegin('trophies', TType.LIST, 4)
       oprot.writeListBegin(TType.STRUCT, len(self.trophies))
-      for iter59 in self.trophies:
-        iter59.write(oprot)
+      for iter70 in self.trophies:
+        iter70.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.league is not None:
@@ -1243,11 +1283,11 @@ class UserLeaderboard(object):
       if fid == 1:
         if ftype == TType.LIST:
           self.users = []
-          (_etype63, _size60) = iprot.readListBegin()
-          for _i64 in xrange(_size60):
-            _elem65 = User()
-            _elem65.read(iprot)
-            self.users.append(_elem65)
+          (_etype74, _size71) = iprot.readListBegin()
+          for _i75 in xrange(_size71):
+            _elem76 = User()
+            _elem76.read(iprot)
+            self.users.append(_elem76)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1269,8 +1309,8 @@ class UserLeaderboard(object):
     if self.users is not None:
       oprot.writeFieldBegin('users', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.users))
-      for iter66 in self.users:
-        iter66.write(oprot)
+      for iter77 in self.users:
+        iter77.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.position is not None:
