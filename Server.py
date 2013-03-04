@@ -236,10 +236,8 @@ class SEHandler(object):
             
             #ret.histvalue = a.history(after=time_utc_old)
             #history currently broken, so don't give an after
-            try:
-                print a.history().price
-            except:
-                pass
+            print a.history()
+            print a.history().price
             ret.histvalue = a.history()
             
             return ret
