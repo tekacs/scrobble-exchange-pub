@@ -571,7 +571,7 @@ class SEHandler(object):
                 t.buy(artist=a, price=guarantee.price)
                 return True
             except datm.NoStockRemainingException:
-                raise TransientError('No stock remaining')
+                return False
         
 
     def sell(self, guarantee, user):
@@ -615,8 +615,32 @@ class SEHandler(object):
                 t.sell(artist=a, price=guarantee.price)
                 return True
             except datm.StockNotOwnedException:
-                raise TransientError('User cannot sell')
+                return False
 
+    def reset(self, user):
+        """
+        Resets the user to the default state.
+        
+        Parameters:
+        -user
+        """
+        with datm.DATMSession(self._config):
+            
+            u = datm.User(self._config, user=user.name.name)
+            
+            try:
+                u.authenticate(user.session_key)
+            except:
+                raise AuthenticationError('User not authenticated')
+           
+            try:
+                mu = mechanics.User(u)
+                mu.reset()
+                return True
+            except:
+                return False
+            
+            
 #Create the databases
 SEHandler._config.db.create_all()
 

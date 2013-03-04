@@ -10,7 +10,7 @@ namespace py se_api
 # Minor is for backwards-compatible ones (e.g. adding optional parameters)
 # Patch is for small bugfixes and similar
 
-const string VERSION = "4.1.0"
+const string VERSION = "5.0.0"
 
 ## Structs
 
@@ -281,6 +281,8 @@ user) throws (1: DataError d, 2: TransientError t, 3: AuthenticationError a),
     /** Sells artist for user, and returns a bool as to whether it was 
         successful or not */
     bool sell (1: required Guarantee guarantee, 2: required AuthUser 
-user) throws (1: DataError d, 2: TransientError t, 3: AuthenticationError a)
-   
+user) throws (1: DataError d, 2: TransientError t, 3: AuthenticationError a),
+    
+    /** Resets the user to the default state. */
+    bool reset (1: required AuthUser user) throws (1: AuthenticationError a)
 }
