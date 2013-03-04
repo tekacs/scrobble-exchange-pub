@@ -3,11 +3,11 @@ from django.shortcuts import render_to_response, redirect
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.core.urlresolvers import reverse
+# from thrift.transport import TTransportException
+# from contextlib import contextmanager
 
 from utils import json_response
 from se_api import ttypes
-
-from urllib import quote
 
 NUM_SEARCH_RESULTS = 9
 NUM_CHARTS = 5
@@ -32,13 +32,33 @@ def home(request):
 
         user_data['portfolio_worth'] = sum(artist.price for artist in api_user_data.stocks)
 
-        # TODO: Uncomment when the API supports this
-        # user_data['recommended_artists'] = client.getTopArtists(NUM_CHARTS, user)
-        user_data['recommended_artists'] = {}
+        try:
+            user_data['recommended_artists'] = client.getTopArtists(NUM_CHARTS, user)
+        except Exception:
+            user_data['recommended_artists'] = {}
 
         return render_to_response('index.html', {'user_data': user_data}, context_instance=RequestContext(request))
     else:
         return render_to_response('index.html', {}, context_instance=RequestContext(request))
+
+
+# @contextmanager
+# def handler():
+#     try:
+#         yield
+#     except TTransportException:
+#         def inner(*args, **kwargs):
+#             return {}
+#         return inner
+
+
+# def _wrap(method):
+#     def fn(*args, **kwargs):
+#         try:
+#             return method(*args, **kwargs)
+#         except TTransportException:
+#             return {}
+#     return fn
 
 
 def user_profile(request, username):
@@ -49,11 +69,12 @@ def reset_portfolio(request):
     if not request.user.is_authenticated():
         return redirect('lastfmauth_login', next=request.path)
 
+    authorized_user = _authuser(request)
     if request.method == 'POST':
-        #TODO: Reset the user's portfolio
-        pass
+        success = client.reset(authorized_user)
+        return render_to_response('reset_page.html', {'success': success}, context_instance=RequestContext(request))
     else:
-        return render_to_response('reset_page.html', {}, context_instance=RequestContext(request))
+        return render_to_response('reset_page.html', {'success': 'Unsubmitted'}, context_instance=RequestContext(request))
 
 
 ############ Leaderboards ############
