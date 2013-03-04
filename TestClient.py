@@ -76,15 +76,16 @@ try:
         #except:
             #pass
     
-    #Testing the getArtistSE function
-    print '\nTesting getArtistSE(artist: Artist, user: User)'  
-    for u in unauthunames:
-        try:
-            a = Artist(mbid='', name='coldplay')
-            user = User(name=u)
-            print client.getArtistSE(a,user)
-        except:
-            pass
+    ##Testing the getArtistSE function
+    #print '\nTesting getArtistSE(artist: Artist, user: User)'   
+    #for s in alist:
+        #for u in unauthunames:
+            #try:
+                #a = Artist(mbid='', name=s)
+                #user = User(name=u)
+                #print client.getArtistSE(a,user)
+            #except:
+                #pass
             
     ##Testing the getArtistLFM function
     #print '\nTesting getArtistLFM(artist: Artist, user: User)'

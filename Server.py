@@ -171,9 +171,8 @@ class SEHandler(object):
                 ret.price = a.price
             else:
                 u = datm.User(self._config, user.name)
-                print 'User owns artist?' + u.owns(a)
                 ret.ownedby = u.owns(a)
-                ret.price = a.price * (1 if u.owns(a) else 0.98)
+                ret.price = a.price * (0.98 if u.owns(a) else 1)
             
             return ret
     
