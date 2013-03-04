@@ -10,7 +10,7 @@ namespace py se_api
 # Minor is for backwards-compatible ones (e.g. adding optional parameters)
 # Patch is for small bugfixes and similar
 
-const string VERSION = "3.1.0"
+const string VERSION = "4.1.0"
 
 ## Structs
 
@@ -71,16 +71,18 @@ struct Trade {
 
 /** User trophies. */
 struct Trophy {
-    1: required string name
-    2: optional string description
-    3: optional string icon
+    1: required string uid
+    2: optional string name
+    3: optional string description
+    4: optional string icon
 }
 
 /** User leagues. */
 struct League {
-    1: required string name
-    2: optional string description
-    3: optional string icon
+    1: required string uid
+    2: optional string name
+    3: optional string description
+    4: optional string icon
 }
 
 /** Basic user info. */
@@ -250,6 +252,9 @@ ProgrammingError p, 5: ServiceError s),
     /** Returns the current user with money. Requires AuthUser to auth */
     AuthUser getUserMoney (1: required AuthUser user) throws (1: DataError d, 
 2: AuthenticationError a),
+
+    /** Returns a list of all the leagues that exist in the game */
+    list<League> getLeagues () throws (1: DataError d),
     
     /** Returns the n top users by decreasing value in the given league. Trange 
         is the number of days the leaderboard is over, rounded to the nearest 

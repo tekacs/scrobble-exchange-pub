@@ -369,13 +369,13 @@ class SEHandler(object):
             ret.trades = []
             ret.stocks = []
             ret.trophies = []
-            ret.league = League(name=u.league.name,
+            ret.league = League(uid=u.league.uid, name=u.league.name,
                                 description=u.league.description,
                                 icon=u.league.icon)
             
             for t in u.trophies():
-                tr = Trophy(name=t.name, description=t.description,
-                            icon=t.icon)
+                tr = Trophy(uid=u.league.uid, name=t.name, 
+                            description=t.description, icon=t.icon)
                 
                 ret.trophies.append(tr)
             
@@ -417,7 +417,26 @@ class SEHandler(object):
             return AuthUser(name=User(name=user.name.name, points=u.points,
                         profileimage=u.images),session_key=user.session_key, 
                                                                 money=u.money)
-
+    
+    def getLeagues(self):
+        """
+        Returns a list of all the leagues that exist in the game */
+        """
+        
+        with datm.DATMSession(self._config):
+            
+            llist = datm.League.all(self._config)
+            
+            ret = []
+            
+            for l in llist:
+                league = League(uid=l.uid, name=l.name, 
+                                description=l.description, icon=l.icon)
+                
+                ret.append(league)
+            
+            return ret
+    
     def getTopUsers(self, n, league, trange):
         """
         Returns the n top users by decreasing value in the given league. Trange 
@@ -432,11 +451,14 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             
             if trange == 1:
-                ulist = datm.User.top(self._config, limit=n, period='daily')
+                ulist = datm.User.top(self._config, limit=n, period='daily',
+                                                                league=league)
             elif trange <= 7:
-                ulist = datm.User.top(self._config, limit=n, period='weekly')
+                ulist = datm.User.top(self._config, limit=n, period='weekly',
+                                                                league=league)
             elif trange <= 31:
-                ulist = datm.User.top(self._config, limit=n, period='monthly')
+                ulist = datm.User.top(self._config, limit=n, period='monthly',
+                                                                league=league)
             else:
                 raise DataError('Unusual time range selected')
             
