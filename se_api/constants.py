@@ -9,4 +9,4 @@
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
 from ttypes import *
 
-VERSION = "3.1.0"
+VERSION = "4.1.0"

@@ -176,6 +176,12 @@ class Iface(object):
     """
     pass
 
+  def getLeagues(self, ):
+    """
+    Returns a list of all the leagues that exist in the game
+    """
+    pass
+
   def getTopUsers(self, n, league, trange):
     """
     Returns the n top users by decreasing value in the given league. Trange
@@ -877,6 +883,36 @@ class Client(Iface):
       raise result.a
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserMoney failed: unknown result");
 
+  def getLeagues(self, ):
+    """
+    Returns a list of all the leagues that exist in the game
+    """
+    self.send_getLeagues()
+    return self.recv_getLeagues()
+
+  def send_getLeagues(self, ):
+    self._oprot.writeMessageBegin('getLeagues', TMessageType.CALL, self._seqid)
+    args = getLeagues_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getLeagues(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getLeagues_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.d is not None:
+      raise result.d
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getLeagues failed: unknown result");
+
   def getTopUsers(self, n, league, trange):
     """
     Returns the n top users by decreasing value in the given league. Trange
@@ -1094,6 +1130,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getRecentTrades"] = Processor.process_getRecentTrades
     self._processMap["getUserData"] = Processor.process_getUserData
     self._processMap["getUserMoney"] = Processor.process_getUserMoney
+    self._processMap["getLeagues"] = Processor.process_getLeagues
     self._processMap["getTopUsers"] = Processor.process_getTopUsers
     self._processMap["getNearUsers"] = Processor.process_getNearUsers
     self._processMap["getGuarantee"] = Processor.process_getGuarantee
@@ -1416,6 +1453,20 @@ class Processor(Iface, TProcessor):
     except AuthenticationError as a:
       result.a = a
     oprot.writeMessageBegin("getUserMoney", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getLeagues(self, seqid, iprot, oprot):
+    args = getLeagues_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getLeagues_result()
+    try:
+      result.success = self._handler.getLeagues()
+    except DataError as d:
+      result.d = d
+    oprot.writeMessageBegin("getLeagues", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -4312,6 +4363,129 @@ class getUserMoney_result(object):
     if self.a is not None:
       oprot.writeFieldBegin('a', TType.STRUCT, 2)
       self.a.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getLeagues_args(object):
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getLeagues_args')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getLeagues_result(object):
+  """
+  Attributes:
+   - success
+   - d
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(League, League.thrift_spec)), None, ), # 0
+    (1, TType.STRUCT, 'd', (DataError, DataError.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, d=None,):
+    self.success = success
+    self.d = d
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype112, _size109) = iprot.readListBegin()
+          for _i113 in xrange(_size109):
+            _elem114 = League()
+            _elem114.read(iprot)
+            self.success.append(_elem114)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.d = DataError()
+          self.d.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getLeagues_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter115 in self.success:
+        iter115.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.d is not None:
+      oprot.writeFieldBegin('d', TType.STRUCT, 1)
+      self.d.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

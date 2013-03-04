@@ -38,6 +38,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getRecentTrades(i32 n, User user)'
   print '  UserData getUserData(string user)'
   print '  AuthUser getUserMoney(AuthUser user)'
+  print '   getLeagues()'
   print '  UserLeaderboard getTopUsers(i32 n, League league, i32 trange)'
   print '  UserLeaderboard getNearUsers(string user)'
   print '  Guarantee getGuarantee(Artist artist, AuthUser user)'
@@ -183,6 +184,12 @@ elif cmd == 'getUserMoney':
     print 'getUserMoney requires 1 args'
     sys.exit(1)
   pp.pprint(client.getUserMoney(eval(args[0]),))
+
+elif cmd == 'getLeagues':
+  if len(args) != 0:
+    print 'getLeagues requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getLeagues())
 
 elif cmd == 'getTopUsers':
   if len(args) != 3:

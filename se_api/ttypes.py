@@ -674,6 +674,7 @@ class Trophy(object):
   User trophies.
 
   Attributes:
+   - uid
    - name
    - description
    - icon
@@ -681,12 +682,14 @@ class Trophy(object):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.STRING, 'icon', None, None, ), # 3
+    (1, TType.STRING, 'uid', None, None, ), # 1
+    (2, TType.STRING, 'name', None, None, ), # 2
+    (3, TType.STRING, 'description', None, None, ), # 3
+    (4, TType.STRING, 'icon', None, None, ), # 4
   )
 
-  def __init__(self, name=None, description=None, icon=None,):
+  def __init__(self, uid=None, name=None, description=None, icon=None,):
+    self.uid = uid
     self.name = name
     self.description = description
     self.icon = icon
@@ -702,15 +705,20 @@ class Trophy(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.name = iprot.readString().decode('utf-8')
+          self.uid = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
-          self.description = iprot.readString().decode('utf-8')
+          self.name = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 3:
+        if ftype == TType.STRING:
+          self.description = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
         if ftype == TType.STRING:
           self.icon = iprot.readString().decode('utf-8')
         else:
@@ -725,24 +733,28 @@ class Trophy(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('Trophy')
+    if self.uid is not None:
+      oprot.writeFieldBegin('uid', TType.STRING, 1)
+      oprot.writeString(self.uid.encode('utf-8'))
+      oprot.writeFieldEnd()
     if self.name is not None:
-      oprot.writeFieldBegin('name', TType.STRING, 1)
+      oprot.writeFieldBegin('name', TType.STRING, 2)
       oprot.writeString(self.name.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.description is not None:
-      oprot.writeFieldBegin('description', TType.STRING, 2)
+      oprot.writeFieldBegin('description', TType.STRING, 3)
       oprot.writeString(self.description.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.icon is not None:
-      oprot.writeFieldBegin('icon', TType.STRING, 3)
+      oprot.writeFieldBegin('icon', TType.STRING, 4)
       oprot.writeString(self.icon.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.name is None:
-      raise TProtocol.TProtocolException(message='Required field name is unset!')
+    if self.uid is None:
+      raise TProtocol.TProtocolException(message='Required field uid is unset!')
     return
 
 
@@ -762,6 +774,7 @@ class League(object):
   User leagues.
 
   Attributes:
+   - uid
    - name
    - description
    - icon
@@ -769,12 +782,14 @@ class League(object):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.STRING, 'icon', None, None, ), # 3
+    (1, TType.STRING, 'uid', None, None, ), # 1
+    (2, TType.STRING, 'name', None, None, ), # 2
+    (3, TType.STRING, 'description', None, None, ), # 3
+    (4, TType.STRING, 'icon', None, None, ), # 4
   )
 
-  def __init__(self, name=None, description=None, icon=None,):
+  def __init__(self, uid=None, name=None, description=None, icon=None,):
+    self.uid = uid
     self.name = name
     self.description = description
     self.icon = icon
@@ -790,15 +805,20 @@ class League(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.name = iprot.readString().decode('utf-8')
+          self.uid = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
-          self.description = iprot.readString().decode('utf-8')
+          self.name = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
       elif fid == 3:
+        if ftype == TType.STRING:
+          self.description = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
         if ftype == TType.STRING:
           self.icon = iprot.readString().decode('utf-8')
         else:
@@ -813,24 +833,28 @@ class League(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('League')
+    if self.uid is not None:
+      oprot.writeFieldBegin('uid', TType.STRING, 1)
+      oprot.writeString(self.uid.encode('utf-8'))
+      oprot.writeFieldEnd()
     if self.name is not None:
-      oprot.writeFieldBegin('name', TType.STRING, 1)
+      oprot.writeFieldBegin('name', TType.STRING, 2)
       oprot.writeString(self.name.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.description is not None:
-      oprot.writeFieldBegin('description', TType.STRING, 2)
+      oprot.writeFieldBegin('description', TType.STRING, 3)
       oprot.writeString(self.description.encode('utf-8'))
       oprot.writeFieldEnd()
     if self.icon is not None:
-      oprot.writeFieldBegin('icon', TType.STRING, 3)
+      oprot.writeFieldBegin('icon', TType.STRING, 4)
       oprot.writeString(self.icon.encode('utf-8'))
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.name is None:
-      raise TProtocol.TProtocolException(message='Required field name is unset!')
+    if self.uid is None:
+      raise TProtocol.TProtocolException(message='Required field uid is unset!')
     return
 
 
