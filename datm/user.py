@@ -139,7 +139,7 @@ class User(DATMObject):
         ).limit(limit)
 
         if league is not None:
-            league.filter(models.User.league == league.dbo)
+            query.filter(models.User.league == league.dbo)
 
         return (User(u) for u in query.all())
 
