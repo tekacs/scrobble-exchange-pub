@@ -1,6 +1,6 @@
 - return placeholder image in autocomplete if no image is found for an artist - WONTFIX
-- return autocompleted artist based on user's input
-    - remove all artists from search with no mbid (both autocomplete and full search)
+- return autocompleted artist based on user's input - DONE
+    - remove all artists from search with no mbid (both autocomplete and full search) - DONE
 
-- ensure all variables requested inside html templates are passed in from api
-- redirect to artists page on first login
+- ensure all variables requested inside html templates are passed in from api - DONE
+- redirect to artists page on first login - DONE
