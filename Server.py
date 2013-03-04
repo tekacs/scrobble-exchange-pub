@@ -234,7 +234,7 @@ class SEHandler(object):
                 ma = mechanics.Artist(a)
                 a.create(ma.initial_price, ma.max_shares)
             
-            ret.histvalue = a.history(self._config, after=time_utc_old)
+            ret.histvalue = a.history(after=time_utc_old)
             
             return ret
     
