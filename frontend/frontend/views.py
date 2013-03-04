@@ -9,8 +9,9 @@ from se_api import ttypes
 
 from urllib import quote
 
-RESULTS_PER_PAGE = 9
+NUM_SEARCH_RESULTS = 9
 NUM_CHARTS = 5
+NUM_LEADERBOARD_ENTRIES = 100
 client = settings.CLIENT
 TIME_RANGE_TRANSLATION = [0, 31, 7, 1]
 #TODO: Handle exceptions with the client
@@ -58,7 +59,8 @@ def reset_portfolio(request):
 ############ Leaderboards ############
 """By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX"""
 def leaderboards(request):
-    return render_to_response('leaderboards.html', {}, context_instance=RequestContext(request))
+    leagues = []
+    return render_to_response('leaderboards.html', {'leagues': leagues}, context_instance=RequestContext(request))
 
 
 '''Sample URL: http://localhost:8000/leaderboards/get/user?time_range=3'''
@@ -104,29 +106,33 @@ def get_leaderboard(request):
     league_id = request.GET.get('league_id', 'default_league')
     time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '2'))]
 
-    # none of the below values make any difference with dummy data
     #TODO: Replace magic number for default users
-    board = client.getTopUsers(n=100, league=ttypes.League(name=league_id), trange=time_range)
+    board = client.getTopUsers(n=NUM_LEADERBOARD_ENTRIES, league=ttypes.League(name=league_id), trange=time_range)
 
-    aadata = []
-    for i in range(len(board.users)):
-        aa = {
-            '0': str(i+1),
-            '1': '<a hred = "#"><img src=\"http://lorempixel.com/48/48/\">'\
-            +board.users[i].name+'</a>',
-            '2': str(board.users[i].points),
-            'DT_RowClass': 'place-'+str(i+1)
+    table = []
+    i = 1
+    for user in board.users:
+        if request.user.is_authenticated() and user.name == request.user.username:
+            me = 'me'
+        else:
+            me = ''
+
+        row = {
+            '0': str(i),
+            '1': '<a href="www.last.fm/user/{0}"><img src="{1}"/>{0}</a>'.format(user.name, user.profileimage),
+            '2': str(user.points),
+            'DT_RowClass': 'place-{0} {1}'.format(str(i), me)
         }
-        
-        aadata.append(aa)
-        
+        table.append(row)
+        i = i + 1
+
     leaderboard = {
         'sEcho': 1,
         'iTotalRecords': '50',
         'iTotalDisplayRecords': '50',
-        'aaData': aadata
+        'aaData': table
     }
-    
+
     return leaderboard
 
 
@@ -216,7 +222,7 @@ def artist_history(request):
 def auto_complete(request):
     #TODO: Change format of data
     partial_text = request.GET.get('q','')
-    results = client.searchArtist(partial_text, RESULTS_PER_PAGE, 1)
+    results = client.searchArtist(partial_text, NUM_SEARCH_RESULTS, 1)
     
     auto = []
     for a in results:
@@ -254,7 +260,7 @@ def search(request):
     next_page = "%s?q=%s&page=%s" % (reverse('frontend.views.search'), query, page_number + 1)
 
 
-    results = client.searchArtist(query, RESULTS_PER_PAGE, page_number)
+    results = client.searchArtist(query, NUM_SEARCH_RESULTS, page_number)
     if not results:
         try:
             results = [client.getArtist(ttypes.Artist(mbid='', name=query))]
@@ -304,10 +310,9 @@ def price(request, artist_id=None):
 
 @json_response(auth_needed = True)
 def guaranteed_price(request):
-    authorize_ajax_calls(request)
     artist_id = request.GET.get('artist_id')
     artist = ttypes.Artist(mbid=artist_id)
-    artist_price_guarantee = vars(client.getGuarantee(artist = artist, user = _authuser(request))
+    artist_price_guarantee = vars(client.getGuarantee(artist=artist, user=_authuser(request)))
     return artist_price_guarantee
 
 @json_response(auth_needed = True)
@@ -323,7 +328,7 @@ def sell(request):
     guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
 
     success = client.sell(guarantee=guarantee, user=_authuser(request))
-    return success;
+    return success
 
 @json_response(auth_needed = True)
 @require_POST
@@ -336,7 +341,7 @@ def buy(request):
     guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
 
     success = client.buy(guarantee=guarantee, user=_authuser(request))
-    return success;
+    return success
 
 
 ############ Helper Functions ############
