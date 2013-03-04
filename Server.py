@@ -171,8 +171,8 @@ class SEHandler(object):
                 ret.price = a.price
             else:
                 u = datm.User(self._config, user.name)
-                ret.ownedby = u.owns(self._config, a)
-                ret.price = a.price * (1 if u.owns(self._config,a) else 0.97)
+                ret.ownedby = u.owns(a)
+                ret.price = a.price * (1 if u.owns(a) else 0.97)
             
             return ret
     
@@ -516,7 +516,7 @@ class SEHandler(object):
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
             
-            if (u.owns(self._config,a)):
+            if (u.owns(a)):
                 price = int(a.price * 0.97)
             else:
                 price = a.price
