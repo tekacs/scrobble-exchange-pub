@@ -27,6 +27,8 @@ window.SE.Search = {
 
 jQuery(document).ready(function($) {
 
+    /* SEARCH BAR */
+
     // Need each to fix bug in 0.8.1: https://github.com/twitter/typeahead.js/issues/42#issuecomment-14028701
     $('.typeahead-search').each(function() {
         $(this).typeahead({
@@ -40,8 +42,6 @@ jQuery(document).ready(function($) {
             engine: window.Hogan
         });
     });
-
-
 
     // Add more link below all suggestions
     $('.typeahead-search').on('keydown', function(e){
@@ -88,5 +88,15 @@ jQuery(document).ready(function($) {
     $(document).on('mouseover', 'ol.tt-suggestions li.tt-suggestion', function(){
         $($(this).parents().first()).find('li.tt-suggestion:first-child').addClass('visited');
     });
+
+
+    /* TROPHY CONTROL */
+
+    $('.see-more-trophies').on('click', function(e){
+        $('.trophy').removeClass('hidden');
+        $(this).hide();
+    });
+
+
 
 });

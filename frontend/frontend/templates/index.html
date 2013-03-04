@@ -37,10 +37,29 @@
 
         <hr>
 
-        <h2 class="sidebar-red">Your Badges</h2>
-        <img class="badge-img" src="http://dummyimage.com/75x75/DAA520/000&amp;text=Gold">
-        <img class="badge-img" src="http://dummyimage.com/75x75/C0C0C0/000&amp;text=Silver">
-        <img class="badge-img" src="http://dummyimage.com/75x75/800080/fff&amp;text=Purple">
-        <img class="badge-img" src="http://dummyimage.com/75x75/eee/000&amp;text=Wow">
-        <img class="badge-img" src="http://dummyimage.com/75x75/000/ffffff&amp;text=A*">
+        <h2 class="sidebar-red">Your Trophies</h2>
+        {% if not user.trophies %}
+            <p class="panel">You currently have no trophies.</p>
+        {% endif %}
+        <div class="trophies">
+            <ul>
+                {% for trophy in user.trophies %}
+                    {% if forloop.counter > 5 %}
+                        <li class="trophy hidden">
+                    {% else %}
+                        <li class="trophy">
+                    {% endif %}
+                            <i class="{{ trophy.icon|icon_split:'code' }}" style="color: {{ trophy.icon|icon_split:'colour' }};"></i>
+                            <div class="description">
+                                <h5 class="title">{{ trophy.name }}</h5>
+                                <p>{{ trophy.description }}</p>
+                            </div>
+                        </li>
+                {% endfor %}
+            </ul>
+
+            {% if user.trophies.length > 5 %}
+                <a class="see-more-trophies" href="#">See all...</a>
+            {% endif %}
+        </div>
     {% endblock sidebar %}
