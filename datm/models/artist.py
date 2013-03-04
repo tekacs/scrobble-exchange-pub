@@ -9,12 +9,13 @@ import base
 class ArtistHistory(base.Base):
     __tablename__ = 'artist_history'
 
-    date = Column(Integer, primary_key=True)
+    id = Column(String, primary_key=True)
+    date = Column(Integer, nullable=False, index=True)
     price = Column(Integer, nullable=False)
     points = Column(Integer, nullable=False)
     dividends = Column(Integer, nullable=False)
 
-    artist_id = Column(String(36), ForeignKey("artists.mbid"))
+    artist_id = Column(String(36), ForeignKey("artists.mbid"), index=True)
 
     def __init__(self, artist, date, price, points, dividends):
         self.artist = artist
