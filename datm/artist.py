@@ -118,7 +118,7 @@ class Artist(DATMObject):
                 self.config,
                 mbid=mbid
             ))
-        except AttributeError:
+        except:
             try:
                 return lfm.Artist.get_info(lastfm.params(
                     self.config,
