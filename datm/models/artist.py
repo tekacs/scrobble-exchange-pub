@@ -61,3 +61,5 @@ class Artist(base.Base):
 
         self.price = price
         self.max_available = max_available
+
+        self.last_closing_price = price
