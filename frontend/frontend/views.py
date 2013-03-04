@@ -233,7 +233,7 @@ def artist_history(request):
 def auto_complete(request):
     """ Sample URL: http://localhost:8000/search/autocomplete/?q=blah """
     partial_text = request.GET.get('q', '')
-    results = client.searchArtist(partial_text, NUM_SEARCH_RESULTS, 1)
+    results = _filterInvalidArtists(client.searchArtist(partial_text, NUM_SEARCH_RESULTS, 1))
 
     auto = []
     for artist in results:
@@ -271,7 +271,7 @@ def search(request):
         previous_page = "#"
     next_page = "%s?q=%s&page=%s" % (reverse('frontend.views.search'), query, page_number + 1)
 
-    results = client.searchArtist(query, NUM_SEARCH_RESULTS, page_number)
+    results = _filterInvalidArtists(client.searchArtist(query, NUM_SEARCH_RESULTS, page_number))
     if not results:
         try:
             results = [client.getArtist(ttypes.Artist(mbid='', name=query))]
@@ -289,6 +289,9 @@ def search(request):
             'next_page': next_page,
             'previous_page': previous_page}, context_instance=RequestContext(request))
 
+
+def _filterInvalidArtists(artists):
+    return [artist for artist in artists if artist.mbid is not None]
 
 ############ Buy/Sell ############
 

@@ -1,4 +1,4 @@
-- return placeholder image in autocomplete if no image is found for an artist
+- return placeholder image in autocomplete if no image is found for an artist - WONTFIX
 - return autocompleted artist based on user's input
     - remove all artists from search with no mbid (both autocomplete and full search)
 
