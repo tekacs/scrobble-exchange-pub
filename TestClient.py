@@ -76,16 +76,15 @@ try:
         #except:
             #pass
     
-    ##Testing the getArtistSE function
-    #print '\nTesting getArtistSE(artist: Artist, user: User)'   
-    #for s in alist:
-        #for u in unauthunames:
-            #try:
-                #a = Artist(mbid='', name=s)
-                #user = User(name=u)
-                #print client.getArtistSE(a,user)
-            #except:
-                #pass
+    #Testing the getArtistSE function
+    print '\nTesting getArtistSE(artist: Artist, user: User)'  
+    for u in unauthunames:
+        try:
+            a = Artist(mbid='', name='coldplay')
+            user = User(name=u)
+            print client.getArtistSE(a,user)
+        except:
+            pass
             
     ##Testing the getArtistLFM function
     #print '\nTesting getArtistLFM(artist: Artist, user: User)'
@@ -184,17 +183,17 @@ try:
         #except:
             #pass
     
-    #Testing the getGuarantee function
-    print '\nTesting getGuarantee(artist: Artist, user: AuthUser)'
+    ##Testing the getGuarantee function
+    #print '\nTesting getGuarantee(artist: Artist, user: AuthUser)'
     
-    a = Artist(mbid='',name='coldplay')
+    #a = Artist(mbid='',name='coldplay')
    
-    guaran = client.getGuarantee(a,authed)
-    print guaran
+    #guaran = client.getGuarantee(a,authed)
+    #print guaran
     
-    #Testing the buy function
-    print '\nTesting buy(guarantee: Guarantee, user: AuthUser)'
-    print client.buy(guaran,authed)
+    ##Testing the buy function
+    #print '\nTesting buy(guarantee: Guarantee, user: AuthUser)'
+    #print client.buy(guaran,authed)
     
     ##Testing the sell function
     #print '\nTesting sell(guarantee: Guarantee, user: AuthUser)'
