@@ -50,7 +50,7 @@
                             <a href="http://last.fm/user/{{ user.username }}/" class="username">{{ user.username }}</a>
                         </div>
                         <ul class="dropdown">
-                          <li><a href="#">Reset</a></li>
+                          <li><a href="{% url frontend.views.reset_portfolio %}">Reset</a></li>
                           <li class="divider"></li>
                           <li><a href="{% url lastfmauth_logout %}">Logout</a></li>
                         </ul>
@@ -101,6 +101,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{% static "js/libs/typeahead.js" %}"></script>
     <script type="text/javascript" src="{% static "js/libs/hogan.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.alerts.js" %}"></script>
     <script type="text/javascript" src="{% static "js/general.js" %}"></script>
 
     {% block body_additional_js %}{% endblock %}

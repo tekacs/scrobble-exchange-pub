@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Reset account{% endblock title %}
+
+{% block above_main %}
+    <h1 class="main-header">Reset account</h1>
+{% endblock above_main %}
+
+{% block main %}
+    {% if success == 'True' %}
+        <div class="alert-box success">
+          Your account has been successfully reset.
+        </div>
+    {% else %}
+
+        {% if success == 'False' %}
+            <div class="alert-box alert">
+              There was an error resetting your account - please try again.
+            </div>
+        {% endif %}
+
+        <p>By resetting your account, you will <strong>lose all artists you currently own</strong>, as well as <strong>any points you have obtained</strong> for the lifetime of your account, and your <strong>cash will be reset</strong> to the starting amount.</p>
+
+        <p><strong>Are you sure you want to proceed?</strong></p>
+
+        <form action="." method="post">
+            {% csrf_token %}
+            <input type="submit" class="button alert" value="Reset account"></input>
+        </form>
+
+    {% endif %}
+{% endblock main %}
