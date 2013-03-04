@@ -27,7 +27,10 @@ lastfm_config = {
 }
 
 db_args = {
-    'url': 'postgresql://api:Koo4ahBa0chahz@localhost:5432/api'
+    #'url': 'postgresql://api:Koo4ahBa0chahz@localhost:5432/api'
+    'url': 'sqlite:///db',
+    'pool_size': None,
+    'max_overflow': None
 }
 
 def rethrow(f):
