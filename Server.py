@@ -586,7 +586,7 @@ class SEHandler(object):
                 t = mechanics.User(user=u)
                 t.buy(artist=a, price=guarantee.price)
                 return True
-            except datm.NoStockRemainingException:
+            except:
                 return False
         
 
@@ -630,7 +630,7 @@ class SEHandler(object):
                 t = mechanics.User(user=u)
                 t.sell(artist=a, price=guarantee.price)
                 return True
-            except datm.StockNotOwnedException:
+            except:
                 return False
 
     def reset(self, user):
