@@ -237,6 +237,15 @@ class Iface(object):
     """
     pass
 
+  def reset(self, user):
+    """
+    Resets the user to the default state.
+
+    Parameters:
+     - user
+    """
+    pass
+
 
 class Client(Iface):
   def __init__(self, iprot, oprot=None):
@@ -1110,6 +1119,40 @@ class Client(Iface):
       raise result.a
     raise TApplicationException(TApplicationException.MISSING_RESULT, "sell failed: unknown result");
 
+  def reset(self, user):
+    """
+    Resets the user to the default state.
+
+    Parameters:
+     - user
+    """
+    self.send_reset(user)
+    return self.recv_reset()
+
+  def send_reset(self, user):
+    self._oprot.writeMessageBegin('reset', TMessageType.CALL, self._seqid)
+    args = reset_args()
+    args.user = user
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_reset(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = reset_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.a is not None:
+      raise result.a
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "reset failed: unknown result");
+
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
@@ -1136,6 +1179,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getGuarantee"] = Processor.process_getGuarantee
     self._processMap["buy"] = Processor.process_buy
     self._processMap["sell"] = Processor.process_sell
+    self._processMap["reset"] = Processor.process_reset
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -1549,6 +1593,20 @@ class Processor(Iface, TProcessor):
     except AuthenticationError as a:
       result.a = a
     oprot.writeMessageBegin("sell", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_reset(self, seqid, iprot, oprot):
+    args = reset_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = reset_result()
+    try:
+      result.success = self._handler.reset(args.user)
+    except AuthenticationError as a:
+      result.a = a
+    oprot.writeMessageBegin("reset", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -5313,6 +5371,141 @@ class sell_result(object):
       oprot.writeFieldEnd()
     if self.a is not None:
       oprot.writeFieldBegin('a', TType.STRUCT, 3)
+      self.a.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class reset_args(object):
+  """
+  Attributes:
+   - user
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'user', (AuthUser, AuthUser.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, user=None,):
+    self.user = user
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.user = AuthUser()
+          self.user.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('reset_args')
+    if self.user is not None:
+      oprot.writeFieldBegin('user', TType.STRUCT, 1)
+      self.user.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.user is None:
+      raise TProtocol.TProtocolException(message='Required field user is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class reset_result(object):
+  """
+  Attributes:
+   - success
+   - a
+  """
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+    (1, TType.STRUCT, 'a', (AuthenticationError, AuthenticationError.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, a=None,):
+    self.success = success
+    self.a = a
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.BOOL:
+          self.success = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.a = AuthenticationError()
+          self.a.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('reset_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.BOOL, 0)
+      oprot.writeBool(self.success)
+      oprot.writeFieldEnd()
+    if self.a is not None:
+      oprot.writeFieldBegin('a', TType.STRUCT, 1)
       self.a.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

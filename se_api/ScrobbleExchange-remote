@@ -44,6 +44,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  Guarantee getGuarantee(Artist artist, AuthUser user)'
   print '  bool buy(Guarantee guarantee, AuthUser user)'
   print '  bool sell(Guarantee guarantee, AuthUser user)'
+  print '  bool reset(AuthUser user)'
   print ''
   sys.exit(0)
 
@@ -220,6 +221,12 @@ elif cmd == 'sell':
     print 'sell requires 2 args'
     sys.exit(1)
   pp.pprint(client.sell(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'reset':
+  if len(args) != 1:
+    print 'reset requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.reset(eval(args[0]),))
 
 else:
   print 'Unrecognized method %s' % cmd
