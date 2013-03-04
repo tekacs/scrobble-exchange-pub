@@ -1,5 +1,7 @@
 __author__ = 'amar'
 
+import datetime
+
 from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 
@@ -21,6 +23,9 @@ def dirty(config):
 
 def commit(config):
     config.session.db.commit()
+
+def utcnow():
+    return int(datetime.datetime.utcnow().strftime("%s"))
 
 def abs_name(obj):
     if isinstance(obj, InstrumentedAttribute):
