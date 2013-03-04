@@ -16,7 +16,7 @@ from functools import wraps as _wraps
 
 import datm
 import config
-import mechanics
+import mechanics import mechanics
 
 from datetime import datetime
 import time, hmac
