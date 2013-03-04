@@ -59,7 +59,7 @@ def reset_portfolio(request):
 ############ Leaderboards ############
 def leaderboards(request):
     """By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX"""
-    leagues = []
+    leagues = client.getLeagues()
     return render_to_response('leaderboards.html', {'leagues': leagues}, context_instance=RequestContext(request))
 
 
@@ -81,7 +81,7 @@ def get_user_leaderboard(request):
     user_points = userdata.user.points
 
     #TODO: Uncomment when its implemented in the API
-    # userleaderboard = client.getNearUsers(request.user.username)
+    userleaderboard = client.getNearUsers(request.user.username, time_range)
     #TODO: Remove magic number and use current position of user instead
     if (userleaderboard.users[3]):
         next_user = vars(userleaderboard.users[3])
@@ -218,13 +218,13 @@ def auto_complete(request):
     results = client.searchArtist(partial_text, NUM_SEARCH_RESULTS, 1)
 
     auto = []
-    for a in results:
+    for artist in results:
         adict = {
-            'value': a.name,
-            'url': reverse('artist_single', args=(a.name,))
+            'value': artist.name,
+            'url': reverse('artist_single', args=(artist.name,))
         }
         try:
-            adict['img'] = a.imgurls['mega']
+            adict['img'] = artist.imgurls['mega']
         except KeyError:
             pass
 
