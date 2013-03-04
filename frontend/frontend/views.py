@@ -57,15 +57,15 @@ def reset_portfolio(request):
 
 
 ############ Leaderboards ############
-"""By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX"""
 def leaderboards(request):
+    """By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX"""
     leagues = []
     return render_to_response('leaderboards.html', {'leagues': leagues}, context_instance=RequestContext(request))
 
 
-'''Sample URL: http://localhost:8000/leaderboards/get/user?time_range=3'''
 @json_response()
 def get_user_leaderboard(request):
+    """Sample URL: http://localhost:8000/leaderboards/get/user?time_range=3"""
     #TODO: Remove return when getNearUsers is implemented in the API
     return {}
     #given: time_range (0-3, 0-alltime, 1-month, 2-week, 3-day)
@@ -99,14 +99,14 @@ def get_user_leaderboard(request):
 
     return data
 
-'''See http://localhost:8000/leaderboards/get/?league_id=1&time_range=3 for example'''
+
 @json_response()
 def get_leaderboard(request):
-
-    league_id = request.GET.get('league_id', 'default_league')
+    """Sample URL: http://localhost:8000/leaderboards/get/?league_name=1&time_range=3"""
+    league_name = request.GET.get('league_name', 'default_league')
     time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '2'))]
 
-    board = client.getTopUsers(n=NUM_LEADERBOARD_ENTRIES, league=ttypes.League(name=league_id), trange=time_range)
+    board = client.getTopUsers(n=NUM_LEADERBOARD_ENTRIES, league=ttypes.League(name=league_name), trange=time_range)
 
     table = []
     i = 1
@@ -154,19 +154,20 @@ def artists(request):
         'recently_traded_artists': recently_traded_artists
     })
 
+
 def artist_single(request, artistname):
     #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
-    
+
     if (artistname == ''):
         return redirect('artists')
 
     user = _user(request)
 
-    artist_basic = client.getArtist(ttypes.Artist(mbid = '', name = artistname))
+    artist_basic = client.getArtist(ttypes.Artist(mbid='', name=artistname))
 
     # Check name and redirect if needed
     if artist_basic.name != artistname:
-        return redirect('artist_single', artist_basic, permanent=true)
+        return redirect('artist_single', artist_basic, permanent=True)
 
     artist_se = client.getArtistSE(artist_basic, user)
     artist_lfm = client.getArtistLFM(artist_basic, user)
@@ -177,11 +178,12 @@ def artist_single(request, artistname):
     returndata.update(vars(artist_lfm))
 
     return render_to_response('artist_single.html', {
-        'artist':returndata}, context_instance=RequestContext(request))
+        'artist': returndata}, context_instance=RequestContext(request))
 
-''' Sample URL: http://127.0.0.1:8000/artist/history/?artist_id=0383dadf-2a4e-4d10-a46a-e9e041da8eb3&days=2'''
+
 @json_response()
 def artist_history(request):
+    """ Sample URL: http://127.0.0.1:8000/artist/history/?artist_id=0383dadf-2a4e-4d10-a46a-e9e041da8eb3&days=2"""
     # artist_id = request.GET.get('artist_id')
     # artist = ttypes.Artist(mbid=artist_id)
 
@@ -210,9 +212,10 @@ def artist_history(request):
         ]
     return history
 
-''' Sample URL: http://localhost:8000/search/autocomplete/?q=blah '''
+
 @json_response()
 def auto_complete(request):
+    """ Sample URL: http://localhost:8000/search/autocomplete/?q=blah """
     #TODO: Change format of data
     partial_text = request.GET.get('q','')
     results = client.searchArtist(partial_text, NUM_SEARCH_RESULTS, 1)
@@ -232,17 +235,18 @@ def auto_complete(request):
         
     return auto
 
-''' Sample URL: http://localhost:8000/search/?q=blah . See https://docs.djangoproject.com/en/dev/topics/forms/ '''
+
 def search(request):
-    query = request.GET.get('q','')
+    """ Sample URL: http://localhost:8000/search/?q=blah . """
+    query = request.GET.get('q', '')
     if (query == ''):
         return render_to_response('search_results.html', {
-            'query' : '',
-            'results' : {},
-            'page' : 1,
-            'next_page' : "#",
-            'previous_page' : "#"
-            }, context_instance=RequestContext(request))
+            'query': '',
+            'results': {},
+            'page': 1,
+            'next_page': "#",
+            'previous_page': "#"
+        }, context_instance=RequestContext(request))
 
     page_number = int(request.GET.get('page', '1'))
 
@@ -252,12 +256,11 @@ def search(request):
         previous_page = "#"
     next_page = "%s?q=%s&page=%s" % (reverse('frontend.views.search'), query, page_number + 1)
 
-
     results = client.searchArtist(query, NUM_SEARCH_RESULTS, page_number)
     if not results:
         try:
             results = [client.getArtist(ttypes.Artist(mbid='', name=query))]
-        except DataError:
+        except ttypes.DataError:
             results = []
 
     if (request.GET.get('lucky', 'false') == 'true' and results):
@@ -265,19 +268,17 @@ def search(request):
         return redirect('artist_single', results[0].name)
     else:
         return render_to_response('search_results.html', {
-            'query':query,
+            'query': query,
             'results': results,
-            'page':page_number,
-            'next_page':next_page,
-            'previous_page':previous_page}, context_instance=RequestContext(request))
+            'page': page_number,
+            'next_page': next_page,
+            'previous_page': previous_page}, context_instance=RequestContext(request))
 
 
 ############ Buy/Sell ############
 
-@json_response(auth_needed = True)
+@json_response(auth_needed=True)
 def price(request, artist_id=None):
-    authorize_ajax_calls(request)
-
     artist_name = request.GET.get('artist_name')
     artist = ttypes.Artist(name = artist_name)
     authuser =  _authuser(request)
