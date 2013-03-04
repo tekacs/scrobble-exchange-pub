@@ -10,6 +10,18 @@ body {
         margin-top: 8px;
     }
 
+    div.welcome {
+        padding: 15px;
+        img.logo {
+            width: 500px;
+            padding-top: 15px;
+        }
+
+        a.signin {
+            margin-top: 15px;
+        }
+    }
+
     .above_main {
         .main-header {
             font-size: 20px;

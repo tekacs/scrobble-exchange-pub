@@ -1,2 +1,23 @@
 {% extends "base.html" %}
 
+{% load static %}
+
+{% block title %}Welcome{% endblock title %}
+
+{% block above_main %}
+
+    <div class="welcome">
+
+        <img class="logo" src="{% static "img/logo_black.png" %}">
+        <h4 class="subheader">A massively multiplayer game</h4>
+
+        <p>Scrobble Exchange is an online multiplayer game where users can invest in a portfolio of artists and gain returns based on the performance of their portfolio. By signing in with a <a href="http://last.fm">Last.fm</a> account, users can buy and sell their favourite artists and compete with others to earn the most points, acquire trophies, and build the best portfolio.</p>
+
+        <p>To get started, you will need a Last.fm account. Click the button below to authorise your account with Scrobble Exchange (you will be prompted to create an account if you do not already have one).</p>
+
+        <p><a href="{% url lastfmauth_login %}?next={{current_path}}" class="signin button large">Sign in with Last.fm</a></p>
+
+    </div>
+
+
+{% endblock above_main %}
