@@ -25,21 +25,40 @@
                     <p class="artist-dividends"><span>${{artist_SE.dividend}}</span> per day</p>
                 </div>
             </div>
+
+        {% empty %}
+
+            <p class="lead">You currently have no artists in your portfolio.</p>
+                <p>Head to the <a href="{% url frontend.views.artists %}">Artists</a> page and buy some artists! Once you own some artists, you can view their prices, most recent dividends awarded, and the number of points per day that you will receive.</p>
+
+                {% if recommended_artists %}
+                    <p>Or browse the recommended artists listed in the sidebar, which are based on your Last.fm scrobbles.</p>
+                {% endif %}
+
         {% endfor %}
     {% endblock main %}
 
     {% block sidebar %}
-        <h2 class="sidebar-red">Current wealth</h2>
-        <p class="sidebar-price joined">${{user.money}}</p>
-        <p class="bonus-wealth">(+ ${{user.portfolio_worth}} in your portfolio)</p>
+        <!--<h2 class="sidebar-red">Current wealth</h2>-->
+        <div class="sidebar-price joined">
+            <p class="money">$2,000,000{{user.money}}</p>
+            <p>in cash</p>
+        </div>
+        <div class="bonus-wealth">
+            <p class="money">$200,000{{user.portfolio_worth}}</p>
+            <p>in your portfolio</p>
+        </div>
 
-        <p class="sidebar-price">{{user.points}} points</p>
+        <div class="bonus-wealth points">
+            <p class="money">{{user.points}} 423192</p>
+            <p>points</p>
+        </div>
 
         <hr>
 
         <h2 class="sidebar-red">Your Trophies</h2>
         {% if not user.trophies %}
-            <p class="panel">You currently have no trophies.</p>
+            <p class="">You currently have no trophies.</p>
         {% endif %}
         <div class="trophies">
             <ul>
@@ -101,7 +120,7 @@
 
                 {% empty %}
 
-                    <div class="panel">
+                    <div class="">
                         <p>You currently have no recommended artists.</p>
                     </div>
 

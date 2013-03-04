@@ -190,24 +190,52 @@ body {
 
         }
 
-        p.sidebar-price {
-            font-size: ms(4);
+        div.sidebar-price {
+            @extend .panel;
             font-weight: bold;
-            background-color: #eee;
+            background-color: #333;
             padding: 10px;
             text-align: center;
 
+            p {
+                font-size: ms(0);
+                margin: 0;
+                color: #fff;
+
+                &.money {
+                    font-size: ms(4);
+                    font-weight: bold;
+                }
+            }
+
             &.joined {
-                margin-top: 20px;
                 margin-bottom: 0;
             }
         }
 
-        p.bonus-wealth {
-            font-size: ms(1);
-            @extend .label;
-            display: block;
+        div.bonus-wealth {
+            @extend .panel;
+            background-color: #eee;
             padding: 10px;
+            text-align: center;
+
+            &.points {
+                background-color: #71b7e6;
+                p {
+                    color: #fff;
+                }
+            }
+
+            p {
+                font-size: ms(0);
+                color: #222;
+                margin: 0;
+
+                &.money {
+                    font-size: ms(2);
+                    font-weight: bold;
+                }
+            }
         }
 
         .trophies {
