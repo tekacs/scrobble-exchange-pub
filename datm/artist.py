@@ -214,7 +214,7 @@ class Artist(DATMObject):
     @property
     @require_db
     def dividend(self):
-        return self.history(count=1)[0].dividend
+        return self.history(count=1)[0].dividends
 
     @property
     @require_db
