@@ -228,7 +228,7 @@ class SEHandler(object):
             time_utc = time.mktime(datetime.utcnow().timetuple())
             time_utc_old = int(time_utc - n*24*60*60)
             
-            ret = ArtistHistory()
+            ret = ArtistHistory({},{},{})
             
             if not a.persisted:
                 ma = mechanics.Artist(a)
@@ -236,9 +236,11 @@ class SEHandler(object):
             
             #ret.histvalue = a.history(after=time_utc_old)
             #history currently broken, so don't give an after
-            print a.history()
-            print a.history().price
-            ret.histvalue = a.history()
+            
+            for h in a.history():
+                ret.histprice[h.date] = h.price
+                ret.histpoints[h.date] = h.points
+                ret.histdividends[h.date] = h.dividends
             
             return ret
     

@@ -26,10 +26,12 @@ struct Artist {
     3: optional map<string,string> imgurls
 }
 
-/** Ordered list by date of artist values (oldest to newest). Formatted as 
+/** Dictionary by date of artist values (oldest to newest). Formatted as 
     (date,price) pairs. */
 struct ArtistHistory {
-    1: required list<map<i32,i32>> histvalue
+    1: required map<i32,i32> histprice
+    2: required map<i32,i32> histpoints
+    3: required map<i32,i32> histdividends
 }
 
 /** Artist biography object */
