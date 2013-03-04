@@ -1,10 +1,10 @@
 # Django settings for frontend project.
 
-import os, sys, glob
+import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 
 # Import thrift stuff
-from se_api import ScrobbleExchange, ttypes
+from se_api import ScrobbleExchange
 from thrift import Thrift
 from thrift.transport import TSocket, TTransport
 from thrift.protocol import TBinaryProtocol
@@ -22,16 +22,17 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'scrobblefront.db',                      # Or path to database file if using sqlite3.
-        'USER': 'charlie',                      # Not used with sqlite3.
-        'PASSWORD': 'myritylv',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',     # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'scrobblefront.db',                 # Or path to database file if using sqlite3.
+        'USER': 'charlie',                          # Not used with sqlite3.
+        'PASSWORD': 'myritylv',                     # Not used with sqlite3.
+        'HOST': '',                                 # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                                 # Set to empty string for default. Not used with sqlite3.
     }
 }
 
-API_SERVER = 'ec2-54-246-25-244.eu-west-1.compute.amazonaws.com'
+# API_SERVER = 'ec2-54-246-25-244.eu-west-1.compute.amazonaws.com'
+API_SERVER = 'localhost'
 API_PORT = 9090
 
 # Set your DSN value
@@ -181,7 +182,7 @@ LOGGING = {
 
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     "frontend.utils.get_current_path",
-    )
+)
 
 #TODO: Add database table name prefix to avoid collisions with rest of data
 

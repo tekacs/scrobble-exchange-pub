@@ -19,10 +19,11 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 
-    #TODO: Remove dollar signs
+    # Add (i?) at start of regex to make URLs case insensitive, eg (r'^(?i)artists/'
+
     url(r'^$', 'frontend.views.home', name='home'),
 
-    # TODO: need to fix for artists with spaces in names
+    
     url(r'^artist/history/', 'frontend.views.artist_history', name='artist_history'),
     url(r'^artist/([^/]*)/?', 'frontend.views.artist_single', name ='artist_single'),
     url(r'^artists/', 'frontend.views.artists', name='artists'),
