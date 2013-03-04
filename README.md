@@ -33,6 +33,10 @@ Current assigned:
 * Victor Mikhno
 * Amar Sood
 
+Running instructions:
+
++ Just run Server.py. It's possible that extra modules may need to be installed on your system.
+
 <a id="amar">AS:</a> Posited by Amar on a technical basis - poke me if you have objections/problems.
 
 [AS]: #amar "Posited by Amar on a technical basis - poke me if you have objections/problems."
