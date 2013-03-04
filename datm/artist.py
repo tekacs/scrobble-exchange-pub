@@ -91,15 +91,21 @@ class Artist(DATMObject):
     @require_db
     def create(self, price, max_available):
         """Create a DB Object corresponding to this Artist."""
-        if self.mbid == '':
-            raise ArtistNeedsMBIDException()
         self.dbo = models.Artist(
             mbid=self.mbid,
             name=self.name,
             price=price,
             max_available=max_available
         )
-        self.session.db.add(self.dbo)
+        emptyhistory = models.ArtistHistory(
+            self.dbo,
+            db.utcnow(),
+            price,
+            0,
+            0
+        )
+        db.add(self.config, self.dbo)
+        db.add(self.config, emptyhistory)
 
     @memoised_property
     @require_lastfm
