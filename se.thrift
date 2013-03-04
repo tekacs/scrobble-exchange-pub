@@ -10,7 +10,7 @@ namespace py se_api
 # Minor is for backwards-compatible ones (e.g. adding optional parameters)
 # Patch is for small bugfixes and similar
 
-const string VERSION = "3.0.0"
+const string VERSION = "3.1.0"
 
 ## Structs
 
@@ -90,11 +90,13 @@ struct User {
     3: optional string profileimage
 }
 
-/** Basic authenticated user. Does not necessarily include their money */
+/** Basic authenticated user. Does not necessarily include their money. Newuser 
+    is set if the user was just created */
 struct AuthUser {
     1: required User name
     2: required string session_key
     3: optional i32 money
+    4: optional bool newuser
 }
 
 /** Encapsulates all the user data. For a new user: trades, stocks and trophies 

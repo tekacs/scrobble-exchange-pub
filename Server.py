@@ -78,11 +78,15 @@ class SEHandler(object):
                 if not user.persisted:
                     user.create(money=20000, points=0, 
                                 league=datm.League(self._config, name='bronze'))
+                    
+                    ret = AuthUser(name=User(name=user.name), 
+                                    session_key=session['key'], newuser=True)
+                else:
+                    ret = AuthUser(name=User(name=user.name), 
+                                    session_key=session['key'], newuser=False)
                 
                 user.vouch_for(session['key'])
-                
-                ret = AuthUser(name=User(name=user.name), 
-                               session_key=session['key'])
+               
                 return ret
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
