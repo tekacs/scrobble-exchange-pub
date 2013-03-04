@@ -238,7 +238,8 @@ class SEHandler(object):
             #history currently broken, so don't give an after
             try:
                 print a.history().price
-                
+            except:
+                pass
             ret.histvalue = a.history()
             
             return ret
