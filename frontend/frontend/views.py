@@ -3,8 +3,6 @@ from django.shortcuts import render_to_response, redirect
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.core.urlresolvers import reverse
-# from thrift.transport import TTransportException
-# from contextlib import contextmanager
 
 from utils import json_response
 from se_api import ttypes
@@ -12,9 +10,8 @@ from se_api import ttypes
 NUM_SEARCH_RESULTS = 9
 NUM_CHARTS = 5
 NUM_LEADERBOARD_ENTRIES = 100
-client = settings.CLIENT
 TIME_RANGE_TRANSLATION = [0, 31, 7, 1]
-#TODO: Handle exceptions with the client
+client = settings.CLIENT
 
 
 def home(request):
@@ -62,6 +59,7 @@ def home(request):
 
 
 def user_profile(request, username):
+    # No user profiles as of now
     return render_to_response('user_profile.html', {}, context_instance=RequestContext(request))
 
 
@@ -79,7 +77,7 @@ def reset_portfolio(request):
 
 ############ Leaderboards ############
 def leaderboards(request):
-    """By default, show leaderboard that the user is on. Retrieve other leaderboards user requests via AJAX"""
+    """Empty leaderboards page with list of leagues. Actual data retrieved by AJAX"""
     leagues = client.getLeagues()
     return render_to_response('leaderboards.html', {'leagues': leagues}, context_instance=RequestContext(request))
 
@@ -200,33 +198,40 @@ def artist_single(request, artistname):
 @json_response()
 def artist_history(request):
     """ Sample URL: http://127.0.0.1:8000/artist/history/?artist_id=0383dadf-2a4e-4d10-a46a-e9e041da8eb3&days=2"""
-    # artist_id = request.GET.get('artist_id')
-    # artist = ttypes.Artist(mbid=artist_id)
 
-    # days = int(request.GET.get('days', '1'))
+    def _format(megadict):
+        data = []
+        for time, value in megadict:
+            data.append({"x": time, "y": value})
+        return data
 
-    # history = client.getArtistHistory(artist, days)
+    artist_id = request.GET.get('artist_id')
+    artist = ttypes.Artist(mbid=artist_id)
+
+    days = int(request.GET.get('days', '1'))
+
+    full_history = client.getArtistHistory(artist, days)
 
     field = request.GET.get('field', 'money')
 
     if (field == 'money'):
-        history = [
+        req_history = [
             {
                 "name": "price",
-                "data": [ { "x": 0, "y": 40 }, { "x": 1, "y": 49 }, { "x": 2, "y": 38 }, { "x": 3, "y": 30 }, { "x": 4, "y": 32 } ]
+                "data": _format(full_history.histprices)
             }, {
                 "name": "dividends",
-                "data": [ { "x": 0, "y": 19 }, { "x": 1, "y": 22 }, { "x": 2, "y": 29 }, { "x": 3, "y": 20 }, { "x": 4, "y": 14 } ]
+                "data": _format(full_history.histdividends)
             }
         ]
     elif (field == 'points'):
-        history = [
+        req_history = [
             {
                 "name": "points",
-                "data": [ { "x": 0, "y": 30 }, { "x": 1, "y": 13 }, { "x": 2, "y": 35 }, { "x": 3, "y": 50 }, { "x": 4, "y": 42 } ]
+                "data": _format(full_history.histpoints)
             }
         ]
-    return history
+    return req_history
 
 
 @json_response()
@@ -298,6 +303,7 @@ def _filterInvalidArtists(artists):
     return [artist for artist in artists if artist.mbid is not None]
 
 ############ Buy/Sell ############
+
 
 @json_response(auth_needed=True)
 def price(request, artist_id=None):
