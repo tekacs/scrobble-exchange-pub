@@ -198,7 +198,7 @@ class SEHandler(object):
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             ret = ArtistLFM(artist=r, streamable=a.streamable,
                             listeners=a.listeners, plays=a.plays,
-                            tags=a.tags, similar=a.similar, bio=b)
+                            tags=[], similar=a.similar, bio=b)
             
             return ret
     
