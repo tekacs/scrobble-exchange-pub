@@ -9,7 +9,7 @@ import base
 class ArtistHistory(base.Base):
     __tablename__ = 'artist_history'
 
-    id = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True)
     date = Column(Integer, nullable=False, index=True)
     price = Column(Integer, nullable=False)
     points = Column(Integer, nullable=False)
