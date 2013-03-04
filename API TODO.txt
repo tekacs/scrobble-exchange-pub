@@ -1,0 +1,2 @@
+API TODO:
+1) Return an empty result or a DataError instead of throwing an excpetion when passed a search string that doesn't return a result, for example a non-existent artist.
