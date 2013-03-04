@@ -537,7 +537,7 @@ class SEHandler(object):
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.Auth(self._config).secret)
+            m = hmac.new(datm.Auth(self._config).secret.encode('ascii'))
             m.update(str(time_utc))
             m.update(str(price))
             el = m.hexdigest()
@@ -560,7 +560,7 @@ class SEHandler(object):
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.Auth(self._config).secret)
+            m = hmac.new(datm.Auth(self._config).secret.encode('ascii'))
             m.update(str(time_utc))
             m.update(str(guarantee.price))
             el = m.hexdigest() 
@@ -604,7 +604,7 @@ class SEHandler(object):
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.Auth(self._config).secret)
+            m = hmac.new(datm.Auth(self._config).secret.encode('ascii'))
             m.update(str(time_utc))
             m.update(str(guarantee.price))
             el = m.hexdigest() 
