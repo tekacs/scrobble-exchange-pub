@@ -398,7 +398,7 @@ class SEHandler(object):
             for t in u.trades():
                 a = self.getArtist(Artist(mbid=t.artist.mbid))
                 
-                ret.trades.append(Trade(artist=a, price=t.price, time=t.time))
+                ret.trades.append(Trade(artist=a, price=t.price, time=t.date))
             
             for s in u.stocks:
                 a = Artist(mbid=s.mbid, name=s.name, imgurls=s.images)
