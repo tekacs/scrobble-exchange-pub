@@ -186,7 +186,7 @@ def artist_single(request, artistname):
         return redirect('artist_single', artist_basic, permanent=True)
 
     artist_se = client.getArtistSE(artist_basic, user)
-    artist_lfm = client.getArtistLFM(artist_basic, user)
+    artist_lfm = client.getArtistLFM(artist_basic)
 
     returndata = {}
     returndata.update(vars(artist_basic))
@@ -254,6 +254,8 @@ def auto_complete(request):
 def search(request):
     """ Sample URL: http://localhost:8000/search/?q=blah . """
     query = request.GET.get('q', '')
+
+    #If no search has been made, return empty search page
     if (query == ''):
         return render_to_response('search_results.html', {
             'query': '',
@@ -263,6 +265,7 @@ def search(request):
             'previous_page': "#"
         }, context_instance=RequestContext(request))
 
+    #Pagination
     page_number = int(request.GET.get('page', '1'))
 
     if (page_number > 1):
@@ -271,6 +274,7 @@ def search(request):
         previous_page = "#"
     next_page = "%s?q=%s&page=%s" % (reverse('frontend.views.search'), query, page_number + 1)
 
+    #Search results, which may need to be autocorrected
     results = _filterInvalidArtists(client.searchArtist(query, NUM_SEARCH_RESULTS, page_number))
     if not results:
         try:
