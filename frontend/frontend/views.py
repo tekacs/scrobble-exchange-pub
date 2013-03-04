@@ -106,7 +106,6 @@ def get_leaderboard(request):
     league_id = request.GET.get('league_id', 'default_league')
     time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '2'))]
 
-    #TODO: Replace magic number for default users
     board = client.getTopUsers(n=NUM_LEADERBOARD_ENTRIES, league=ttypes.League(name=league_id), trange=time_range)
 
     table = []
@@ -141,23 +140,17 @@ def artists(request):
     TIME_RANGE = 7
     user = _user(request)
 
-    #TODO: Flatten ArtistSE objects
-    top_SE_artists = client.getSETop(NUM_CHARTS,TIME_RANGE, user) #Returns Artists
-    top_traded_artists = client.getTradedArtists(NUM_CHARTS, user) #Returns Artists
-
-    # TODO: The API needs to implement this function
-    recommended_artists = client.getTopArtists(NUM_CHARTS, user)
-    
-    popular_LFM_artists = client.getLFMTop(NUM_CHARTS, user)              #Returns Artists
-    recently_traded_artists = client.getRecentTrades(NUM_CHARTS, user)    #Returns Artists
-
-
+    top_SE_artists = _flattenArtistSEList(client.getSETop(NUM_CHARTS, TIME_RANGE, user))
+    top_traded_artists = _flattenArtistSEList(client.getTradedArtists(NUM_CHARTS, user))
+    recommended_artists = _flattenArtistSEList(client.getTopArtists(NUM_CHARTS, user))  # TODO: The API needs to implement this function
+    popular_LFM_artists = _flattenArtistSEList(client.getLFMTop(NUM_CHARTS, user))
+    recently_traded_artists = _flattenArtistSEList(client.getRecentTrades(NUM_CHARTS, user))
 
     return render_to_response('artists.html', {
         'top_SE_artists': top_SE_artists,
         'top_traded_artists': top_traded_artists,
+        'recommended_artists': recommended_artists,
         'popular_LFM_artists': popular_LFM_artists,
-        'recommended_artists': top_artists,
         'recently_traded_artists': recently_traded_artists
     })
 
@@ -351,8 +344,14 @@ def _authuser(request):
     else:
         return None
 
+
 def _user(request):
     if request.user.is_authenticated:
         return ttypes.User(request.user.username)
     else:
         return ttypes.User('')
+
+
+def _flattenArtistSEList(artists):
+    for artistSE in artists:
+        artistSE.update(vars(artistSE.artist))
