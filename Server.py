@@ -16,6 +16,7 @@ from functools import wraps as _wraps
 
 import datm
 import config
+import mechanics
 
 from datetime import datetime
 import time, hmac
@@ -74,7 +75,8 @@ class SEHandler(object):
                 user = datm.User(self._config, name=session['name'])
                 
                 if not user.persisted:
-                    user.create(money=20000, points=0, 
+                    u = mechanics.User(user)
+                    user.create(money=u.initial_money, points=u.initial_points, 
                                 league=datm.League(self._config, name='bronze'))
                     
                     ret = AuthUser(name=User(name=user.name), 
@@ -154,8 +156,8 @@ class SEHandler(object):
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             
             if not a.persisted:
-                a.create(750, 100)
-                #a.create(mechanics.price, mechanics.no_remaining)
+                ma = mechanics.Artist(a)
+                a.create(ma.initial_price, ma.max_shares)
             
             ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                                points=a.points, dividend=a.dividend)
@@ -221,8 +223,8 @@ class SEHandler(object):
             ret = ArtistHistory()
             
             if not a.persisted:
-                a.create(750,100)
-                #a.create(mechanics.price, mechanics.no_remaining)
+                ma = mechanics.Artist(a)
+                a.create(ma.initial_price, ma.max_shares)
             
             ret.histvalue = a.history(self._config, after=time_utc_old)
             
@@ -565,11 +567,9 @@ class SEHandler(object):
             a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
             
             try:
-                #t = mechanics.Trade(user=u)
-                #t.sell(artist=a, price=guarantee.price)
-                t = datm.Trade(self._config, user=u, artist=a, 
-                                                        price=guarantee.price)
-                t.buy()
+                t = mechanics.User(user=u)
+                t.buy(artist=a, price=guarantee.price)
+                return True
             except datm.NoStockRemainingException:
                 raise TransientError('No stock remaining')
         
@@ -611,11 +611,9 @@ class SEHandler(object):
             a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
             
             try:
-                #t = mechanics.Trade(user=u)
-                #t.sell(artist=a, price=guarantee.price)
-                t = datm.Trade(self._config, user=u, artist=a, 
-                                                        price=guarantee.price)
-                t.sell()
+                t = mechanics.User(user=u)
+                t.sell(artist=a, price=guarantee.price)
+                return True
             except datm.StockNotOwnedException:
                 raise TransientError('User cannot sell')
 
