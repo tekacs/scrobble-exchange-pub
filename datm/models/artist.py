@@ -40,7 +40,7 @@ class Artist(base.Base):
 
     @hybrid_property
     def no_remaining(self):
-        return self.max_available - func.count(self.owners)
+        return self.max_available - len(self.owners)
 
 #   owners = ... # Many-to-many
 
