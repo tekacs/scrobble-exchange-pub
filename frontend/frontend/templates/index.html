@@ -37,10 +37,77 @@
 
         <hr>
 
-        <h2 class="sidebar-red">Your Badges</h2>
-        <img class="badge-img" src="http://dummyimage.com/75x75/DAA520/000&amp;text=Gold">
-        <img class="badge-img" src="http://dummyimage.com/75x75/C0C0C0/000&amp;text=Silver">
-        <img class="badge-img" src="http://dummyimage.com/75x75/800080/fff&amp;text=Purple">
-        <img class="badge-img" src="http://dummyimage.com/75x75/eee/000&amp;text=Wow">
-        <img class="badge-img" src="http://dummyimage.com/75x75/000/ffffff&amp;text=A*">
+        <h2 class="sidebar-red">Your Trophies</h2>
+        {% if not user.trophies %}
+            <p class="panel">You currently have no trophies.</p>
+        {% endif %}
+        <div class="trophies">
+            <ul>
+                {% for trophy in user.trophies %}
+                    {% if forloop.counter > 5 %}
+                        <li class="trophy hidden">
+                    {% else %}
+                        <li class="trophy">
+                    {% endif %}
+                            <i class="{{ trophy.icon|icon_split:'code' }}" style="color: {{ trophy.icon|icon_split:'colour' }};"></i>
+                            <div class="description">
+                                <h5 class="title">{{ trophy.name }}</h5>
+                                <p>{{ trophy.description }}</p>
+                            </div>
+                        </li>
+                {% endfor %}
+            </ul>
+
+            {% if user.trophies.length > 5 %}
+                <a class="see-more-trophies" href="#">See all...</a>
+            {% endif %}
+        </div>
+
+        <hr>
+
+        <h2 class="sidebar-red">Recommended artists</h2>
+        <p class="lead">Based on your Last.fm data</p>
+
+        <div class="rank-list">
+
+            <ol class="top-list primary recommended sidebar-list">
+
+                {% for recommended_artist_SE in recommended_artists %}
+
+                    <li class="rankItem sidebar-item">
+                        <div class="rankItem-wrap">
+                            <div class="rankItem-wrap2">
+                                <a href="{% url frontend.views.artist_single recommended_artist_SE.name|urlencode %}" class="rankItem-blockLink">
+                                    <h4>
+                                        <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
+                                        <span class="rankItem-title">{{recommended_artist_SE.name|truncatechars:30}}</span>
+                                    </h4>
+                                    <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.imgurls|get_image:'mega'}}');">
+                                        <div class="rankItem-imageCrop-wrap">
+                                            <img src="{{recommended_artist_SE.imgurls|get_image:'mega'}}">
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <p class="rankItem-bar">
+                                <span class="rankItem-bar-percentage" style="width: 100%">
+                                    <span>
+                                        <strong>${{ recommended_artist_SE.price }}</strong>
+                                    </span>
+                                </span>
+                            </p>
+                        </div>
+                    </li>
+
+                {% empty %}
+
+                    <div class="panel">
+                        <p>You currently have no recommended artists.</p>
+                    </div>
+
+                {% endfor %}
+
+            </ol>
+
+        </div>
     {% endblock sidebar %}

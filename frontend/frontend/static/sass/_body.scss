@@ -36,6 +36,10 @@ body {
     }
 
     .main {
+
+        padding-right: 40px;
+
+
         h1, h2, h3, h4 {
             font-weight: bold;
         }
@@ -164,6 +168,8 @@ body {
                 font-size: 20px;
                 margin-bottom: 5px;
 
+                clear: left;
+
                 &:first-child {
                     margin-top: 0;
                 }
@@ -190,6 +196,44 @@ body {
             @extend .label;
             display: block;
             padding: 10px;
+        }
+
+        .trophies {
+            ul {
+                list-style-type: none;
+
+                & > li {
+
+                    &.hidden {
+                        display: none;
+                    }
+
+                    [class^="icon-"],
+                    [class*=" icon-"] {
+                        font-size: ms(3);
+                        float: left;
+                    }
+
+                    .description {
+                        display: block;
+                        overflow: hidden;
+                        margin: 20px 0 0 20px;
+
+                        .title {
+                            font-size: 1;
+                            font-weight: bold;
+                            margin: 0;
+                        }
+
+                        p {
+                            font-size: 11px;
+                            margin-bottom: 0;
+                        }
+
+                    }
+                }
+            }
+
         }
 
         .sub-info {

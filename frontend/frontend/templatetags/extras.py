@@ -16,3 +16,13 @@ def get_image(images, size_name):
         if s in images and images[s] != '':
             return images[s]
     return generic
+
+@register.filter(name='icon_split')
+def get_icon_split(icon, desired):
+    # Take an icon string in the form code#000000
+    split = icon.split('#')
+
+    if (desired == 'code'):
+        return split[0]
+    elif (desired == 'colour'):
+        return '#' + split[1]

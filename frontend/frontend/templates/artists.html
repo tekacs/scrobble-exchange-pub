@@ -165,45 +165,47 @@
 {% endblock main %}
 
 {% block sidebar %}
-    <h2 class="sidebar-red">Recommended artists</h2>
-    <p>Based on your Last.fm profile data</p>
+    {% if user.is_authenticated %}
+        <h2 class="sidebar-red">Recommended artists</h2>
+        <p>Based on your Last.fm profile data</p>
 
-    <div class="rank-list">
+        <div class="rank-list">
 
-        <ol class="top-list rising primary sidebar-list">
+            <ol class="top-list rising primary sidebar-list">
 
-            {% for recommended_artist_SE in recommended_artists %}
+                {% for recommended_artist_SE in recommended_artists %}
 
-                <li class="rankItem sidebar-item">
-                    <div class="rankItem-wrap">
-                        <div class="rankItem-wrap2">
-                            <a href="{% url frontend.views.artist_single recommended_artist_SE.name|urlencode %}" class="rankItem-blockLink">
-                                <h4>
-                                    <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
-                                    <span class="rankItem-title">{{recommended_artist_SE.name|truncatechars:30}}</span>
-                                </h4>
-                                <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.imgurls|get_image:'mega'}}');">
-                                    <div class="rankItem-imageCrop-wrap">
-                                        <img src="{{recommended_artist_SE.imgurls|get_image:'mega'}}">
+                    <li class="rankItem sidebar-item">
+                        <div class="rankItem-wrap">
+                            <div class="rankItem-wrap2">
+                                <a href="{% url frontend.views.artist_single recommended_artist_SE.name|urlencode %}" class="rankItem-blockLink">
+                                    <h4>
+                                        <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
+                                        <span class="rankItem-title">{{recommended_artist_SE.name|truncatechars:30}}</span>
+                                    </h4>
+                                    <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.imgurls|get_image:'mega'}}');">
+                                        <div class="rankItem-imageCrop-wrap">
+                                            <img src="{{recommended_artist_SE.imgurls|get_image:'mega'}}">
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        </div>
-                        <p class="rankItem-bar">
-                            <span class="rankItem-bar-percentage" style="width: 100%">
-                                <span>
-                                    <strong>${{ recommended_artist_SE.price }}</strong>
+                                </a>
+                            </div>
+                            <p class="rankItem-bar">
+                                <span class="rankItem-bar-percentage" style="width: 100%">
+                                    <span>
+                                        <strong>${{ recommended_artist_SE.price }}</strong>
+                                    </span>
                                 </span>
-                            </span>
-                        </p>
-                    </div>
-                </li>
+                            </p>
+                        </div>
+                    </li>
 
-            {% endfor %}
+                {% endfor %}
 
-        </ol>
+            </ol>
 
-    </div>
+        </div>
+    {% endif %}
 
 
     <h2 class="sidebar-red">Recently traded artists</h2>
