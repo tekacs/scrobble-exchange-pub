@@ -935,12 +935,14 @@ class User(object):
 
 class AuthUser(object):
   """
-  Basic authenticated user. Does not necessarily include their money
+  Basic authenticated user. Does not necessarily include their money. Newuser
+  is set if the user was just created
 
   Attributes:
    - name
    - session_key
    - money
+   - newuser
   """
 
   thrift_spec = (
@@ -948,12 +950,14 @@ class AuthUser(object):
     (1, TType.STRUCT, 'name', (User, User.thrift_spec), None, ), # 1
     (2, TType.STRING, 'session_key', None, None, ), # 2
     (3, TType.I32, 'money', None, None, ), # 3
+    (4, TType.BOOL, 'newuser', None, None, ), # 4
   )
 
-  def __init__(self, name=None, session_key=None, money=None,):
+  def __init__(self, name=None, session_key=None, money=None, newuser=None,):
     self.name = name
     self.session_key = session_key
     self.money = money
+    self.newuser = newuser
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -980,6 +984,11 @@ class AuthUser(object):
           self.money = iprot.readI32();
         else:
           iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.BOOL:
+          self.newuser = iprot.readBool();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1001,6 +1010,10 @@ class AuthUser(object):
     if self.money is not None:
       oprot.writeFieldBegin('money', TType.I32, 3)
       oprot.writeI32(self.money)
+      oprot.writeFieldEnd()
+    if self.newuser is not None:
+      oprot.writeFieldBegin('newuser', TType.BOOL, 4)
+      oprot.writeBool(self.newuser)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
