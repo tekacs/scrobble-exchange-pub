@@ -27,6 +27,8 @@ window.SE.Search = {
 
 jQuery(document).ready(function($) {
 
+    $(document).foundationAlerts();
+
     /* SEARCH BAR */
 
     // Need each to fix bug in 0.8.1: https://github.com/twitter/typeahead.js/issues/42#issuecomment-14028701
