@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load extras %}
 
 {% block title %}Leaderboards{% endblock title %}
 
@@ -9,46 +10,30 @@
 {% endblock above_main %}
 
 {% block main %}
-
-    <dl class="tabs">
-      <dd class="active"><a href="#league1">League 1</a></dd>
-      <dd><a href="#league2">League 2</a></dd>
-      <dd class="hide-for-small"><a href="#league3">League 3</a></dd>
-    </dl>
-    <ul class="tabs-content">
-      <li class="active" id="league1Tab">
-        <table class="leaderboard leaderboard-1">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>User</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-        </table>
-      </li>
-      <li id="league2Tab">
-        <table class="leaderboard leaderboard-2">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>User</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-        </table>
-      </li>
-      <li id="league3Tab">
-        <table class="leaderboard leaderboard-3">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>User</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-        </table>
-      </li>
+    <ul class="accordion support tag close leaderboards">
+        {% for league in leagues %}
+            {% if forloop.first %}
+                <li class="active">
+            {% else %}
+                <li>
+            {% endif %}
+                    <div class="title">
+                        <h5><i class="{{ league.icon|icon_split:'code' }}" style="color: {{ league.icon|icon_split:'colour' }};"></i> {{ league.name }}</h5>
+                    </div>
+                    <div class="content">
+                        <p class="description">{{ league.description }}</p>
+                        <table data-leaguename="{{ league.name }}" class="leaderboard leaderboard-{{ forloop.counter }}">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>User</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </li>
+        {% endfor %}
     </ul>
 {% endblock main %}
 
@@ -64,7 +49,7 @@
   <div class="leaderboards-sidebar-inner">
     <h2 class="sidebar-red">Change timespan</h2>
     <ul>
-      <li><a class="time-adjust" data-timeadjust="3" href="#">Last 24 hours</a></li>
+      <li><a class="time-adjust" data-timeadjust="3" href="#">Last Day</a></li>
       <li><a class="time-adjust selected" data-timeadjust="2" href="#">Last Week</a></li>
       <li><a class="time-adjust" data-timeadjust="1" href="#">Last Month</a></li>
     </ul>
@@ -73,6 +58,7 @@
 
 {% block body_additional_js %}
   <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.tabs.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.accordion.custom.js" %}"></script>
   <script type="text/javascript" src="{% static "js/libs/jquery.dataTables.js" %}"></script>
   <script type="text/javascript" src="{% static "js/libs/dataTables.scroller.min.js" %}"></script>
   <script type="text/javascript">
