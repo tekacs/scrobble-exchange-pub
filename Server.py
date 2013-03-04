@@ -396,8 +396,7 @@ class SEHandler(object):
                 ret.trophies.append(tr)
             
             for t in u.trades():
-                a = Artist(mbid=t.artist.mbid, name=t.artist.name,
-                           imgurls=t.artist.images)
+                a = self.getArtist(mbid=t.artist.mbid)
                 
                 ret.trades.append(Trade(artist=a, price=t.price, time=t.time))
             
