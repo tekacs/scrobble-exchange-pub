@@ -375,13 +375,13 @@ class SEHandler(object):
                                 description=u.league.description,
                                 icon=u.league.icon)
             
-            for t in u.trophies:
+            for t in u.trophies():
                 tr = Trophy(name=t.name, description=t.description,
                             icon=t.icon)
                 
                 ret.trophies.append(tr)
             
-            for t in u.trades:
+            for t in u.trades():
                 a = Artist(mbid=t.artist.mbid, name=t.artist.name,
                            imgurls=t.artist.images)
                 
