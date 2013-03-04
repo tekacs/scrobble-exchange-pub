@@ -57,6 +57,8 @@ class User(object):
     def initial_money(self):
         """This value is a constant."""
         return 20000
+    
+    @property
     def initial_points(self):
         """This value is a constant."""
         return 0
