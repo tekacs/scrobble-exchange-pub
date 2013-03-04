@@ -226,7 +226,7 @@ class Artist(DATMObject):
     def history(self, after=None, step=None, count=None):
         q = db.query(self.config, models.ArtistHistory).join(models.Artist)
         if after is not None:
-            q = q.filter_by(models.ArtistHistory.date >= after)
+            q = q.filter(models.ArtistHistory.date >= after)
         q = q.order_by(models.ArtistHistory.date.desc()).limit(count)
 
         return q.all()
