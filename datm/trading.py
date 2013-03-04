@@ -1,9 +1,10 @@
 __author__ = 'amar'
 
+import datetime
+
 from sqlalchemy.orm.exc import NoResultFound
 
 import models
-
 from util import db
 from util.magic import memoised_property
 from base import DATMObject, datm_setup,\
@@ -31,7 +32,10 @@ class Trade(DATMObject):
     @memoised_property
     @require_db
     def id(self):
-        return self.dbo.id
+        dbo = self.dbo
+        if self.dbo is None:
+            raise NoDatabaseObjectException()
+        return dbo.id
 
     @memoised_property
     @require_db
@@ -45,12 +49,19 @@ class Trade(DATMObject):
             raise NoDatabaseObjectException()
 
     def create(self, purchase):
-        self.dbo = models.Trade(self.user, self.artist, self.price, purchase)
+        self.dbo = models.Trade(
+            self.user.dbo,
+            self.artist.dbo,
+            self.price,
+            purchase,
+            int(datetime.datetime.utcnow().strftime("%s"))
+        )
         self.session.db.add(self.dbo)
 
     user = db.dbo_property('user')
     artist = db.dbo_property('artist')
     price = db.dbo_property('price')
+    date = db.dbo_property('date')
 
     @staticmethod
     @require_db
@@ -59,18 +70,6 @@ class Trade(DATMObject):
             models.Trade.id.desc()
         ).limit(limit)
         return query.all()
-
-    @require_db
-    def buy(self):
-        if self.artist.no_remaining > 0 and not self.user.owns(self.artist):
-            self.create(True)
-        else:
-            raise NoStockRemainingException()
-
-    @require_db
-    def sell(self):
-        if self.user.owns(self.artist):
-            self.create(False)
 
 class NoStockRemainingException(Exception):
     pass
