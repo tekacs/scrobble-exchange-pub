@@ -466,15 +466,15 @@ class SEHandler(object):
         with datm.DATMSession(self._config):
             
             if trange == 1:
-                l = datm.League(uid=league.uid)
+                l = datm.League(self._config, uid=league.uid)
                 ulist = datm.User.top(self._config, limit=n, period='daily',
                                                                     league=l)
             elif trange <= 7:
-                l = datm.League(uid=league.uid)
+                l = datm.League(self._config, uid=league.uid)
                 ulist = datm.User.top(self._config, limit=n, period='weekly',
                                                                     league=l)
             elif trange <= 31:
-                l = datm.League(uid=league.uid)
+                l = datm.League(self._config, uid=league.uid)
                 ulist = datm.User.top(self._config, limit=n, period='monthly',
                                                                     league=l)
             else:
