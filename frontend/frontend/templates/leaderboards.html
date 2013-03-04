@@ -40,7 +40,7 @@
 {% block sidebar %}
   <div class="leaderboards-sidebar-inner">
     <h2 class="sidebar-red">Your current position</h2>
-    <p class="lead">You are currently ranked <strong><span class="context-user-position"></span></strong> in <strong>League <span class="context-user-league"></span></strong>, with a total of <strong><span class="context-user-points"></span></strong> points.</p>
+    <p class="lead">You are currently ranked <strong><span class="context-user-position"></span></strong> in <strong><span class="context-user-league"></span></strong>, with a total of <strong><span class="context-user-points"></span></strong> points.</p>
     {% if next_user %}
       <p>Earn <strong><span class="context-next_user-points">{{next_user.points}}</span></strong> more points to overtake your closest rival, <a href="#"><strong><span class="context-next_user-name">{{next_user.name}}</span></strong></a>!</p>
     {% endif %}
@@ -57,7 +57,6 @@
 {% endblock sidebar %}
 
 {% block body_additional_js %}
-  <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.tabs.js" %}"></script>
   <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.accordion.custom.js" %}"></script>
   <script type="text/javascript" src="{% static "js/libs/jquery.dataTables.js" %}"></script>
   <script type="text/javascript" src="{% static "js/libs/dataTables.scroller.min.js" %}"></script>
