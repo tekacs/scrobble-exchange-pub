@@ -280,51 +280,37 @@ def search(request):
 @json_response(auth_needed=True)
 def price(request, artist_id=None):
     artist_name = request.GET.get('artist_name')
-    artist = ttypes.Artist(name = artist_name)
-    authuser =  _authuser(request)
-    # artist_SE = client.getArtistSE(artist = artist, user = authuser)
-    # TODO: Ask Victor why this may be throwing exceptions
-    # Throws errors because the test backend currently only looks stuff up by 
-    # artist name
-    artist_SE = {
-        'artist': {
-            'name': 'Coldplay',
-            'imgurls': {
-                'mega': 'http:\/\/userserve-ak.last.fm\/serve\/500\/75646980\/Coldplay+PNG.png',
-                'extralarge': 'http:\/\/userserve-ak.last.fm\/serve\/252\/75646980.png',
-                'large': 'http://userserve-ak.last.fm/serve/126/75646980.png',
-                'medium': 'http://userserve-ak.last.fm/serve/64/75646980.png',
-                'small': 'http://userserve-ak.last.fm/serve/34/75646980.png'
-            }
-        },
-        'price': 2542,
-        'points': 242
-    }
-    return artist_SE
+    artist = ttypes.Artist(name=artist_name)
+    user = _user(request)
 
-@json_response(auth_needed = True)
+    artist = _flattenArtistSE(client.getArtistSE(artist=artist, user=user))
+    return artist
+
+
+@json_response(auth_needed=True)
 def guaranteed_price(request):
     artist_id = request.GET.get('artist_id')
     artist = ttypes.Artist(mbid=artist_id)
     artist_price_guarantee = vars(client.getGuarantee(artist=artist, user=_authuser(request)))
     return artist_price_guarantee
 
-@json_response(auth_needed = True)
+
+@json_response(auth_needed=True)
 @require_POST
 def sell(request):
     #TODO: Remind Joe to check out https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
-    # guarantee = request.POST.get('guarantee')
     elephant = request.POST.get('elephant')
     price = int(request.POST.get('price'))
     time = int(request.POST.get('time'))
     artist = ttypes.Artist(mbid=request.POST.get('artist_id'))
 
-    guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
+    guarantee = ttypes.Guarantee(elephant=elephant, artist=artist, price=price, time=time)
 
     success = client.sell(guarantee=guarantee, user=_authuser(request))
     return success
 
-@json_response(auth_needed = True)
+
+@json_response(auth_needed=True)
 @require_POST
 def buy(request):
     elephant = request.POST.get('elephant')
@@ -332,7 +318,7 @@ def buy(request):
     time = int(request.POST.get('time'))
     artist = ttypes.Artist(mbid=request.POST.get('artist_id'))
 
-    guarantee = ttypes.Guarantee(elephant = elephant, artist = artist, price = price, time = time)
+    guarantee = ttypes.Guarantee(elephant=elephant, artist=artist, price=price, time=time)
 
     success = client.buy(guarantee=guarantee, user=_authuser(request))
     return success
@@ -355,4 +341,8 @@ def _user(request):
 
 def _flattenArtistSEList(artists):
     for artistSE in artists:
-        artistSE.update(vars(artistSE.artist))
+        _flattenArtistSE(artistSE)
+
+
+def _flattenArtistSE(artistSE):
+    artistSE.update(vars(artistSE.artist))
