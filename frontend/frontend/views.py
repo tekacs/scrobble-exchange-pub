@@ -156,8 +156,6 @@ def artists(request):
 
 
 def artist_single(request, artistname):
-    #TODO: Change artist name mechanism, look at http://stackoverflow.com/a/837835/181284
-
     if (artistname == ''):
         return redirect('artists')
 
@@ -216,23 +214,22 @@ def artist_history(request):
 @json_response()
 def auto_complete(request):
     """ Sample URL: http://localhost:8000/search/autocomplete/?q=blah """
-    #TODO: Change format of data
-    partial_text = request.GET.get('q','')
+    partial_text = request.GET.get('q', '')
     results = client.searchArtist(partial_text, NUM_SEARCH_RESULTS, 1)
-    
+
     auto = []
     for a in results:
         adict = {
             'value': a.name,
-            'url': quote('/artist/'+a.name),
+            'url': reverse('artist_single', args=(a.name,))
         }
         try:
             adict['img'] = a.imgurls['mega']
         except KeyError:
             pass
-        
+
         auto.append(adict)
-        
+
     return auto
 
 
