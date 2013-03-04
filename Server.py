@@ -522,7 +522,7 @@ class SEHandler(object):
             else:
                 raise DataError('Incorrect artist data')
             
-            u = datm.User(self._config, user.name)
+            u = datm.User(self._config, user.name.name)
             
             try:
                 u.authenticate(user.session_key)
@@ -573,7 +573,7 @@ class SEHandler(object):
             if (time_utc - guarantee.time) > 17:
                 raise TransientError('Too late')
             
-            u = datm.User(self._config, user=user.name)
+            u = datm.User(self._config, user=user.name.name)
             
             try:
                 u.authenticate(user.session_key)
@@ -617,7 +617,7 @@ class SEHandler(object):
             if (time_utc - guarantee.time) > 17:
                 raise TransientError('Too late')
             
-            u = datm.User(self._config, user=user.name)
+            u = datm.User(self._config, user=user.name.name)
             
             try:
                 u.authenticate(user.session_key)
