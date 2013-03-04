@@ -62,4 +62,52 @@
                 <a class="see-more-trophies" href="#">See all...</a>
             {% endif %}
         </div>
+
+        <hr>
+
+        <h2 class="sidebar-red">Recommended artists</h2>
+        <p class="lead">Based on your Last.fm data</p>
+
+        <div class="rank-list">
+
+            <ol class="top-list primary recommended sidebar-list">
+
+                {% for recommended_artist_SE in recommended_artists %}
+
+                    <li class="rankItem sidebar-item">
+                        <div class="rankItem-wrap">
+                            <div class="rankItem-wrap2">
+                                <a href="{% url frontend.views.artist_single recommended_artist_SE.name|urlencode %}" class="rankItem-blockLink">
+                                    <h4>
+                                        <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
+                                        <span class="rankItem-title">{{recommended_artist_SE.name|truncatechars:30}}</span>
+                                    </h4>
+                                    <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.imgurls|get_image:'mega'}}');">
+                                        <div class="rankItem-imageCrop-wrap">
+                                            <img src="{{recommended_artist_SE.imgurls|get_image:'mega'}}">
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <p class="rankItem-bar">
+                                <span class="rankItem-bar-percentage" style="width: 100%">
+                                    <span>
+                                        <strong>${{ recommended_artist_SE.price }}</strong>
+                                    </span>
+                                </span>
+                            </p>
+                        </div>
+                    </li>
+
+                {% empty %}
+
+                    <div class="panel">
+                        <p>You currently have no recommended artists.</p>
+                    </div>
+
+                {% endfor %}
+
+            </ol>
+
+        </div>
     {% endblock sidebar %}
