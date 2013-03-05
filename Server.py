@@ -661,7 +661,7 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config) as datmconfig:
             
-            u = datm.User(datmconfig, user=user.user.name)
+            u = datm.User(datmconfig, name=user.user.name)
             
             try:
                 u.authenticate(user.session_key)
