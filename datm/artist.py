@@ -107,6 +107,11 @@ class Artist(DATMObject):
             0,
             0
         )
+
+        self.dbo.last_listeners = self.listeners
+        self.dbo.last_playcount = self.playcount
+        self.dbo.last_closing_price = price
+
         db.add(self.config, self.dbo)
         db.add(self.config, emptyhistory)
 
