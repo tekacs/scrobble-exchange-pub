@@ -130,15 +130,15 @@ def get_leaderboard(request):
             '0': str(i),
             '1': '<a href="www.last.fm/user/{0}"><img src="{1}"/>{0}</a>'.format(user.name, user.profileimage['medium']),
             '2': str(user.points),
-            'DT_RowClass': 'place-{0} {1}'.format(str(i), me)
+            'DT_RowClass': 'place-{}{}{}'.format(str(i), ' ' if me else '', me)
         }
         table.append(row)
         i = i + 1
 
     leaderboard = {
         'sEcho': 1,
-        'iTotalRecords': i,
-        'iTotalDisplayRecords': i,
+        'iTotalRecords': str(i),
+        'iTotalDisplayRecords': str(i),
         'aaData': table
     }
 
