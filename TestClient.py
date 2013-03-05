@@ -145,13 +145,9 @@ try:
     #except:
         #pass
       
-    ##Testing the getUserData function
-    #print '\nTesting getUserData(user: string)'
-    #for u in unauthunames:
-        #try:
-            #print client.getUserData(u)
-        #except:
-            #pass
+    #Testing the getUserData function
+    print '\nTesting getUserData(user: string)'
+    print client.getUserData('neilsatra')
     
     ##Testing the getUserMoney function
     #print '\nTesting getUserMoney(user: AuthUser)'

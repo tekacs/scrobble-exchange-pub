@@ -234,10 +234,7 @@ class SEHandler(object):
                 ma = mechanics.Artist(a)
                 a.create(ma.initial_price, ma.max_shares)
             
-            #ret.histvalue = a.history(after=time_utc_old)
-            #history currently broken, so don't give an after
-            
-            for h in a.history():
+            for h in a.history(after=time_utc_old):
                 ret.histprice[h.date] = h.price
                 ret.histpoints[h.date] = h.points
                 ret.histdividends[h.date] = h.dividends
@@ -404,8 +401,8 @@ class SEHandler(object):
                 
                 #the assumption is that if the stock is listed, then it exists 
                 #in the DB and no databaseobjectexception would be thrown
-                ret.stocks.append(ArtistSE(artist=a, price=s.price, 
-                            dividend=s.dividend, numremaining=s.no_remaining))
+                #also, no writes will be done and so no threading errors
+                ret.stocks.append(self.getArtistSE(a, basicu))
             
             return ret
         

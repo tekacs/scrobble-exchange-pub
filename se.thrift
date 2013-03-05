@@ -10,7 +10,7 @@ namespace py se_api
 # Minor is for backwards-compatible ones (e.g. adding optional parameters)
 # Patch is for small bugfixes and similar
 
-const string VERSION = "5.0.0"
+const string VERSION = "5.1.0"
 
 ## Structs
 
@@ -91,7 +91,7 @@ struct League {
 struct User {
     1: required string name
     2: optional i32 points
-    3: optional string profileimage
+    3: optional map<string,string> profileimage
 }
 
 /** Basic authenticated user. Does not necessarily include their money. Newuser 
