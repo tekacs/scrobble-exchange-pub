@@ -11,8 +11,8 @@ from thrift.protocol import TBinaryProtocol
 API_SERVER = 'ec2-54-246-25-244.eu-west-1.compute.amazonaws.com'
 API_PORT = 9090
 
-authed = AuthUser(money=None, session_key=u'1a4602d8af05a8330611ff408b3edbdf', 
-newuser=False, name=User(profileimage=None, points=None, name=u'Sov1etRuss1a'))
+authed = AuthUser(money=None, session_key=u'9281b6c4d57cb5f2f90d903f4a6404a2', 
+newuser=False, user=User(profileimage=None, points=None, name=u'Sov1etRuss1a'))
 
 unauthunames = ['simonmoran', 'foreverautumn', 'theneonfever', 'robinlisle',
                 'nancyvw', 'miadellocca', 'massdosage', 'mbrodbelt',
@@ -183,19 +183,19 @@ try:
         #except:
             #pass
     
-    #print client.getArtistSE(Artist(mbid='',name='ovum'), User(''))
+    print client.getArtistSE(Artist(mbid='',name='ovum'), User(''))
     
-    ##Testing the getGuarantee function
-    #print '\nTesting getGuarantee(artist: Artist, user: AuthUser)'
+    #Testing the getGuarantee function
+    print '\nTesting getGuarantee(artist: Artist, user: AuthUser)'
     
-    #a = Artist(mbid='',name='ovum')
+    a = Artist(mbid='',name='ovum')
    
-    #guaran = client.getGuarantee(a,authed)
-    #print guaran
+    guaran = client.getGuarantee(a,authed)
+    print guaran
     
-    ##Testing the buy function
-    #print '\nTesting buy(guarantee: Guarantee, user: AuthUser)'
-    #print client.buy(guaran,authed)
+    #Testing the buy function
+    print '\nTesting buy(guarantee: Guarantee, user: AuthUser)'
+    print client.buy(guaran,authed)
     
     #print client.getArtistSE(Artist(mbid='',name='ovum'), authed.name)
     
