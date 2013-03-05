@@ -461,20 +461,22 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config) as datmconfig:
             
-            if trange == 1:
-                l = datm.League(datmconfig, uid=league.uid)
-                ulist = datm.User.top(datmconfig, limit=n, period='daily',
-                                                                    league=l)
-            elif trange <= 7:
-                l = datm.League(datmconfig, uid=league.uid)
-                ulist = datm.User.top(datmconfig, limit=n, period='weekly',
-                                                                    league=l)
-            elif trange <= 31:
-                l = datm.League(datmconfig, uid=league.uid)
-                ulist = datm.User.top(datmconfig, limit=n, period='monthly',
-                                                                    league=l)
+            if league == '':
+                l = None
             else:
-                raise DataError('Unusual time range selected')
+                l = datm.League(datmconfig, uid=league.uid)
+            
+            if trange == 1:
+                period = 'daily'
+            elif trange <= 7:
+                period = 'weekly'
+            elif trange <= 31:
+                period = 'monthly'
+            else:
+                raise DataError('Unavailable time range selected')
+                
+            ulist = datm.User.top(datmconfig, limit=n, period=period,
+                                                                league=l)
             
             ret = UserLeaderboard(users=[])
             
