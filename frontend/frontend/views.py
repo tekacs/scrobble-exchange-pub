@@ -112,7 +112,7 @@ def get_user_leaderboard(request):
 
 @json_response()
 def get_leaderboard(request):
-    """Sample URL: http://localhost:8000/leaderboards/get/?league_id=1&time_range=3"""
+    """Sample URL: http://localhost:8000/leaderboards/get/?league_id=bronze&time_range=3"""
     league_id = request.GET.get('league_id', '')
     time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '2'))]
 
@@ -121,7 +121,6 @@ def get_leaderboard(request):
     table = []
     i = 1
     for user in board.users:
-
         if request.user.is_authenticated() and user.name == request.user.username:
             me = 'me'
         else:
@@ -129,7 +128,7 @@ def get_leaderboard(request):
 
         row = {
             '0': str(i),
-            '1': '<a href="www.last.fm/user/{0}"><img src="{1}"/>{0}</a>'.format(user.name, user.profileimage.small),
+            '1': '<a href="www.last.fm/user/{0}"><img src="{1}"/>{0}</a>'.format(user.name, user.profileimage['medium']),
             '2': str(user.points),
             'DT_RowClass': 'place-{0} {1}'.format(str(i), me)
         }
