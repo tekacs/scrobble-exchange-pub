@@ -186,7 +186,7 @@ class Iface(object):
     """
     Returns the n top users by decreasing value in the given league. Trange
     is the number of days the leaderboard is over, rounded to the nearest
-    day, week or month.
+    day, week or month or all time
 
     Parameters:
      - n
@@ -195,13 +195,15 @@ class Iface(object):
     """
     pass
 
-  def getNearUsers(self, user):
+  def getNearUsers(self, user, trange):
     """
     Returns a list of 10 users with 4 above and 5 below in the leaderboard
-    compared to the user provided, including the user's position.
+    compared to the user provided, including the user's position. Trange is
+    the number of days the leaderboard is over, rounded to nearest d/w/m
 
     Parameters:
      - user
+     - trange
     """
     pass
 
@@ -926,7 +928,7 @@ class Client(Iface):
     """
     Returns the n top users by decreasing value in the given league. Trange
     is the number of days the leaderboard is over, rounded to the nearest
-    day, week or month.
+    day, week or month or all time
 
     Parameters:
      - n
@@ -962,21 +964,24 @@ class Client(Iface):
       raise result.d
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getTopUsers failed: unknown result");
 
-  def getNearUsers(self, user):
+  def getNearUsers(self, user, trange):
     """
     Returns a list of 10 users with 4 above and 5 below in the leaderboard
-    compared to the user provided, including the user's position.
+    compared to the user provided, including the user's position. Trange is
+    the number of days the leaderboard is over, rounded to nearest d/w/m
 
     Parameters:
      - user
+     - trange
     """
-    self.send_getNearUsers(user)
+    self.send_getNearUsers(user, trange)
     return self.recv_getNearUsers()
 
-  def send_getNearUsers(self, user):
+  def send_getNearUsers(self, user, trange):
     self._oprot.writeMessageBegin('getNearUsers', TMessageType.CALL, self._seqid)
     args = getNearUsers_args()
     args.user = user
+    args.trange = trange
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -1535,7 +1540,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = getNearUsers_result()
     try:
-      result.success = self._handler.getNearUsers(args.user)
+      result.success = self._handler.getNearUsers(args.user, args.trange)
     except DataError as d:
       result.d = d
     oprot.writeMessageBegin("getNearUsers", TMessageType.REPLY, seqid)
@@ -4731,15 +4736,18 @@ class getNearUsers_args(object):
   """
   Attributes:
    - user
+   - trange
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'user', None, None, ), # 1
+    (2, TType.I32, 'trange', None, None, ), # 2
   )
 
-  def __init__(self, user=None,):
+  def __init__(self, user=None, trange=None,):
     self.user = user
+    self.trange = trange
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -4753,6 +4761,11 @@ class getNearUsers_args(object):
       if fid == 1:
         if ftype == TType.STRING:
           self.user = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.trange = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -4769,12 +4782,18 @@ class getNearUsers_args(object):
       oprot.writeFieldBegin('user', TType.STRING, 1)
       oprot.writeString(self.user.encode('utf-8'))
       oprot.writeFieldEnd()
+    if self.trange is not None:
+      oprot.writeFieldBegin('trange', TType.I32, 2)
+      oprot.writeI32(self.trange)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
     if self.user is None:
       raise TProtocol.TProtocolException(message='Required field user is unset!')
+    if self.trange is None:
+      raise TProtocol.TProtocolException(message='Required field trange is unset!')
     return
 
 
