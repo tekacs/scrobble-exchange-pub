@@ -198,6 +198,7 @@ class Artist(DATMObject):
         q = q.filter(models.Trade.purchase == True)
         q = q.group_by(models.Trade.artist_id)
         q = q.order_by(func.count(models.Trade.id).desc())
+        q = q.limit(limit)
         return (Artist(config, dbo=o) for o in q)
 
     # Object Interface
