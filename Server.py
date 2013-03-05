@@ -319,7 +319,7 @@ class SEHandler(object):
             alist = u.top_artists(limit=n)
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name),
-                                    user.user) for a in alist]
+                                    user) for a in alist]
             
             return ret
     
