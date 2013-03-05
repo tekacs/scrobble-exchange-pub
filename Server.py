@@ -82,10 +82,10 @@ class SEHandler(object):
                     user.create(money=u.initial_money, points=u.initial_points, 
                                 league=datm.League(config, uid='bronze'))
                     
-                    ret = AuthUser(name=User(name=user.name), 
+                    ret = AuthUser(user=User(name=user.name), 
                                     session_key=session['key'], newuser=True)
                 else:
-                    ret = AuthUser(name=User(name=user.name), 
+                    ret = AuthUser(user=User(name=user.name), 
                                     session_key=session['key'], newuser=False)
                 
                 user.vouch_for(session['key'])
@@ -425,7 +425,7 @@ class SEHandler(object):
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
             
-            return AuthUser(name=User(name=user.user.name, points=u.points,
+            return AuthUser(user=User(name=user.user.name, points=u.points,
                         profileimage=u.images),session_key=user.session_key, 
                                                                 money=u.money)
     
