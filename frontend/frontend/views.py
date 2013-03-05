@@ -119,7 +119,7 @@ def get_leaderboard(request):
     board = client.getTopUsers(n=NUM_LEADERBOARD_ENTRIES, league=ttypes.League(uid=league_id), trange=time_range)
 
     table = []
-    i = 1
+    i = 0
     for user in board.users:
         if request.user.is_authenticated() and user.name == request.user.username:
             me = 'me'
@@ -133,7 +133,7 @@ def get_leaderboard(request):
             'DT_RowClass': 'place-{}{}{}'.format(str(i), ' ' if me else '', me)
         }
         table.append(row)
-        i = i + 1
+        i += 1
 
     leaderboard = {
         'sEcho': 1,
