@@ -73,6 +73,7 @@ def reset_portfolio(request):
 ############ Leaderboards ############
 def leaderboards(request):
     """Empty leaderboards page with list of leagues. Actual data retrieved by AJAX"""
+    _authuser(request) #Just so that user properties are set
     leagues = client.getLeagues()
     return render_to_response('leaderboards.html', {'leagues': leagues}, context_instance=RequestContext(request))
 
@@ -148,6 +149,7 @@ def get_leaderboard(request):
 
 ############ Artist stuff ############
 def artists(request):
+    _authuser(request)
     TIME_RANGE = 7
     user = _user(request)
 
@@ -167,6 +169,7 @@ def artists(request):
 
 
 def artist_single(request, artistname):
+    _authuser(request)
     if (artistname == ''):
         return redirect('artists')
 
@@ -192,7 +195,7 @@ def artist_single(request, artistname):
 
 @json_response()
 def artist_history(request):
-    """ Sample URL: http://127.0.0.1:8000/artist/history/?artist_id=0383dadf-2a4e-4d10-a46a-e9e041da8eb3&days=2"""
+    """ Sample URL: http://localhost:8000/artist/history/?artist_id=0383dadf-2a4e-4d10-a46a-e9e041da8eb3&days=2"""
 
     def _format(megadict):
         data = []
