@@ -44,8 +44,9 @@ class DATMConfig(object):
             for key in [k for k, v in _db_args.iteritems() if v is None]:
                 _db_args.pop(key)
             url = _db_args.pop('url')
+            _db_args['echo'] = debug
 
-            engine = create_engine(url, echo=debug, **_db_args)
+            engine = create_engine(url, **_db_args)
             SessionBase = sessionmaker(bind=engine)
             self._db = DATMDatabase(engine, SessionBase)
 
