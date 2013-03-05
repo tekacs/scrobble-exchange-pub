@@ -493,7 +493,8 @@ class SEHandler(object):
         - user
         """
         with datm.DATMSession(self._config) as datmconfig:
-            ulist = datm.User.near(datmconfig, name=user)
+            u = datm.User(datmconfig, name=user)
+            ulist = u.near(up=4, down=5)
             
             ret = UserLeaderboard(users=[])
             for u in ulist:
