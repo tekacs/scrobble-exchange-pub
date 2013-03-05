@@ -18,23 +18,15 @@ def home(request):
     #Done with the API
     if request.user.is_authenticated():
         authorized_user = _authuser(request)
-        user = _user(request)
-
-        api_user_data = client.getUserData(user.name)
-        api_user_money = client.getUserMoney(authorized_user)
-
-        user_data = {}
-        user_data.update(vars(api_user_data))
-        user_data.update(vars(api_user_money))
-
-        user_data['portfolio_worth'] = sum(artist.price for artist in api_user_data.stocks)
+        api_user_data = client.getUserData(authorized_user.user.name)
+        request.user.portfolio_worth = sum(artist.price for artist in api_user_data.stocks)
 
         try:
-            user_data['recommended_artists'] = client.getTopArtists(NUM_CHARTS, user)
+            request.user.recommended_artists = client.getTopArtists(NUM_CHARTS, authorized_user.user)
         except Exception:
-            user_data['recommended_artists'] = {}
+            request.user.recommended_artists = {}
 
-        return render_to_response('index.html', {'user_data': user_data}, context_instance=RequestContext(request))
+        return render_to_response('index.html', {}, context_instance=RequestContext(request))
     else:
         return render_to_response('welcome.html', {}, context_instance=RequestContext(request))
 
@@ -355,7 +347,11 @@ def buy(request):
 ############ Helper Functions ############
 def _authuser(request):
     if request.user.is_authenticated:
-        return ttypes.AuthUser(name=ttypes.User(request.user.username), session_key=request.user.first_name)
+        authuser = ttypes.AuthUser(user=ttypes.User(request.user.username), session_key=request.user.first_name)
+        updatedauthuser = client.getUserMoney(authuser)
+        request.user.points = updatedauthuser.user.points
+        request.user.money = updatedauthuser.money
+        return updatedauthuser
     else:
         return None
 
@@ -368,9 +364,13 @@ def _user(request):
 
 
 def _flattenArtistSEList(artists):
+    artistdicts = []
     for artistSE in artists:
-        _flattenArtistSE(artistSE)
+        artistdicts.append(_flattenArtistSE(artistSE))
 
 
 def _flattenArtistSE(artistSE):
-    artistSE.update(vars(artistSE.artist))
+    artistdict = {}
+    artistdict.update(vars(artistSE))
+    artistdict.update(vars(artistSE.artist))
+    return artistdict

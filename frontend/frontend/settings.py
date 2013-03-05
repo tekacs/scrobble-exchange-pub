@@ -31,8 +31,8 @@ DATABASES = {
     }
 }
 
-# API_SERVER = 'ec2-54-246-25-244.eu-west-1.compute.amazonaws.com'
-API_SERVER = 'localhost'
+API_SERVER = 'ec2-54-246-25-244.eu-west-1.compute.amazonaws.com'
+# API_SERVER = 'localhost'
 API_PORT = 9090
 
 # Set your DSN value
