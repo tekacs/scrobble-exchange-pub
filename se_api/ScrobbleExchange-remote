@@ -33,7 +33,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   searchArtist(string text, i32 n, i32 page)'
   print '   getSETop(i32 n, i32 trange, User user)'
   print '   getLFMTop(i32 n, User user)'
-  print '   getRecommendedArtists(i32 n, AuthUser user)'
+  print '   getRecommendedArtists(i32 n, User user)'
   print '   getTradedArtists(i32 n, User user)'
   print '   getRecentTrades(i32 n, User user)'
   print '  UserData getUserData(string user)'

@@ -3538,7 +3538,7 @@ class getRecommendedArtists_args(object):
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'n', None, None, ), # 1
-    (2, TType.STRUCT, 'user', (AuthUser, AuthUser.thrift_spec), None, ), # 2
+    (2, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 2
   )
 
   def __init__(self, n=None, user=None,):
@@ -3561,7 +3561,7 @@ class getRecommendedArtists_args(object):
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRUCT:
-          self.user = AuthUser()
+          self.user = User()
           self.user.read(iprot)
         else:
           iprot.skip(ftype)
