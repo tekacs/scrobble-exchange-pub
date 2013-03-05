@@ -92,6 +92,8 @@ class Artist(DATMObject):
     @require_db
     def create(self, price, max_available):
         """Create a DB Object corresponding to this Artist."""
+        if self.mbid == '':
+            raise ArtistNeedsMBIDException()
         self.dbo = models.Artist(
             mbid=self.mbid,
             name=self.name,
