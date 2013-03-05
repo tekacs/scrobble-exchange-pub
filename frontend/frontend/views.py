@@ -169,7 +169,9 @@ def artists(request):
 
 
 def artist_single(request, artistname):
-    user = _authuser(request).user
+    _authuser(request)
+    user = _user(request)
+
     if (artistname == ''):
         return redirect('artists')
 
