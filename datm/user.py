@@ -129,18 +129,13 @@ class User(DATMObject):
 
         period from options
         """
-        options = (None, 'daily', 'weekly', 'monthly')
-        if not period in options:
-            raise ValueError('Period must be in %s' % (options,))
-        period = (period or '') + ('' if period is None else '_')
-        period += 'points'
-
         query = db.query(config, models.User)
 
         if league is not None:
             query = query.filter(models.User.league == league.dbo)
 
-        query = query.order_by(getattr(models.User, period).desc()).limit(limit)
+        query = query.order_by(models.User.points_by_period(period).desc())
+        query = query.limit(limit)
 
         return (User(config, dbo=u) for u in query)
 
@@ -224,10 +219,12 @@ class User(DATMObject):
         return q.count()
 
     @require_db
-    def near(self, up, down):
-        pos = self.rank
+    def near(self, up, down, period=None):
         q = db.query(self.config, models.User)
-        q = q.order_by(models.User.points.desc())
+        q = q.filter(models.User.league == self.league.dbo)
+
+        pos = self.rank
+        q = q.order_by(models.User.points_by_period(period).desc())
         return (User(self.config, dbo=u) for u in q.slice(pos - up, pos + down))
 
     @memoised_property

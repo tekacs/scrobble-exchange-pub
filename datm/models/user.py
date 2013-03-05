@@ -21,6 +21,15 @@ class User(base.Base):
     weekly_points = Column(Integer, nullable=False)
     monthly_points = Column(Integer, nullable=False)
 
+    @classmethod
+    def points_by_period(cls, period):
+        options = (None, 'daily', 'weekly', 'monthly')
+        if not period in options:
+            raise ValueError('Period must be in %s' % (options,))
+        period = (period or '') + ('' if period is None else '_')
+        period += 'points'
+        return getattr(cls, period)
+
     last_reset = Column(Integer)
 
     artists = relationship(
