@@ -475,7 +475,7 @@ class SEHandler(object):
             elif trange <= 31:
                 period = 'monthly'
             else:
-                raise DataError('Unavailable time range selected')
+                period = None
                 
             ulist = datm.User.top(datmconfig, limit=n, period=period,
                                                                 league=l)
@@ -488,17 +488,29 @@ class SEHandler(object):
            
             return ret
 
-    def getNearUsers(self, user):
+    def getNearUsers(self, user, trange):
         """
         Returns a list of 10 users with 4 above and 5 below in the leaderboard
-        compared to the user provided, including the user's position.
+        compared to the user provided, including the user's position.  Trange 
+        is the number of days the leaderboard is over, rounded to nearest d/w/m
 
         Parameters:
         - user
+        - trange
         """
         with datm.DATMSession(self._config) as datmconfig:
+            
+            if trange == 1:
+                period = 'daily'
+            elif trange <= 7:
+                period = 'weekly'
+            elif trange <= 31:
+                period = 'monthly'
+            else:
+                period = None
+            
             u = datm.User(datmconfig, name=user)
-            ulist = u.near(up=4, down=5)
+            ulist = u.near(up=4, down=5, period=period)
             
             ret = UserLeaderboard(users=[],position=u.rank)
             for u in ulist:
