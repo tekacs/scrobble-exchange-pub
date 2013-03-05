@@ -55,6 +55,7 @@ def home(request):
 
 def user_profile(request, username):
     # No user profiles as of now
+    _authuser(request)
     return render_to_response('user_profile.html', {}, context_instance=RequestContext(request))
 
 
@@ -256,6 +257,7 @@ def auto_complete(request):
 
 def search(request):
     """ Sample URL: http://localhost:8000/search/?q=blah . """
+    _authuser(request)
     query = request.GET.get('q', '')
 
     #If no search has been made, return empty search page
