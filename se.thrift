@@ -260,14 +260,15 @@ ProgrammingError p, 5: ServiceError s),
     
     /** Returns the n top users by decreasing value in the given league. Trange 
         is the number of days the leaderboard is over, rounded to the nearest 
-        day, week or month. */
+        day, week or month or all time */
     UserLeaderboard getTopUsers (1: required i32 n, 2: required League league, 
 3: required i32 trange) throws (1: DataError d),
     
     /** Returns a list of 10 users with 4 above and 5 below in the leaderboard 
-        compared to the user provided, including the user's position. */
-    UserLeaderboard getNearUsers (1: required string user) throws (1: 
-DataError d),
+        compared to the user provided, including the user's position. Trange is 
+        the number of days the leaderboard is over, rounded to nearest d/w/m */
+    UserLeaderboard getNearUsers (1: required string user, 2: required i32 
+trange) throws (1: DataError d),
     
     # Data Modification
     
