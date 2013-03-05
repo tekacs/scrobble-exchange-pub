@@ -19,14 +19,17 @@ def home(request):
     if request.user.is_authenticated():
         authorized_user = _authuser(request)
         api_user_data = client.getUserData(authorized_user.user.name)
+        request.user.trophies = api_user_data.trophies
         request.user.portfolio_worth = sum(artist.price for artist in api_user_data.stocks)
 
-        try:
-            request.user.recommended_artists = client.getTopArtists(NUM_CHARTS, authorized_user.user)
-        except Exception:
-            request.user.recommended_artists = {}
+        request.user.stocks = _flattenArtistSEList(api_user_data.stocks)
 
-        return render_to_response('index.html', {}, context_instance=RequestContext(request))
+        try:
+            recommended_artists = _flattenArtistSEList(client.getRecommendedArtists(NUM_CHARTS, authorized_user))
+        except Exception:
+            recommended_artists = []
+
+        return render_to_response('index.html', {'recommended_artists': recommended_artists}, context_instance=RequestContext(request))
     else:
         return render_to_response('welcome.html', {}, context_instance=RequestContext(request))
 
@@ -351,6 +354,7 @@ def _authuser(request):
         updatedauthuser = client.getUserMoney(authuser)
         request.user.points = updatedauthuser.user.points
         request.user.money = updatedauthuser.money
+        request.user.profileimage = updatedauthuser.user.profileimage
         return updatedauthuser
     else:
         return None
@@ -367,6 +371,7 @@ def _flattenArtistSEList(artists):
     artistdicts = []
     for artistSE in artists:
         artistdicts.append(_flattenArtistSE(artistSE))
+    return artistdicts
 
 
 def _flattenArtistSE(artistSE):

@@ -46,8 +46,10 @@
                     <li class="points">{{ user.points }} points</li>
                     <li class="has-dropdown">
                         <div class="user-profile-link">
-                            <a href="http://last.fm/user/{{ user.username }}/"><img src="{{ user.profileimage }}"></a>
-                            <a href="http://last.fm/user/{{ user.username }}/" class="username">{{ user.username }}</a>
+                            <a href="{% url frontend.views.home %}">
+                                <img src="{{ user.profileimage.small }}">
+                            </a>
+                            <a href="{% url frontend.views.home %}" class="username">{{ user.username }}</a>
                         </div>
                         <ul class="dropdown">
                           <li><a href="{% url frontend.views.reset_portfolio %}">Reset</a></li>
