@@ -315,7 +315,7 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config) as datmconfig:
             
-            u = datm.User(datmconfig, name=user.user.name)
+            u = datm.User(datmconfig, name=user.name)
             alist = u.top_artists(limit=n)
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name),

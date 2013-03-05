@@ -229,7 +229,7 @@ DataError d, 4: ProgrammingError p, 5: ServiceError s),
 ProgrammingError p, 5: ServiceError s),
 
     /** Returns the n top recommended artists for a user. **/
-    list<ArtistSE> getRecommendedArtists (1: required i32 n, 2: AuthUser user) 
+    list<ArtistSE> getRecommendedArtists (1: required i32 n, 2: User user) 
 throws (1: TransientError t, 2: AuthenticationError a, 3: DataError d, 4: 
 ProgrammingError p, 5: ServiceError s)
     
