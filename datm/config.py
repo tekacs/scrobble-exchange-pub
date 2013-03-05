@@ -15,7 +15,8 @@ class DATMConfig(object):
                  lastfm=None,
                  db_args=None,
                  inner_config=None,
-                 session=None):
+                 session=None,
+                 debug=False):
 
         _db_args = {'pool_size': 20, 'max_overflow': 0}
 
@@ -29,7 +30,8 @@ class DATMConfig(object):
             try:
                 request_builder = lfm.RequestBuilder(
                     api_key=lastfm['api_key'],
-                    api_secret=lastfm['api_secret']
+                    api_secret=lastfm['api_secret'],
+                    debug=debug
                 )
             except KeyError:
                 raise TypeError(
@@ -43,7 +45,7 @@ class DATMConfig(object):
                 _db_args.pop(key)
             url = _db_args.pop('url')
 
-            engine = create_engine(url, **_db_args)
+            engine = create_engine(url, echo=debug, **_db_args)
             SessionBase = sessionmaker(bind=engine)
             self._db = DATMDatabase(engine, SessionBase)
 

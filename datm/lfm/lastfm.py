@@ -138,7 +138,14 @@ class LastFMAPIObject(object):
 
 class RequestBuilder(object):
     """Aids in the construction of parameter dictionaries for API requests."""
-    def __init__(self, api_key, api_secret=None, user=None, session_key=None):
+    def __init__(
+            self,
+            api_key,
+            api_secret=None,
+            user=None,
+            session_key=None,
+            debug=False):
+
         self._base_params = {
             'raw': 'true',
             'api_key': api_key
@@ -150,9 +157,13 @@ class RequestBuilder(object):
             'username': 'user',
             'sk': 'session_key'
         }
+
         for k, v in params_map.iteritems():
             if locals()[v] is not None:
                 self._auth_params[k] = locals()[v]
+
+        if debug:
+            self._base_params['_debug'] = True
 
     @property
     def api_key(self):
