@@ -63,7 +63,7 @@ def reset_portfolio(request):
     authorized_user = _authuser(request)
     if request.method == 'POST':
         success = client.reset(authorized_user)
-        return render_to_response('reset_page.html', {'success': success}, context_instance=RequestContext(request))
+        return render_to_response('reset_page.html', {'success': str(success)}, context_instance=RequestContext(request))
     else:
         return render_to_response('reset_page.html', {'success': 'Unsubmitted'}, context_instance=RequestContext(request))
 
@@ -127,7 +127,7 @@ def get_leaderboard(request):
             me = ''
 
         row = {
-            '0': str(i),
+            '0': str(i+1),
             '1': '<a href="http://www.last.fm/user/{0}"><img src="{1}"/>{0}</a>'.format(user.name, user.profileimage['medium']),
             '2': str(user.points),
             'DT_RowClass': 'place-{}{}{}'.format(str(i), ' ' if me else '', me)
