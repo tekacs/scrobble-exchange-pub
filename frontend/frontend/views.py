@@ -127,7 +127,7 @@ def get_leaderboard(request):
             me = ''
 
         row = {
-            '0': str(i),
+            '0': str(i+1),
             '1': '<a href="http://www.last.fm/user/{0}"><img src="{1}"/>{0}</a>'.format(user.name, user.profileimage['medium']),
             '2': str(user.points),
             'DT_RowClass': 'place-{}{}{}'.format(str(i), ' ' if me else '', me)
