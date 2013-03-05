@@ -234,10 +234,7 @@ class SEHandler(object):
                 ma = mechanics.Artist(a)
                 a.create(ma.initial_price, ma.max_shares)
             
-            #ret.histvalue = a.history(after=time_utc_old)
-            #history currently broken, so don't give an after
-            
-            for h in a.history():
+            for h in a.history(after=time_utc_old):
                 ret.histprice[h.date] = h.price
                 ret.histpoints[h.date] = h.points
                 ret.histdividends[h.date] = h.dividends

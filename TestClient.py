@@ -122,13 +122,13 @@ try:
     #except:
         #pass
     
-    ##Testing the getLFMTop function
-    #print '\nTesting getLFMTop(n: int)'
-    #try:
-        #u = User('')
-        #print client.getLFMTop(5,u)
-    #except:
-        #pass
+    #Testing the getLFMTop function
+    print '\nTesting getLFMTop(n: int)'
+    try:
+        u = User('')
+        print client.getLFMTop(5,u)
+    except:
+        pass
         
     ##Testing the getTradedArtists function
     ##TODO: as yet this is not done
