@@ -65,7 +65,7 @@ class Trade(DATMObject):
 
     @staticmethod
     @require_db
-    def recent(self, config, limit=25):
+    def recent(config, limit=25):
         query = db.query(config, models.Trade).order_by(
             models.Trade.id.desc()
         ).limit(limit)
