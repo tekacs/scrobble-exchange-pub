@@ -26,27 +26,39 @@ class User(object):
         if isinstance(artist, Artist):
             artist = artist.artist
         if self.user.owns(artist):
-            raise ArtistAlreadyOwnedError()
+            raise ArtistAlreadyOwnedError((self.user.name, artist.name))
         if self.user.money < price:
-            raise NotEnoughMoneyError()
+            raise NotEnoughMoneyError((self.user.name, self.user.money, artist.name, artist.price))
         if artist.no_remaining <= 0:
             raise NoStockRemainingException((artist.name, artist.max_available, artist.no_remaining))
 
         t = datm.Trade(self.config, user=self.user, artist=artist, price=price)
         t.create(purchase=True)
 
+        price_delta = artist.last_closing_price * D('0.01') * (
+            10 - 9 * D(artist.no_remaining)/D(artist.max_available)
+        ) / D(artist.max_available)
+        artist.price += int(price_delta)
+
         self.user.money -= price
+        self.user.bought(artist)
 
     def sell(self, artist, price):
         if isinstance(artist, Artist):
             artist = artist.artist
         if not self.user.owns(artist):
-            raise ArtistNotOwnedError()
+            raise ArtistNotOwnedError((self.user.name, artist.name))
 
         t = datm.Trade(self.config, user=self.user, artist=artist, price=price)
         t.create(purchase=False)
 
+        price_delta = artist.last_closing_price * D('0.01') * (
+            1 + 9 * D(artist.no_remaining)/D(artist.max_available)
+            ) / D(artist.max_available)
+        artist.price -= int(price_delta)
+
         self.user.money += price
+        self.user.sold(artist)
 
     @staticmethod
     def count(config):
@@ -80,8 +92,8 @@ class Artist(object):
     def score(self):
         """Daily Score = 0.0005 * ∆S + 0.05 * ∆L"""
         artist = self.artist
-        listener_delta = artist.listeners - artist.last_listeners
-        playcount_delta = artist.plays - artist.last_playcount
+        listener_delta = artist.listeners - (artist.last_listeners or artist.listeners)
+        playcount_delta = artist.plays - (artist.last_playcount or artist.plays)
         base = (D('0.0005') * playcount_delta) + (D('0.05') * listener_delta)
         return int(D.round_even(base))
 
@@ -89,8 +101,8 @@ class Artist(object):
     def dividend(self):
         """Dividends = 0.01 * (3 * ∆√S + 0.05 * ∆L)"""
         artist = self.artist
-        listener_delta = artist.listeners - artist.last_listeners
-        playcount_delta = artist.plays - artist.last_playcount
+        listener_delta = artist.listeners - (artist.last_listeners or artist.listeners)
+        playcount_delta = artist.plays - (artist.last_playcount or artist.plays)
         base = (3 * D(playcount_delta).sqrt()) + (D('0.05') * listener_delta)
         base = D('0.01') * base
         return int(D.round_even(base))
