@@ -18,7 +18,8 @@ class User(object):
 
     def reset(self):
         for artist in self.user.stocks:
-            self.sell(artist)
+            ma = Artist(artist)
+            self.sell(artist, ma.price(owned=True))
         self.user.points = self.initial_points
         self.user.money = self.initial_money
 
