@@ -315,11 +315,11 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config) as datmconfig:
             
-            u = datm.User(datmconfig, name=user.name.name)
+            u = datm.User(datmconfig, name=user.user.name)
             alist = datm.User.top_artists
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name),
-                                    user.name) for a in alist]
+                                    user.user) for a in alist]
             
             return ret
     
@@ -414,7 +414,7 @@ class SEHandler(object):
         - user
         """
         with datm.DATMSession(self._config) as datmconfig:
-            u = datm.User(datmconfig, user.name.name)
+            u = datm.User(datmconfig, user.user.name)
             
             if not u.persisted:
                 print 'Trying to get money on a non-existent user ' + user
@@ -425,7 +425,7 @@ class SEHandler(object):
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
             
-            return AuthUser(name=User(name=user.name.name, points=u.points,
+            return AuthUser(name=User(name=user.user.name, points=u.points,
                         profileimage=u.images),session_key=user.session_key, 
                                                                 money=u.money)
     
@@ -518,7 +518,7 @@ class SEHandler(object):
             else:
                 raise DataError('Incorrect artist data')
             
-            u = datm.User(datmconfig, user.name.name)
+            u = datm.User(datmconfig, user.user.name)
             
             try:
                 u.authenticate(user.session_key)
@@ -569,7 +569,7 @@ class SEHandler(object):
             if (time_utc - guarantee.time) > 17:
                 raise TransientError('Too late')
             
-            u = datm.User(datmconfig, name=user.name.name)
+            u = datm.User(datmconfig, name=user.user.name)
             
             try:
                 u.authenticate(user.session_key)
@@ -616,7 +616,7 @@ class SEHandler(object):
             if (time_utc - guarantee.time) > 17:
                 raise TransientError('Too late')
             
-            u = datm.User(datmconfig, name=user.name.name)
+            u = datm.User(datmconfig, name=user.user.name)
             
             try:
                 u.authenticate(user.session_key)
@@ -644,7 +644,7 @@ class SEHandler(object):
         """
         with datm.DATMSession(self._config) as datmconfig:
             
-            u = datm.User(datmconfig, user=user.name.name)
+            u = datm.User(datmconfig, user=user.user.name)
             
             try:
                 u.authenticate(user.session_key)
