@@ -150,10 +150,12 @@ def artists(request):
     _authuser(request)
     TIME_RANGE = 7
     user = _user(request)
-
+    if request.user.is_authenticated():
+        recommended_artists = _flattenArtistSEList(client.getRecommendedArtists(NUM_CHARTS, user))  # TODO: The API needs to implement this function
+    else:
+        recommended_artists = []
     top_SE_artists = _flattenArtistSEList(client.getSETop(NUM_CHARTS, TIME_RANGE, user))
     top_traded_artists = _flattenArtistSEList(client.getTradedArtists(NUM_CHARTS, user))
-    recommended_artists = _flattenArtistSEList(client.getRecommendedArtists(NUM_CHARTS, user))  # TODO: The API needs to implement this function
     popular_LFM_artists = _flattenArtistSEList(client.getLFMTop(NUM_CHARTS, user))
     recently_traded_artists = _flattenArtistSEList(client.getRecentTrades(NUM_CHARTS, user))
 
@@ -167,11 +169,9 @@ def artists(request):
 
 
 def artist_single(request, artistname):
-    _authuser(request)
+    user = _authuser(request).user
     if (artistname == ''):
         return redirect('artists')
-
-    user = _user(request)
 
     artist_basic = client.getArtist(ttypes.Artist(mbid='', name=artistname))
 
