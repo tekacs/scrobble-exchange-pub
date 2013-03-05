@@ -351,7 +351,7 @@ def buy(request):
 
 ############ Helper Functions ############
 def _authuser(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated():
         authuser = ttypes.AuthUser(user=ttypes.User(request.user.username), session_key=request.user.first_name)
         updatedauthuser = client.getUserMoney(authuser)
         request.user.points = updatedauthuser.user.points
@@ -363,7 +363,7 @@ def _authuser(request):
 
 
 def _user(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated():
         return ttypes.User(request.user.username)
     else:
         return ttypes.User('')
