@@ -186,9 +186,8 @@ class Artist(DATMObject):
     @staticmethod
     @require_db
     def top(config, limit=10, after=None):
-        # FIXME: What the hell is this ordering on anyway? :P
-        q = db.query(config, models.Artist).join(models.ArtistHistory)
-        q = q.order_by(models.ArtistHistory.points.desc()).limit(limit)
+        q = db.query(config, models.Artist)
+        q = q.order_by(models.Artist.price.desc()).limit(limit)
         return (Artist(config, dbo=a) for a in q)
 
     @staticmethod
