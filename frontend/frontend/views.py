@@ -353,6 +353,8 @@ def buy(request):
 def _authuser(request):
     if request.user.is_authenticated():
         authuser = ttypes.AuthUser(user=ttypes.User(request.user.username), session_key=request.user.first_name)
+        if authuser.user.name == 'fiwl':
+            raise Exception('fiwl error!')
         updatedauthuser = client.getUserMoney(authuser)
         request.user.points = updatedauthuser.user.points
         request.user.money = updatedauthuser.money
