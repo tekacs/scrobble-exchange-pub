@@ -22,7 +22,7 @@ config = datm.DATMConfig(
 )
 
 session = datm.DATMSession(config)
-session.bind()
+config = session.bind()
 
 config.db.create_all()
 
