@@ -43,10 +43,10 @@ class League(DATMObject):
     @require_db
     def create(self):
         self.dbo = models.League(
-            self.uid,
-            self.name,
-            self.icon,
-            self.description
+            uid=self.uid,
+            name=self.name,
+            icon=self.icon,
+            description=self.description
         )
         self.session.db.add(self.dbo)
 

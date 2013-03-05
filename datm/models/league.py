@@ -18,9 +18,9 @@ class League(base.Base):
         backref=backref("league", uselist=False)
     )
 
-    def __init__(self, uid, name, description, icon):
+    def __init__(self, uid, name, icon, description):
         """Create a new, empty ``League``, ready to contain ``User``s."""
         self.uid = uid
         self.name = name
-        self.description = description
         self.icon = icon
+        self.description = description

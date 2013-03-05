@@ -50,11 +50,11 @@ class Trade(DATMObject):
 
     def create(self, purchase):
         self.dbo = models.Trade(
-            self.user.dbo,
-            self.artist.dbo,
-            self.price,
-            purchase,
-            int(datetime.datetime.utcnow().strftime("%s"))
+            user=self.user.dbo,
+            artist=self.artist.dbo,
+            price=self.price,
+            purchase=purchase,
+            date=int(datetime.datetime.utcnow().strftime("%s"))
         )
         self.session.db.add(self.dbo)
 

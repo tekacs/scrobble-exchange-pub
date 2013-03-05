@@ -77,7 +77,7 @@ class User(DATMObject):
     @require_db
     def create(self, money, points, league=None):
         """Create a new DB Object and prepare it to be saved."""
-        self.dbo = models.User(self.name, money, points)
+        self.dbo = models.User(name=self.name, money=money, points=points)
         self.dbo.league = league.dbo
         self.session.db.add(self.dbo)
 
@@ -147,7 +147,7 @@ class User(DATMObject):
     @require_db
     def near(config):
         # FIXME: Complete this!
-        pass
+        return []
 
     # Object Interface
 
