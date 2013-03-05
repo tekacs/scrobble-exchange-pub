@@ -24,6 +24,12 @@ def dirty(config):
 def commit(config):
     config.session.db.commit()
 
+def refresh(config, dbo):
+    config.session.db.refresh(dbo)
+
+def db(config):
+    return config.session.db
+
 def utcnow():
     return int(datetime.datetime.utcnow().strftime("%s"))
 
