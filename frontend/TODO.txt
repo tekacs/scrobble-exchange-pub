@@ -1,0 +1,1 @@
+- Please make calls to /leaderboards/get/?league_id=<...> pass UID instead of a number (1?) corresponding to the League UID that Neil passes to you with each league.
