@@ -3,7 +3,7 @@ __copyright__ = "Copyright (C) 2013 - \infty Amar Sood"
 __license__ = "apache2"
 __email__ = 'mail@amarsood.com'
 
-from artist import Artist
+from artist import Artist, ArtistNeedsMBIDException
 from auth import Auth
 from base import DATMObject, UserIsLyingToYouException,\
     NoDatabaseObjectException
@@ -40,6 +40,7 @@ __all__ = [
     'NoStockRemainingException',
     'InvalidAuthorisationException',
     'UserNotAuthenticatedException',
+    'ArtistNeedsMBIDException',
 
     'TransientError',
     'AuthenticationError',
