@@ -132,16 +132,17 @@ class User(DATMObject):
         options = (None, 'daily', 'weekly', 'monthly')
         if not period in options:
             raise ValueError('Period must be in %s' % (options,))
-        period = (period + '_points') if period is None else 'points'
+        period = (period or '') + ('' if period is None else '_')
+        period += 'points'
 
-        query = db.query(config, models.User).filter(models.User).order_by(
-            getattr(models.User, period).desc()
-        ).limit(limit)
+        query = db.query(config, models.User)
 
         if league is not None:
-            query.filter(models.User.league == league.dbo)
+            query = query.filter(models.User.league == league.dbo)
 
-        return (User(u) for u in query)
+        query = query.order_by(getattr(models.User, period).desc()).limit(limit)
+
+        return (User(config, dbo=u) for u in query)
 
     # Object Interface
 
