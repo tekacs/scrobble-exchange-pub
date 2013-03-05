@@ -180,7 +180,7 @@ class User(DATMObject):
     @require_db
     def owns(self, artist):
         """Determine whether a user owns a given artist."""
-        return artist in self.stocks
+        return artist.dbo in self.dbo.artists
 
     @property
     @require_db
