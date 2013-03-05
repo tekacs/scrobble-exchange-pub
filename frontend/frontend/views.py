@@ -177,7 +177,7 @@ def artist_single(request, artistname):
 
     # Check name and redirect if needed
     if artist_basic.name != artistname:
-        return redirect('artist_single', artist_basic, permanent=True)
+        return redirect('artist_single', artist_basic.name, permanent=True)
 
     artist_se = client.getArtistSE(artist_basic, user)
     artist_lfm = client.getArtistLFM(artist_basic)
