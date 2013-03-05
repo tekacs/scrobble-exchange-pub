@@ -1,6 +1,5 @@
 __author__ = 'amar'
 
-import threading
 from functools import wraps
 
 from sqlalchemy import create_engine
@@ -12,8 +11,19 @@ from models.base import Base as DeclarativeBase
 import pdb # temp
 
 class DATMConfig(object):
-    def __init__(self, lastfm=None, db_args=None):
-        _lastfm = {}
+    def __init__(self,
+                 lastfm=None,
+                 db_args=None,
+                 inner_config=None,
+                 session=None):
+
+        _db_args = {'pool_size': 20, 'max_overflow': 0}
+
+        if  inner_config is not None:
+            self._db = inner_config.db
+            self._lastfm = inner_config.lastfm
+            self._session = session
+            return
 
         if lastfm is not None:
             try:
@@ -27,7 +37,6 @@ class DATMConfig(object):
                 )
             self._lastfm = DATMLastFM(request_builder)
 
-        _db_args = {'pool_size': 20, 'max_overflow': 0}
         if db_args is not None:
             _db_args.update(db_args)
             for key in [k for k, v in _db_args.iteritems() if v is None]:
@@ -38,7 +47,8 @@ class DATMConfig(object):
             SessionBase = sessionmaker(bind=engine)
             self._db = DATMDatabase(engine, SessionBase)
 
-        self._sessions = threading.local()
+    def clone(self, session=None):
+        return DATMConfig(inner_config=self, session=session)
 
     @property
     def lastfm(self):
@@ -49,12 +59,8 @@ class DATMConfig(object):
         return getattr(self, '_db', None)
 
     @property
-    def sessions(self):
-        return self._sessions
-
-    @property
     def session(self):
-        return self._sessions.current_session
+        return self._session
 
 class DATMLastFM(object):
     def __init__(self, request_builder):

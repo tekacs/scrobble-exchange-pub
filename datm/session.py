@@ -1,16 +1,17 @@
 __author__ = 'amar'
 
-from config import has_db, NoDatabaseException
+from config import has_db
 
 class DATMSession(object):
     def __init__(self, config):
-        self._config = config
+        self._base_config = config
+        self._config = config.clone(self)
         if has_db(config):
             self._db = config.db.SessionBase()
 
     def __enter__(self):
         self.bind()
-        return self
+        return self.config
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is not None:
@@ -22,13 +23,15 @@ class DATMSession(object):
         self.unbind()
 
     def bind(self):
-        self.config.sessions.current_session = self
+        self._config = self.config.clone(self)
+        return self.config
 
     def unbind(self):
         try:
-            del self.config.sessions.current_session
+            self._config = self._base_config
         except TypeError:
             raise InvalidSessionException()
+        return self.config
 
     @property
     def config(self):
