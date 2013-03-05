@@ -50,6 +50,9 @@ window.SE.Leaderboards = {
         window.SE.Leaderboards.current_timespan = newTimespan;
         var name, sourceData;
         switch(newTimespan){
+            case(0):
+                name = 'All Time';
+                break;
             case(1):
                 name = 'Last Month';
                 break;
