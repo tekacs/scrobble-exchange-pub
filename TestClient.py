@@ -129,6 +129,9 @@ try:
         #print client.getLFMTop(5,u)
     #except:
         #pass
+    
+    #Testing the getRecommendedArtists function
+    
         
     ##Testing the getTradedArtists function
     ##TODO: as yet this is not done
@@ -148,7 +151,7 @@ try:
     ##Testing the getUserData function
     #print '\nTesting getUserData(user: string)'
     #try:
-        #print client.getUserData('neilsatra')
+        #print client.getUserData('Sov1etRuss1a')
     #except:
         #pass
     
@@ -183,25 +186,21 @@ try:
         #except:
             #pass
     
-    print client.getArtistSE(Artist(mbid='',name='ovum'), User(''))
+    ##Testing the getGuarantee function
+    #print '\nTesting getGuarantee(artist: Artist, user: AuthUser)'
     
-    #Testing the getGuarantee function
-    print '\nTesting getGuarantee(artist: Artist, user: AuthUser)'
+    #a = Artist(mbid='',name='ovum')
+    #guaran = client.getGuarantee(a,authed)
+    #print guaran
     
-    a = Artist(mbid='',name='ovum')
-   
-    guaran = client.getGuarantee(a,authed)
-    print guaran
-    
-    #Testing the buy function
-    print '\nTesting buy(guarantee: Guarantee, user: AuthUser)'
-    print client.buy(guaran,authed)
-    
-    #print client.getArtistSE(Artist(mbid='',name='ovum'), authed.name)
+    ##Testing the buy function
+    #print '\nTesting buy(guarantee: Guarantee, user: AuthUser)'
+    #print client.buy(guaran,authed)
     
     ##Testing the sell function
     #print '\nTesting sell(guarantee: Guarantee, user: AuthUser)'
     #print client.sell(guaran,authed)
+    
     
     
 except Thrift.TException, tx:
