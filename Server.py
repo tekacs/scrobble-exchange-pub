@@ -201,7 +201,7 @@ class SEHandler(object):
                             tags=[], similar=[], bio=b)
             
             for sim in a.similar:
-                if a.mbid:
+                if sim.mbid:
                     asim = Artist(mbid=sim.mbid, name=sim.name,
                                                             imgurls=sim.images)
                 
