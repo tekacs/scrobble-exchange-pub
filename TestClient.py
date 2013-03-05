@@ -145,9 +145,12 @@ try:
     #except:
         #pass
       
-    #Testing the getUserData function
-    print '\nTesting getUserData(user: string)'
-    print client.getUserData('neilsatra')
+    ##Testing the getUserData function
+    #print '\nTesting getUserData(user: string)'
+    #try:
+        #print client.getUserData('neilsatra')
+    #except:
+        #pass
     
     ##Testing the getUserMoney function
     #print '\nTesting getUserMoney(user: AuthUser)'

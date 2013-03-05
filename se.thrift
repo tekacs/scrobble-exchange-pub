@@ -97,7 +97,7 @@ struct User {
 /** Basic authenticated user. Does not necessarily include their money. Newuser 
     is set if the user was just created */
 struct AuthUser {
-    1: required User name
+    1: required User user
     2: required string session_key
     3: optional i32 money
     4: optional bool newuser
