@@ -419,7 +419,7 @@ class SEHandler(object):
             u = datm.User(datmconfig, user.user.name)
             
             if not u.persisted:
-                print 'Trying to get money on a non-existent user ' + user
+                print 'Trying to get money on a non-existent user ' + user.user.name
                 raise DataError('User doesn`t exist in database')
             
             try:
