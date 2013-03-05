@@ -22,7 +22,7 @@
                     </div>
                     <div class="content">
                         <p class="description">{{ league.description }}</p>
-                        <table data-leaguename="{{ league.name }}" class="leaderboard leaderboard-{{ forloop.counter }}">
+                        <table data-leaguename="{{ league.name }}" data-leagueuid="{{ league.uid }}" class="leaderboard leaderboard-{{ forloop.counter }}">
                             <thead>
                                 <tr>
                                     <th>Rank</th>

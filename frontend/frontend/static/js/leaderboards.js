@@ -1,7 +1,7 @@
 window.SE.Leaderboards = {
     options: {
         // time_range = 2, last week
-        'sAjaxSource': '/leaderboards/get/?league_id=1&time_range=2',
+        //'sAjaxSource': '/leaderboards/get/?league_id=1&time_range=2',
         "aoColumns" : [ {sTitle : "Rank"}, {sTitle : "User"}, {sTitle : "Score"}],
         'bDeferRender': true,
         'sDom': '<"H"fr>t<"F"iS>',
@@ -37,9 +37,9 @@ window.SE.Leaderboards = {
         }
     },
 
-    // Returns name of league selected, a string
+    // Returns uid of league selected
     getSelectedLeague: function() {
-        return $('ul.leaderboards li.active table.leaderboard').first().data('leaguename');
+        return $('ul.leaderboards li.active table.leaderboard').first().data('leagueuid');
     },
 
     updatePageForTimespan: function(newTimespan) {
@@ -71,10 +71,11 @@ window.SE.Leaderboards = {
         // Destroy old table on new construction
         newOptions.bDestroy = true;
 
-        var leagueCount = 0, newSource, leagueName;
+        var leagueCount = 0, newSource, leagueUid;
         $('table.leaderboard').each(function(){
-            leagueName = $(this).data('leaguename');
-            newOptions.sAjaxSource = '/leaderboards/get/?league_name=' + leagueName + '&time_range=' + newTimespan;
+            leagueUid = $(this).data('leagueuid');
+            newOptions.sAjaxSource = '/leaderboards/get/?league_id=' + leagueUid + '&time_range=' + newTimespan;
+            window.console.log(newOptions.sAjaxSource);
             $(this).dataTable(newOptions);
         });
     },
@@ -112,8 +113,9 @@ $(document).ready(function() {
     window.SE.Leaderboards.getContextualUserData(window.SE.Leaderboards.current_timespan);
 
     $('table.leaderboard').each(function(){
-        var leagueName = $(this).data('leaguename');
-        window.SE.Leaderboards.leaderboards[leagueName] = $(this).dataTable(window.SE.Leaderboards.options).fadeIn();
+        var leagueUid = $(this).data('leagueuid');
+        window.SE.Leaderboards.options.sAjaxSource = '/leaderboards/get/?league_id=' + leagueUid + '&time_range=2',
+        window.SE.Leaderboards.leaderboards[leagueUid] = $(this).dataTable(window.SE.Leaderboards.options).fadeIn();
     });
 
     // Scroll to the correct position in the table (to the user's name)
@@ -121,15 +123,15 @@ $(document).ready(function() {
 
     // Re-adjust column sizing upon window resize
     $(window).resize(function() {
-        var leagueName = window.SE.Leaderboards.getSelectedLeague();
-        window.SE.Leaderboards.leaderboards[leagueName].fnAdjustColumnSizing();
+        var leagueUid = window.SE.Leaderboards.getSelectedLeague();
+        window.SE.Leaderboards.leaderboards[leagueUid].fnAdjustColumnSizing();
     });
 
     // Fix bug where columns would be messed up when switching
     // 'opened' triggered by jquery.foundation.accordion.custom.js, not in vanilla
     $('ul.leaderboards li').on('opened', function(){
-        var leagueName = $(this).find('table.leaderboard').data('leaguename');
-        window.SE.Leaderboards.leaderboards[leagueName].fnAdjustColumnSizing();
+        var leagueUid = $(this).find('table.leaderboard').data('leagueuid');
+        window.SE.Leaderboards.leaderboards[leagueUid].fnAdjustColumnSizing();
     });
 
     $('a.time-adjust').on('click', function() {
