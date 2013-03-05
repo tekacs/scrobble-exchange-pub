@@ -1013,7 +1013,7 @@ class AuthUser(object):
   is set if the user was just created
 
   Attributes:
-   - name
+   - user
    - session_key
    - money
    - newuser
@@ -1021,14 +1021,14 @@ class AuthUser(object):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRUCT, 'name', (User, User.thrift_spec), None, ), # 1
+    (1, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 1
     (2, TType.STRING, 'session_key', None, None, ), # 2
     (3, TType.I32, 'money', None, None, ), # 3
     (4, TType.BOOL, 'newuser', None, None, ), # 4
   )
 
-  def __init__(self, name=None, session_key=None, money=None, newuser=None,):
-    self.name = name
+  def __init__(self, user=None, session_key=None, money=None, newuser=None,):
+    self.user = user
     self.session_key = session_key
     self.money = money
     self.newuser = newuser
@@ -1044,8 +1044,8 @@ class AuthUser(object):
         break
       if fid == 1:
         if ftype == TType.STRUCT:
-          self.name = User()
-          self.name.read(iprot)
+          self.user = User()
+          self.user.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -1073,9 +1073,9 @@ class AuthUser(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('AuthUser')
-    if self.name is not None:
-      oprot.writeFieldBegin('name', TType.STRUCT, 1)
-      self.name.write(oprot)
+    if self.user is not None:
+      oprot.writeFieldBegin('user', TType.STRUCT, 1)
+      self.user.write(oprot)
       oprot.writeFieldEnd()
     if self.session_key is not None:
       oprot.writeFieldBegin('session_key', TType.STRING, 2)
@@ -1093,8 +1093,8 @@ class AuthUser(object):
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.name is None:
-      raise TProtocol.TProtocolException(message='Required field name is unset!')
+    if self.user is None:
+      raise TProtocol.TProtocolException(message='Required field user is unset!')
     if self.session_key is None:
       raise TProtocol.TProtocolException(message='Required field session_key is unset!')
     return
