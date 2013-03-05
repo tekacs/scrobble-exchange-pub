@@ -70,17 +70,17 @@ class SEHandler(object):
         Parameters:
         - token
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             try:
                 
-                session = datm.User.getSession(self._config, token)
+                session = datm.User.getSession(datmconfig, token)
                 
-                user = datm.User(self._config, name=session['name'])
+                user = datm.User(datmconfig, name=session['name'])
                 
                 if not user.persisted:
                     u = mechanics.User(user)
                     user.create(money=u.initial_money, points=u.initial_points, 
-                                league=datm.League(self._config, uid='bronze'))
+                                league=datm.League(config, uid='bronze'))
                     
                     ret = AuthUser(name=User(name=user.name), 
                                     session_key=session['key'], newuser=True)
@@ -103,11 +103,11 @@ class SEHandler(object):
         Parameters:
         - artist
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid)
+                a = datm.Artist(datmconfig, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name)
+                a = datm.Artist(datmconfig, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
            
@@ -124,11 +124,11 @@ class SEHandler(object):
         Parameters:
         - artist
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid)
+                a = datm.Artist(datmconfig, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name)
+                a = datm.Artist(datmconfig, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
@@ -148,11 +148,11 @@ class SEHandler(object):
         - artist
         - user
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid)
+                a = datm.Artist(datmconfig, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name)
+                a = datm.Artist(datmconfig, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
@@ -170,7 +170,7 @@ class SEHandler(object):
                 ret.ownedby = False
                 ret.price = a.price
             else:
-                u = datm.User(self._config, user.name)
+                u = datm.User(datmconfig, user.name)
                 ret.ownedby = u.owns(a)
                 ret.price = a.price * (0.98 if u.owns(a) else 1)
             
@@ -185,11 +185,11 @@ class SEHandler(object):
         Parameters:
         - artist
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid)
+                a = datm.Artist(datmconfig, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name)
+                a = datm.Artist(datmconfig, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
 
@@ -217,11 +217,11 @@ class SEHandler(object):
         - artist
         - n
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid)
+                a = datm.Artist(datmconfig, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name)
+                a = datm.Artist(datmconfig, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
@@ -255,9 +255,8 @@ class SEHandler(object):
         - artist
         - n
         """
-        with datm.DATMSession(self._config):
-            alist = datm.Artist.api_search(self._config, text, limit=n,
-                                                                    page=page)
+        with datm.DATMSession(self._config) as datmconfig:
+            alist = datm.Artist.api_search(datmconfig, text, limit=n, page=page)
 
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for a in 
                                                                         alist]
@@ -276,12 +275,12 @@ class SEHandler(object):
         - trange
         - user
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             
             time_utc = time.mktime(datetime.utcnow().timetuple())
             time_utc_old = time_utc - trange*24*60*60
             
-            alist = datm.Artist.top(self._config, limit=n, after=time_utc_old)
+            alist = datm.Artist.top(datmconfig, limit=n, after=time_utc_old)
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
                                                                 for a in alist]
@@ -300,8 +299,8 @@ class SEHandler(object):
         - trange
         - user
         """
-        with datm.DATMSession(self._config):
-            alist = datm.Artist.popular(self._config, limit=n)
+        with datm.DATMSession(self._config) as datmconfig:
+            alist = datm.Artist.popular(datmconfig, limit=n)
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
                                                                 for a in alist]
@@ -317,9 +316,9 @@ class SEHandler(object):
         - n
         - user
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             
-            u = datm.User(self._config, name=user.name.name)
+            u = datm.User(datmconfig, name=user.name.name)
             alist = datm.User.top_artists
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name),
@@ -338,8 +337,8 @@ class SEHandler(object):
         - n
         - user
         """
-        with datm.DATMSession(self._config):
-            alist = datm.Artist.most_traded(self._config, limit=n)
+        with datm.DATMSession(self._config) as datmconfig:
+            alist = datm.Artist.most_traded(datmconfig, limit=n)
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
                                                                 for a in alist]
@@ -356,8 +355,8 @@ class SEHandler(object):
         - n
         - user
         """
-        with datm.DATMSession(self._config):
-            tlist = datm.Trade.recent(self._config, limit=n)
+        with datm.DATMSession(self._config) as datmconfig:
+            tlist = datm.Trade.recent(datmconfig, limit=n)
             
             ret = [self.getArtistSE(Artist(mbid=t.mbid, name=t.name), user)
                                                                 for t in tlist]
@@ -372,8 +371,8 @@ class SEHandler(object):
         Parameters:
         - user
         """
-        with datm.DATMSession(self._config):
-            u = datm.User(self._config, user)
+        with datm.DATMSession(self._config) as datmconfig:
+            u = datm.User(datmconfig, user)
             
             if not u.persisted:
                 print 'Trying a get data on non-existent user ' + user
@@ -417,8 +416,8 @@ class SEHandler(object):
         Parameters:
         - user
         """
-        with datm.DATMSession(self._config):
-            u = datm.User(self._config, user.name.name)
+        with datm.DATMSession(self._config) as datmconfig:
+            u = datm.User(datmconfig, user.name.name)
             
             if not u.persisted:
                 print 'Trying to get money on a non-existent user ' + user
@@ -438,9 +437,9 @@ class SEHandler(object):
         Returns a list of all the leagues that exist in the game */
         """
         
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             
-            llist = datm.League.all(self._config)
+            llist = datm.League.all(datmconfig)
             
             ret = []
             
@@ -463,19 +462,19 @@ class SEHandler(object):
         - league
         - trange
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             
             if trange == 1:
-                l = datm.League(self._config, uid=league.uid)
-                ulist = datm.User.top(self._config, limit=n, period='daily',
+                l = datm.League(datmconfig, uid=league.uid)
+                ulist = datm.User.top(datmconfig, limit=n, period='daily',
                                                                     league=l)
             elif trange <= 7:
-                l = datm.League(self._config, uid=league.uid)
-                ulist = datm.User.top(self._config, limit=n, period='weekly',
+                l = datm.League(datmconfig, uid=league.uid)
+                ulist = datm.User.top(datmconfig, limit=n, period='weekly',
                                                                     league=l)
             elif trange <= 31:
-                l = datm.League(self._config, uid=league.uid)
-                ulist = datm.User.top(self._config, limit=n, period='monthly',
+                l = datm.League(datmconfig, uid=league.uid)
+                ulist = datm.User.top(datmconfig, limit=n, period='monthly',
                                                                     league=l)
             else:
                 raise DataError('Unusual time range selected')
@@ -496,8 +495,8 @@ class SEHandler(object):
         Parameters:
         - user
         """
-        with datm.DATMSession(self._config):
-            ulist = datm.User.near(self._config, name=user)
+        with datm.DATMSession(self._config) as datmconfig:
+            ulist = datm.User.near(datmconfig, name=user)
             
             ret = UserLeaderboard(users=[])
             for u in ulist:
@@ -514,15 +513,15 @@ class SEHandler(object):
         - artist
         - user
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             if artist.mbid:
-                a = datm.Artist(self._config, mbid=artist.mbid)
+                a = datm.Artist(datmconfig, mbid=artist.mbid)
             elif artist.name:
-                a = datm.Artist(self._config, name=artist.name)
+                a = datm.Artist(datmconfig, name=artist.name)
             else:
                 raise DataError('Incorrect artist data')
             
-            u = datm.User(self._config, user.name.name)
+            u = datm.User(datmconfig, user.name.name)
             
             try:
                 u.authenticate(user.session_key)
@@ -537,7 +536,7 @@ class SEHandler(object):
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.Auth(self._config).secret.encode('ascii'))
+            m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
             m.update(str(time_utc))
             m.update(str(price))
             el = m.hexdigest()
@@ -555,12 +554,12 @@ class SEHandler(object):
         - guarantee
         - user
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.Auth(self._config).secret.encode('ascii'))
+            m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
             m.update(str(time_utc))
             m.update(str(guarantee.price))
             el = m.hexdigest() 
@@ -573,14 +572,14 @@ class SEHandler(object):
             if (time_utc - guarantee.time) > 17:
                 raise TransientError('Too late')
             
-            u = datm.User(self._config, name=user.name.name)
+            u = datm.User(datmconfig, name=user.name.name)
             
             try:
                 u.authenticate(user.session_key)
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
             
-            a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
+            a = datm.Artist(datmconfig, mbid=guarantee.artist.mbid)
             
             if not u.owns(a):
                 try:
@@ -602,12 +601,12 @@ class SEHandler(object):
         - guarantee
         - user
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             
             # Calculating the elephant
             time_utc = time.mktime(datetime.utcnow().timetuple())
 
-            m = hmac.new(datm.Auth(self._config).secret.encode('ascii'))
+            m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
             m.update(str(time_utc))
             m.update(str(guarantee.price))
             el = m.hexdigest() 
@@ -620,14 +619,14 @@ class SEHandler(object):
             if (time_utc - guarantee.time) > 17:
                 raise TransientError('Too late')
             
-            u = datm.User(self._config, name=user.name.name)
+            u = datm.User(datmconfig, name=user.name.name)
             
             try:
                 u.authenticate(user.session_key)
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
             
-            a = datm.Artist(self._config, mbid=guarantee.artist.mbid)
+            a = datm.Artist(datmconfig, mbid=guarantee.artist.mbid)
             
             if u.owns(a):
                 try:
@@ -646,9 +645,9 @@ class SEHandler(object):
         Parameters:
         -user
         """
-        with datm.DATMSession(self._config):
+        with datm.DATMSession(self._config) as datmconfig:
             
-            u = datm.User(self._config, user=user.name.name)
+            u = datm.User(datmconfig, user=user.name.name)
             
             try:
                 u.authenticate(user.session_key)

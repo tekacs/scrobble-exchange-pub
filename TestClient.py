@@ -184,10 +184,12 @@ try:
         #except:
             #pass
     
+    #print client.getArtistSE(Artist(mbid='',name='ovum'), User(''))
+    
     ##Testing the getGuarantee function
     #print '\nTesting getGuarantee(artist: Artist, user: AuthUser)'
     
-    #a = Artist(mbid='',name='coldplay')
+    #a = Artist(mbid='',name='ovum')
    
     #guaran = client.getGuarantee(a,authed)
     #print guaran
@@ -195,6 +197,8 @@ try:
     ##Testing the buy function
     #print '\nTesting buy(guarantee: Guarantee, user: AuthUser)'
     #print client.buy(guaran,authed)
+    
+    #print client.getArtistSE(Artist(mbid='',name='ovum'), authed.name)
     
     ##Testing the sell function
     #print '\nTesting sell(guarantee: Guarantee, user: AuthUser)'
