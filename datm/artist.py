@@ -228,9 +228,10 @@ class Artist(DATMObject):
 
     @require_db
     def history(self, after=None, step=None, count=None):
-        q = db.query(self.config, models.ArtistHistory).join(models.Artist)
+        q = db.query(self.config, models.ArtistHistory)
         if after is not None:
             q = q.filter(models.ArtistHistory.date >= after)
+        q = q.join(models.Artist).filter(models.Artist.mbid == self.mbid)
         q = q.order_by(models.ArtistHistory.date.desc()).limit(count)
 
         return q.all()
