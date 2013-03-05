@@ -43,7 +43,7 @@ try:
     
     ##Testing the login function
     #print '\nTesting login(token: string)'
-    #slist = ['19531d4acfc01b4d6f95fda44bc7a985']
+    #slist = ['cf932427176c506ec8a358758acd4f09']
     #for s in slist:
         #print client.login(s)
     
@@ -148,7 +148,7 @@ try:
     ##Testing the getUserData function
     #print '\nTesting getUserData(user: string)'
     #try:
-        #print client.getUserData('Sov1etRuss1a')
+        #print client.getUserData('joebateson')
     #except:
         #pass
     
@@ -166,21 +166,16 @@ try:
     #except:
         #pass
     
-    ##Testing the getTopUsers function
+    #Testing the getTopUsers function
     print '\nTesting getTopUsers(n: int, league: League, trange: int)'
     try:
-        print client.getTopUsers(100, League(uid='silver'), 2)
+        print client.getTopUsers(100, League(uid='gold'), 2)
     except:
         pass
         
     ##Testing the getNearUsers function
-    ##TODO: User doesn't have an attribute near
-    #print '\nTesting getNearUsers(user: string)'
-    #for u in ulist:
-        #try:
-            #print client.getNearUsers(u)
-        #except:
-            #pass
+    #print '\nTesting getNearUsers(user: string, trange: int)'
+    #print client.getNearUsers('joebateson', 4)
     
     ##Testing the getGuarantee function
     #print '\nTesting getGuarantee(artist: Artist, user: AuthUser)'
