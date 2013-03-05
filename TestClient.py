@@ -43,12 +43,9 @@ try:
     
     ##Testing the login function
     #print '\nTesting login(token: string)'
-    #slist = ['3084916df7ed2ae457be656facf5a9c0']
+    #slist = ['19531d4acfc01b4d6f95fda44bc7a985']
     #for s in slist:
-        #try:
-            #print client.login(s)
-        #except AuthenticationError:
-            #print s + ' was not accepted as an argument'
+        #print client.login(s)
     
     ##Testing the getArtist function
     #print '\nTesting getArtist(artist: Artist)'
@@ -170,12 +167,11 @@ try:
         #pass
     
     ##Testing the getTopUsers function
-    ##TODO: doesn't include leagues
-    #print '\nTesting getTopUsers(n: int, league: League, trange: int)'
-    #try:
-        #print client.getTopUsers(5, League(uid='bronze'), 20)
-    #except:
-        #pass
+    print '\nTesting getTopUsers(n: int, league: League, trange: int)'
+    try:
+        print client.getTopUsers(100, League(uid='silver'), 2)
+    except:
+        pass
         
     ##Testing the getNearUsers function
     ##TODO: User doesn't have an attribute near

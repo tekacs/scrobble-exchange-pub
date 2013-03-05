@@ -500,7 +500,7 @@ class SEHandler(object):
             u = datm.User(datmconfig, name=user)
             ulist = u.near(up=4, down=5)
             
-            ret = UserLeaderboard(users=[])
+            ret = UserLeaderboard(users=[],position=u.rank)
             for u in ulist:
                 ret.users.append(User(name=u.name, points=u.points,
                                                         profileimage=u.images))
