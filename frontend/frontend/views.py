@@ -114,11 +114,11 @@ def get_user_leaderboard(request):
 
 @json_response()
 def get_leaderboard(request):
-    """Sample URL: http://localhost:8000/leaderboards/get/?league_name=1&time_range=3"""
-    league_name = request.GET.get('league_name', 'default_league')
+    """Sample URL: http://localhost:8000/leaderboards/get/?league_id=1&time_range=3"""
+    league_id = request.GET.get('league_id', '')
     time_range = TIME_RANGE_TRANSLATION[int(request.GET.get('time_range', '2'))]
 
-    board = client.getTopUsers(n=NUM_LEADERBOARD_ENTRIES, league=ttypes.League(name=league_name), trange=time_range)
+    board = client.getTopUsers(n=NUM_LEADERBOARD_ENTRIES, league=ttypes.League(uid=league_id), trange=time_range)
 
     table = []
     i = 1
@@ -155,7 +155,7 @@ def artists(request):
 
     top_SE_artists = _flattenArtistSEList(client.getSETop(NUM_CHARTS, TIME_RANGE, user))
     top_traded_artists = _flattenArtistSEList(client.getTradedArtists(NUM_CHARTS, user))
-    recommended_artists = _flattenArtistSEList(client.getTopArtists(NUM_CHARTS, user))  # TODO: The API needs to implement this function
+    recommended_artists = _flattenArtistSEList(client.getRecommendedArtists(NUM_CHARTS, user))  # TODO: The API needs to implement this function
     popular_LFM_artists = _flattenArtistSEList(client.getLFMTop(NUM_CHARTS, user))
     recently_traded_artists = _flattenArtistSEList(client.getRecentTrades(NUM_CHARTS, user))
 
