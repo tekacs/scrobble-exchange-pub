@@ -12,11 +12,34 @@ __author__ = 'Amar Sood (tekacs)'
 
 import pprint
 from hashlib import md5 as _md5
-from functools import wraps as _wraps
+from functools import wraps as _wraps, partial as _partial
 
 import requests
+try:
+    import pylibmc as memcache
+except ImportError:
+    try:
+        import memcache
+    except ImportError:
+        memcache = None
 
 __all__ = ['APIMeta']
+
+mc = memcache.Client(
+    ['127.0.0.1'],
+    binary=True,
+    behaviors={'tcp_nodelay': True, 'ketama': True}
+)
+pool = memcache.ThreadMappedPool(mc)
+
+def cache_get(key, request):
+    with pool.reserve() as loc:
+        try:
+            resp = loc[key]
+        except KeyError:
+            s = requests.Session()
+            loc[key] = resp = s.send(request).json()
+        return resp
 
 class APIClient(object):
     """Provides ``classmethod`` network services to ``APIObject``s.
@@ -37,7 +60,6 @@ class APIClient(object):
 
     @classmethod
     def request(cls, method, http_method, sign=False, **params):
-        request_kind = getattr(requests, http_method)
         params.update(cls._base_params)
         params.update(method=method)
 
@@ -48,12 +70,18 @@ class APIClient(object):
         if sign:
             cls._sign(params)
 
-        r = request_kind(cls._base_endpoint, params=params)
+        request = requests.Request(
+            http_method.upper(),
+            cls._base_endpoint,
+            params=params
+        )
+        request = request.prepare()
+        r = cache_get(request.url, request)
 
         if print_json:
-            pprint.pprint(r.text)
+            pprint.pprint(r)
 
-        return r.json()
+        return r
 
 class APIError(Exception):
     pass
