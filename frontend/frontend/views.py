@@ -63,7 +63,7 @@ def reset_portfolio(request):
     authorized_user = _authuser(request)
     if request.method == 'POST':
         success = client.reset(authorized_user)
-        return render_to_response('reset_page.html', {'success': success}, context_instance=RequestContext(request))
+        return render_to_response('reset_page.html', {'success': str(success)}, context_instance=RequestContext(request))
     else:
         return render_to_response('reset_page.html', {'success': 'Unsubmitted'}, context_instance=RequestContext(request))
 
