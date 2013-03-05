@@ -923,7 +923,7 @@ class User(object):
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.I32, 'points', None, None, ), # 2
-    (3, TType.STRING, 'profileimage', None, None, ), # 3
+    (3, TType.MAP, 'profileimage', (TType.STRING,None,TType.STRING,None), None, ), # 3
   )
 
   def __init__(self, name=None, points=None, profileimage=None,):
@@ -951,8 +951,14 @@ class User(object):
         else:
           iprot.skip(ftype)
       elif fid == 3:
-        if ftype == TType.STRING:
-          self.profileimage = iprot.readString().decode('utf-8')
+        if ftype == TType.MAP:
+          self.profileimage = {}
+          (_ktype51, _vtype52, _size50 ) = iprot.readMapBegin() 
+          for _i54 in xrange(_size50):
+            _key55 = iprot.readString().decode('utf-8')
+            _val56 = iprot.readString().decode('utf-8')
+            self.profileimage[_key55] = _val56
+          iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       else:
@@ -974,8 +980,12 @@ class User(object):
       oprot.writeI32(self.points)
       oprot.writeFieldEnd()
     if self.profileimage is not None:
-      oprot.writeFieldBegin('profileimage', TType.STRING, 3)
-      oprot.writeString(self.profileimage.encode('utf-8'))
+      oprot.writeFieldBegin('profileimage', TType.MAP, 3)
+      oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.profileimage))
+      for kiter57,viter58 in self.profileimage.items():
+        oprot.writeString(kiter57.encode('utf-8'))
+        oprot.writeString(viter58.encode('utf-8'))
+      oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1148,33 +1158,33 @@ class UserData(object):
       elif fid == 2:
         if ftype == TType.LIST:
           self.trades = []
-          (_etype53, _size50) = iprot.readListBegin()
-          for _i54 in xrange(_size50):
-            _elem55 = Trade()
-            _elem55.read(iprot)
-            self.trades.append(_elem55)
+          (_etype62, _size59) = iprot.readListBegin()
+          for _i63 in xrange(_size59):
+            _elem64 = Trade()
+            _elem64.read(iprot)
+            self.trades.append(_elem64)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.LIST:
           self.stocks = []
-          (_etype59, _size56) = iprot.readListBegin()
-          for _i60 in xrange(_size56):
-            _elem61 = ArtistSE()
-            _elem61.read(iprot)
-            self.stocks.append(_elem61)
+          (_etype68, _size65) = iprot.readListBegin()
+          for _i69 in xrange(_size65):
+            _elem70 = ArtistSE()
+            _elem70.read(iprot)
+            self.stocks.append(_elem70)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.trophies = []
-          (_etype65, _size62) = iprot.readListBegin()
-          for _i66 in xrange(_size62):
-            _elem67 = Trophy()
-            _elem67.read(iprot)
-            self.trophies.append(_elem67)
+          (_etype74, _size71) = iprot.readListBegin()
+          for _i75 in xrange(_size71):
+            _elem76 = Trophy()
+            _elem76.read(iprot)
+            self.trophies.append(_elem76)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1201,22 +1211,22 @@ class UserData(object):
     if self.trades is not None:
       oprot.writeFieldBegin('trades', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.trades))
-      for iter68 in self.trades:
-        iter68.write(oprot)
+      for iter77 in self.trades:
+        iter77.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.stocks is not None:
       oprot.writeFieldBegin('stocks', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.stocks))
-      for iter69 in self.stocks:
-        iter69.write(oprot)
+      for iter78 in self.stocks:
+        iter78.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.trophies is not None:
       oprot.writeFieldBegin('trophies', TType.LIST, 4)
       oprot.writeListBegin(TType.STRUCT, len(self.trophies))
-      for iter70 in self.trophies:
-        iter70.write(oprot)
+      for iter79 in self.trophies:
+        iter79.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.league is not None:
@@ -1283,11 +1293,11 @@ class UserLeaderboard(object):
       if fid == 1:
         if ftype == TType.LIST:
           self.users = []
-          (_etype74, _size71) = iprot.readListBegin()
-          for _i75 in xrange(_size71):
-            _elem76 = User()
-            _elem76.read(iprot)
-            self.users.append(_elem76)
+          (_etype83, _size80) = iprot.readListBegin()
+          for _i84 in xrange(_size80):
+            _elem85 = User()
+            _elem85.read(iprot)
+            self.users.append(_elem85)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1309,8 +1319,8 @@ class UserLeaderboard(object):
     if self.users is not None:
       oprot.writeFieldBegin('users', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.users))
-      for iter77 in self.users:
-        iter77.write(oprot)
+      for iter86 in self.users:
+        iter86.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.position is not None:
