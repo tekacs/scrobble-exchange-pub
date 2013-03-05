@@ -297,7 +297,7 @@ def search(request):
 
 
 def _filterInvalidArtists(artists):
-    return [artist for artist in artists if artist.mbid is not None]
+    return [artist for artist in artists if artist.mbid]
 
 ############ Buy/Sell ############
 
