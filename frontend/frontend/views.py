@@ -200,7 +200,7 @@ def artist_history(request):
 
     def _format(megadict):
         data = []
-        for time, value in megadict:
+        for time, value in megadict.iteritems():
             data.append({"x": time, "y": value})
         return data
 
