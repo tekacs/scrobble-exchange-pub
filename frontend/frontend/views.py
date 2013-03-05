@@ -10,7 +10,7 @@ from se_api import ttypes
 NUM_SEARCH_RESULTS = 9
 NUM_CHARTS = 5
 NUM_LEADERBOARD_ENTRIES = 100
-TIME_RANGE_TRANSLATION = [0, 31, 7, 1]
+TIME_RANGE_TRANSLATION = [100, 31, 7, 1]
 client = settings.CLIENT
 
 
@@ -121,6 +121,7 @@ def get_leaderboard(request):
     table = []
     i = 1
     for user in board.users:
+
         if request.user.is_authenticated() and user.name == request.user.username:
             me = 'me'
         else:
@@ -128,7 +129,7 @@ def get_leaderboard(request):
 
         row = {
             '0': str(i),
-            '1': '<a href="www.last.fm/user/{0}"><img src="{1}"/>{0}</a>'.format(user.name, user.profileimage),
+            '1': '<a href="www.last.fm/user/{0}"><img src="{1}"/>{0}</a>'.format(user.name, user.profileimage.small),
             '2': str(user.points),
             'DT_RowClass': 'place-{0} {1}'.format(str(i), me)
         }
