@@ -137,8 +137,8 @@ def get_leaderboard(request):
 
     leaderboard = {
         'sEcho': 1,
-        'iTotalRecords': '50',
-        'iTotalDisplayRecords': '50',
+        'iTotalRecords': i,
+        'iTotalDisplayRecords': i,
         'aaData': table
     }
 
