@@ -71,7 +71,7 @@ def reset_portfolio(request):
 ############ Leaderboards ############
 def leaderboards(request):
     """Empty leaderboards page with list of leagues. Actual data retrieved by AJAX"""
-    _authuser(request) #Just so that user properties are set
+    _authuser(request)  # Just so that user properties are set
     leagues = client.getLeagues()
     return render_to_response('leaderboards.html', {'leagues': leagues}, context_instance=RequestContext(request))
 
