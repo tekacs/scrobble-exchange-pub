@@ -135,19 +135,13 @@ class User(DATMObject):
         period = (period + '_points') if period is None else 'points'
 
         query = db.query(config, models.User).filter(models.User).order_by(
-            getattr(User, period).desc()
+            getattr(models.User, period).desc()
         ).limit(limit)
 
         if league is not None:
             query.filter(models.User.league == league.dbo)
 
-        return (User(u) for u in query.all())
-
-    @staticmethod
-    @require_db
-    def near(config):
-        # FIXME: Complete this!
-        return []
+        return (User(u) for u in query)
 
     # Object Interface
 
@@ -220,6 +214,20 @@ class User(DATMObject):
         if o is None:
             raise NoDatabaseObjectException()
         return League(self.config, dbo=o)
+
+    @property
+    @require_db
+    def rank(self):
+        q = db.query(self.config, models.User)
+        q = q.filter(models.User.points > self.points)
+        return q.count()
+
+    @require_db
+    def near(self, up, down):
+        pos = self.rank
+        q = db.query(self.config, models.User)
+        q = q.order_by(models.User.points.desc())
+        return (User(self.config, dbo=u) for u in q.slice(pos - up, pos + down))
 
     @memoised_property
     @require_lastfm

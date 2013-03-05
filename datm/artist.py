@@ -2,6 +2,7 @@ __author__ = 'amar'
 
 from functools import partial
 
+from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
 
 import lfm
@@ -185,18 +186,19 @@ class Artist(DATMObject):
     @staticmethod
     @require_db
     def top(config, limit=10, after=None):
-        # FIXME: This doesn't do what it says.
-        query = db.query(config, models.Artist).limit(limit)
-#        query = db.query(config, models.Artist).order_by(
-#            models.Artist.history[0].points.desc()
-#        ).limit(limit)
-        return (Artist(config, dbo=a) for a in query.all())
+        # FIXME: What the hell is this ordering on anyway? :P
+        q = db.query(config, models.Artist).join(models.ArtistHistory)
+        q = q.order_by(models.ArtistHistory.points.desc()).limit(limit)
+        return (Artist(config, dbo=a) for a in q)
 
     @staticmethod
     @require_db
     def most_traded(config, limit=10):
-        # TODO: this! (group by & func.count)
-        pass
+        q = db.query(config, models.Artist).join(models.Trade)
+        q = q.filter(models.Trade.purchase == True)
+        q = q.group_by(models.Trade.artist_id)
+        q = q.order_by(func.count(models.Trade.id).desc())
+        return (Artist(config, dbo=o) for o in q)
 
     # Object Interface
 
