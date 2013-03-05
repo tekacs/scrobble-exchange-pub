@@ -217,7 +217,7 @@ def artist_history(request):
         req_history = [
             {
                 "name": "price",
-                "data": _format(full_history.histprices)
+                "data": _format(full_history.histprice)
             }, {
                 "name": "dividends",
                 "data": _format(full_history.histdividends)
