@@ -24,10 +24,7 @@ def home(request):
 
         request.user.stocks = _flattenArtistSEList(api_user_data.stocks)
 
-        try:
-            recommended_artists = _flattenArtistSEList(client.getRecommendedArtists(NUM_CHARTS, authorized_user))
-        except Exception:
-            recommended_artists = []
+        recommended_artists = _flattenArtistSEList(client.getRecommendedArtists(NUM_CHARTS, authorized_user.user))
 
         return render_to_response('index.html', {'recommended_artists': recommended_artists}, context_instance=RequestContext(request))
     else:
