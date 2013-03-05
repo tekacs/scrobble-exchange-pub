@@ -54,7 +54,7 @@ def rethrow(f):
     return inner
 
 class SEHandler(object):
-    _config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args)
+    _config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args, debug=true)
     
     def apikey(self):
         """
