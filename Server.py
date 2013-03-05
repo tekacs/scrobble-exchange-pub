@@ -54,7 +54,7 @@ def rethrow(f):
     return inner
 
 class SEHandler(object):
-    _config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args)
+    _config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args, debug=true)
     
     def apikey(self):
         """
@@ -165,7 +165,7 @@ class SEHandler(object):
             ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
                                points=a.points, dividend=a.dividend)
             
-            #Empty user sent, special case to mean not logged in (anonymous)
+            #Empty user sent, special case to mean anonymous
             if not user.name:
                 ret.ownedby = False
                 ret.price = a.price
@@ -256,7 +256,7 @@ class SEHandler(object):
             alist = datm.Artist.api_search(datmconfig, text, limit=n, page=page)
 
             ret = [Artist(mbid=a.mbid, name=a.name, imgurls=a.images) for a in 
-                                                                        alist]
+                                                                alist if a.mbid]
             
             return ret
     
@@ -280,7 +280,7 @@ class SEHandler(object):
             alist = datm.Artist.top(datmconfig, limit=n, after=time_utc_old)
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
-                                                                for a in alist]
+                                                    for a in alist if a.mbid]
 
             return ret
     
@@ -300,7 +300,7 @@ class SEHandler(object):
             alist = datm.Artist.popular(datmconfig, limit=n)
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
-                                                                for a in alist]
+                                                    for a in alist if a.mbid]
             
             return ret
     
@@ -319,7 +319,7 @@ class SEHandler(object):
             alist = u.top_artists(limit=n)
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name),
-                                    user) for a in alist]
+                                                user) for a in alist if a.mbid]
             
             return ret
     
@@ -338,7 +338,7 @@ class SEHandler(object):
             alist = datm.Artist.most_traded(datmconfig, limit=n)
             
             ret = [self.getArtistSE(Artist(mbid=a.mbid, name=a.name), user)
-                                                                for a in alist]
+                                                    for a in alist if a.mbid]
 
             return ret
     
