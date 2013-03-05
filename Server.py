@@ -355,8 +355,8 @@ class SEHandler(object):
         with datm.DATMSession(self._config) as datmconfig:
             tlist = datm.Trade.recent(datmconfig, limit=n)
             
-            ret = [self.getArtistSE(Artist(mbid=t.mbid, name=t.name), user)
-                                                                for t in tlist]
+            ret = [self.getArtistSE(Artist(mbid=t.artist.mbid, 
+                                    name=t.artist.name), user) for t in tlist]
             
             return ret
     
