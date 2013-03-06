@@ -148,13 +148,16 @@ $(document).ready(function() {
 
     $('a.time-adjust').on('click', function() {
         var timespan = $(this).data('timeadjust');
+
+        window.SE.Leaderboards.updatePageForTimespan(timespan);
+
         window.SE.Leaderboards.current_timespan = timespan;
 
         $('a.time-adjust').removeClass('selected');
         $(this).addClass('selected');
 
         window.SE.Leaderboards.leaderboards = [];
-        window.SE.Leaderboards.updatePageForTimespan(timespan);
+
         window.SE.Leaderboards.createAppropriateTable();
         window.SE.Leaderboards.getContextualUserData();
 
