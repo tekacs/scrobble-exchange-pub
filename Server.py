@@ -555,7 +555,7 @@ class SEHandler(object):
                 raise AuthenticationError('User not authenticated')
             
             ma = mechanics.Artist(a)
-            price = a.price(owned=u.owns(a))
+            price = ma.price(owned=u.owns(a))
            
             # Calculating the elephant
             m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
