@@ -19,7 +19,12 @@
                 <input type="submit" class="button expand postfix" value="Search"></input>
             </div>
         </form>
+        {% if correction %}
+        <p class="did-you-mean">Did you mean: <a href="{% url frontend.views.artist_single correction.name|urlencode %}">{{ correction.name }}</a>?</p>
+        {% endif %}
     </div>
+
+
 
     {% for artist in results %}
         <a href="{% url frontend.views.artist_single artist.name|urlencode %}">
