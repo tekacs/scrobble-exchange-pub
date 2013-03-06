@@ -21,6 +21,9 @@ class User(object):
             ma = Artist(artist)
             self.sell(artist, ma.price(owned=True))
         self.user.points = self.initial_points
+        self.user.daily_points = self.initial_points
+        self.user.weekly_points = self.initial_points
+        self.user.monthly_points = self.initial_points
         self.user.money = self.initial_money
 
     def buy(self, artist, price):
