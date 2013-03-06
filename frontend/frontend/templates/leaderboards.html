@@ -63,12 +63,14 @@
   <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.accordion.custom.js" %}"></script>
   <script type="text/javascript" src="{% static "js/libs/jquery.dataTables.js" %}"></script>
   <script type="text/javascript" src="{% static "js/libs/dataTables.scroller.min.js" %}"></script>
-  {% if user.is_authenticated %}
     <script type="text/javascript">
       window.SE.User = {
+        {% if user.is_authenticated %}
         'username': '{{ user.username }}'
+        {% else %}
+        'username': ''
+        {% endif %}
       }
     </script>
-  {% endif %}
   <script type="text/javascript" src="{% static "js/leaderboards.js" %}"></script>
 {% endblock body_additional_js %}

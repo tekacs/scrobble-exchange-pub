@@ -112,6 +112,12 @@ body {
             }
         }
 
+        .leaderboards {
+            div.content {
+                padding-top: 0;
+            }
+        }
+
         div.portfolio-img, div.artist-img {
             $portfolio-img-height: 190px;
             background-size: cover;
