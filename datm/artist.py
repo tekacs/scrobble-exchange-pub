@@ -269,6 +269,8 @@ class Artist(DATMObject):
     @memoised_property
     @require_lastfm
     def similar(self):
+        if type(self.lastfm_info['similar']) is not list:
+            return []
         return (partial_artist(self.config, i)
             for i in self.lastfm_info['similar']['artist'])
 
