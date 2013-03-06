@@ -29,13 +29,16 @@ window.SE.Leaderboards = {
         }
     },
 
+    // default timespan 2, for a week
     current_timespan: 2,
 
     leaderboards: [],
 
     scrollToName: function(leaderboard) {
         // Scroll to arbitrary position above the user's name
+        if (window.SE.User.leaderboard_position){
         leaderboard.fnSettings().oScroller.fnScrollToRow( window.SE.User.leaderboard_position - 6 );
+        }
     },
 
     scrollToNameHandler: function() {
@@ -90,6 +93,9 @@ window.SE.Leaderboards = {
 
     // Update the information on the sidebar via Ajax to keep consistent with currently selected timespan
     getContextualUserData: function() {
+        if (!window.SE.User.username){
+            return;
+        }
         var timespan = window.SE.Leaderboards.current_timespan;
         var url = '/leaderboards/get/user/?time_range=' + timespan;
         var league, position, points, rival_name, rival_points;
@@ -99,11 +105,13 @@ window.SE.Leaderboards = {
           dataType: 'json',
           success: function(data, textStatus, xhr) {
             league = data.user_league.name;
-            //position = data.user_position;
-            position = 2;
+            position = data.user_position;
             points = data.user_points;
             rival_name = data.next_user.name;
             rival_points = data.next_user.points;
+
+            window.SE.User.league = league;
+            window.SE.User.leaderboard_position = position;
 
             $('.context-user-league').text(league);
             $('.context-user-position').text(position);
