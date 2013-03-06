@@ -81,7 +81,7 @@ class SEHandler(object):
                 if not user.persisted:
                     u = mechanics.User(user)
                     user.create(money=u.initial_money, points=u.initial_points, 
-                                league=datm.League(datmconfig, uid='aa_bronze'))
+                                league=datm.League(datmconfig, uid='ac_bronze'))
                     
                     ret = AuthUser(user=User(name=user.name), 
                                     session_key=session['key'], newuser=True)
