@@ -51,12 +51,13 @@
     </div>
 
     {% if artist.ownedby %}
-        <a class="button large" id="sell-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Sell</a>
+        <a class="button large enabled" id="sell-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Sell</a>
     {% else %}
+
         {% if artist.numremaining == 0 %}
             <a class="button large" id="buy-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Buy</a>
         {% else %}
-            <a class="button large disabled" id="buy-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Buy</a>
+            <a class="button large enabled" id="buy-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Buy</a>
         {% endif %}
     {% endif %}
 
