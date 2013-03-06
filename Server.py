@@ -159,8 +159,8 @@ class SEHandler(object):
             
             r = Artist(mbid=a.mbid, name=a.name, imgurls=a.images)
             
+            ma = mechanics.Artist(a)
             if not a.persisted:
-                ma = mechanics.Artist(a)
                 a.create(ma.initial_price, ma.max_shares)
             
             ret = ArtistSE(artist=r, numremaining=a.no_remaining, 
