@@ -94,7 +94,7 @@ def get_user_leaderboard(request):
 
     #TODO: Needs to be implemented in the API
     userleaderboard = client.getNearUsers(request.user.username, time_range)
-    user_position = userleaderboard.position
+    user_position = userleaderboard.positions[0]
     if (userleaderboard.users[user_position - 1]):
         next_user = vars(userleaderboard.users[user_position - 1])
     else:
@@ -119,26 +119,25 @@ def get_leaderboard(request):
     board = client.getTopUsers(n=NUM_LEADERBOARD_ENTRIES, league=ttypes.League(uid=league_id), trange=time_range)
 
     table = []
-    i = 0
-    for user in board.users:
+    for pos, user in zip(board.positions, board.users):
         if request.user.is_authenticated() and user.name == request.user.username:
             me = 'me'
         else:
             me = ''
 
         row = {
-            '0': str(i+1),
+            '0': str(pos),
             '1': '<a href="http://www.last.fm/user/{0}"><img src="{1}"/>{0}</a>'.format(user.name, user.profileimage['medium']),
             '2': str(user.points),
-            'DT_RowClass': 'place-{}{}{}'.format(str(i), ' ' if me else '', me)
+            'DT_RowClass': 'place-{}{}{}'.format(str(pos), ' ' if me else '', me)
         }
         table.append(row)
-        i += 1
+    tot = len(board.users)
 
     leaderboard = {
         'sEcho': 1,
-        'iTotalRecords': str(i),
-        'iTotalDisplayRecords': str(i),
+        'iTotalRecords': str(tot),
+        'iTotalDisplayRecords': str(tot),
         'aaData': table
     }
 
