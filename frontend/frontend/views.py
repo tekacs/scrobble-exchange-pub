@@ -238,6 +238,12 @@ def auto_complete(request):
     partial_text = request.GET.get('q', '')
     results = _filterInvalidArtists(client.searchArtist(partial_text, NUM_SEARCH_RESULTS, 1))
 
+    if not results:
+        try:
+            results = [client.getArtist(ttypes.Artist(mbid='', name=partial_text))]
+        except ttypes.DataError:
+            results = []
+
     auto = []
     for artist in results:
         adict = {
@@ -280,6 +286,7 @@ def search(request):
 
     #Search results, which may need to be autocorrected
     results = _filterInvalidArtists(client.searchArtist(query, NUM_SEARCH_RESULTS, page_number))
+
     if not results:
         try:
             results = [client.getArtist(ttypes.Artist(mbid='', name=query))]
