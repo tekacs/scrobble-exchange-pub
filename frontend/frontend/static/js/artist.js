@@ -207,12 +207,14 @@ window.SE.Artist.makeTransaction = function(transaction_type){
         },
         error: function(xhr, textStatus, errorThrown) {
             window.console.log('failed!');
-            $('#buy-sell-modal .row').prepend(
+            if ($('#buy-sell-modal .row .alert-box').length === 0){
+              $('#buy-sell-modal .row').prepend(
               '<div style="margin-bottom: 40px;" class="alert-box alert">' +
               'Alert! Your transaction was not completed - please try again.' +
               '<a href="" class="close">&times;</a>' +
               '</div>'
               );
+            }
         }
     });
 };
