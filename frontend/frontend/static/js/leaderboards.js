@@ -1,12 +1,9 @@
 window.SE.Leaderboards = {
     options: {
-        // time_range = 2, last week
-        //'sAjaxSource': '/leaderboards/get/?league_id=1&time_range=2',
         "aoColumns" : [ {sTitle : "Rank"}, {sTitle : "User"}, {sTitle : "Score"}],
         'bDeferRender': true,
-        'sDom': '<"H"fr>t<"F"iS>',
+        'sDom': '<"H"r>t<"F"iS>',
         'sScrollY': '800px',
-        'bJQueryUI': true,
         'bPaginate': true,
         'bSort': false,
         'bScrollCollapse': true,
@@ -37,7 +34,7 @@ window.SE.Leaderboards = {
     scrollToName: function(leaderboard) {
         // Scroll to arbitrary position above the user's name
         if (window.SE.User.leaderboard_position){
-        leaderboard.fnSettings().oScroller.fnScrollToRow( window.SE.User.leaderboard_position - 6 );
+            leaderboard.fnSettings().oScroller.fnScrollToRow( window.SE.User.leaderboard_position - 6 );
         }
     },
 

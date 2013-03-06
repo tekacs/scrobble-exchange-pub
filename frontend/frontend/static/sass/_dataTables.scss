@@ -21,10 +21,23 @@ table.dataTable {
     width: 100%;
     border-collapse: collapse;
 
-    thead th {
-        padding: 3px 0px 3px 10px;
-        cursor: pointer;
-        *cursor: hand;
+    thead {
+
+        background-color: #fff;
+
+        tr {
+            th {
+                font-weight: normal;
+            }
+
+        }
+
+        th {
+            padding: 3px 0px 3px 10px;
+            cursor: pointer;
+            *cursor: hand;
+        }
+
     }
 
     tfoot th {
@@ -32,19 +45,19 @@ table.dataTable {
     }
 
     td {
-        padding: 10px 10px;
+        //padding: 10px 10px;
         vertical-align: middle;
-        font-size: ms(1);
-        line-height: 48px;
+        font-size: ms(0);
+        //line-height: 48px;
 
         img {
             vertical-align: middle;
-            width: 48px;
-            height: 48px;
-            margin-right: 20px;
-            border-radius: 10px;
-            -webkit-border-radius: 10px;
-            -moz-border-radius: 10px;
+            width: 16px;
+            height: 16px;
+            margin-right: 10px;
+            // border-radius: 10px;
+            // -webkit-border-radius: 10px;
+            // -moz-border-radius: 10px;
             border: 1px solid #aaa;
         }
 
@@ -73,35 +86,6 @@ table.dataTable {
             td.sorting_1 {
                 background-color: lighten($mainColor, 45%);
             }
-        }
-
-        &.place-1,
-        &.place-2,
-        &.place-3 {
-        }
-
-        &.place-1 {
-            background-color: lighten(#DAA520, 35%);
-            td.sorting_1 {
-                background-color: lighten(#DAA520, 30%);
-            }
-            @include background-image(linear-gradient(top, lighten(#DAA520, 35%), lighten(#DAA520, 25%)));
-        }
-
-        &.place-2 {
-            background-color: lighten(#C0C0C0, 10%);
-            td.sorting_1 {
-                background-color: lighten(#C0C0C0, 5%);
-            }
-            @include background-image(linear-gradient(top, lighten(#C0C0C0, 10%), lighten(#C0C0C0, 5%)));
-        }
-
-        &.place-3 {
-            background-color: lighten(#8c7853, 35%);
-            td.sorting_1 {
-                background-color: lighten(#8c7853, 30%);
-            }
-            @include background-image(linear-gradient(top, lighten(#8c7853, 35%), lighten(#8c7853, 30%)));
         }
     }
 }
@@ -146,6 +130,8 @@ table.dataTable {
 .dataTables_filter {
     float: right;
     text-align: right;
+    margin-right: 14px;
+    margin-bottom: 10px;
 
     input {
         padding: 2px;
@@ -165,7 +151,7 @@ table.dataTable {
 .dataTables_info {
     padding-top: 3px;
     clear: both;
-    float: left;
+    //float: left;
     font-size: 13px;
 }
 
@@ -329,5 +315,6 @@ table.dataTable th:active {
 .dataTables_scrollBody {
     *margin-top: -1px;
     -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid #ddd;
 }
 
