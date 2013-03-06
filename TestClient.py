@@ -169,7 +169,7 @@ try:
     #Testing the getTopUsers function
     print '\nTesting getTopUsers(n: int, league: League, trange: int)'
     try:
-        print client.getTopUsers(100, League(uid='gold'), 2)
+        print client.getTopUsers(100, League(uid='op'), 2)
     except:
         pass
         

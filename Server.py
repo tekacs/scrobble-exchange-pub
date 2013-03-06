@@ -483,8 +483,19 @@ class SEHandler(object):
             ret = UserLeaderboard(users=[])
             
             for u in ulist:
-                ret.users.append(User(name=u.name, points=u.points,
-                                                        profileimage=u.images))
+                
+                basicu = User(name=u.name, profileimage=u.images)
+                
+                if period == 'daily':
+                    basicu.points = u.daily_points
+                elif period == 'weekly':
+                    basicu.points = u.weekly_points
+                elif period == 'monthly':
+                    basicu.points = u.monthly_points
+                else:
+                    basicu.points = u.points
+                
+                ret.users.append(basicu)
            
             return ret
 
