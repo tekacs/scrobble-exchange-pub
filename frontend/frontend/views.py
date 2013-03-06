@@ -147,8 +147,8 @@ def get_leaderboard(request):
 ############ Artist stuff ############
 def artists(request):
     _authuser(request)
-    TIME_RANGE = 7
     user = _user(request)
+    TIME_RANGE = 7
     if request.user.is_authenticated():
         recommended_artists = _flattenArtistSEList(client.getRecommendedArtists(NUM_CHARTS, user))  # TODO: The API needs to implement this function
     else:
@@ -157,7 +157,7 @@ def artists(request):
     top_traded_artists = _flattenArtistSEList(client.getTradedArtists(NUM_CHARTS, user))
     popular_LFM_artists = _flattenArtistSEList(client.getLFMTop(NUM_CHARTS, user))
     recently_traded_artists = _flattenArtistSEList(client.getRecentTrades(NUM_CHARTS, user))
-
+    
     return render_to_response('artists.html', {
         'top_SE_artists': top_SE_artists,
         'top_traded_artists': top_traded_artists,
