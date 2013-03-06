@@ -287,11 +287,13 @@ def search(request):
     #Search results, which may need to be autocorrected
     results = _filterInvalidArtists(client.searchArtist(query, NUM_SEARCH_RESULTS, page_number))
 
-    if not results:
-        try:
-            results = [client.getArtist(ttypes.Artist(mbid='', name=query))]
-        except ttypes.DataError:
-            results = []
+    try:
+        correction = client.getArtist(ttypes.Artist(mbid='', name=query))
+    except ttypes.DataError:
+        correction = None
+
+    if not results and correction is not None:
+        results = [correction]
 
     if (request.GET.get('lucky', 'false') == 'true' and results):
         #TODO: Pass ID instead of name once artist_single can handle it
@@ -302,7 +304,8 @@ def search(request):
             'results': results,
             'page': page_number,
             'next_page': next_page,
-            'previous_page': previous_page}, context_instance=RequestContext(request))
+            'previous_page': previous_page,
+            'correction': correction}, context_instance=RequestContext(request))
 
 
 def _filterInvalidArtists(artists):
