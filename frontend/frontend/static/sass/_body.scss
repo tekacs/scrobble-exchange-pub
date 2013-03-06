@@ -329,11 +329,17 @@ body {
     }
 
     div.search-elements {
-        margin-bottom: 30px !important;
+        margin-bottom: 10px !important;
 
         input {
             height: 50px;
             font-size: ms(1);
+        }
+
+        .did-you-mean {
+            clear: left;
+            padding-top: 10px;
+            font-style: italic;
         }
     }
 
