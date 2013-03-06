@@ -11,6 +11,15 @@ window.SE.Leaderboards = {
         'bSort': false,
         'bScrollCollapse': true,
         'bStateSave': true,
+        "fnServerData": function( sUrl, aoData, fnCallback, oSettings ) {
+            oSettings.jqXHR = $.ajax( {
+                "url": sUrl,
+                "data": aoData,
+                "success": fnCallback,
+                "dataType": "jsonp",
+                "cache": true
+            } );
+        },
         'fnInitComplete': function () {
             this.fnAdjustColumnSizing();
             var currentLeagueSelected = window.SE.Leaderboards.getSelectedLeague();
@@ -67,23 +76,21 @@ window.SE.Leaderboards = {
         $('span.leaderboards-time').text(name);
     },
 
-    switchAllDataSources: function(newTimespan) {
-
+    createTable: function(leagueUid, timespan) {
         var newOptions = window.SE.Leaderboards.options;
-
-        // Destroy old table on new construction
         newOptions.bDestroy = true;
+        newOptions.sAjaxSource = '/leaderboards/get/?league_id=' + leagueUid + '&time_range=' + timespan;
+        window.SE.Leaderboards.leaderboards[leagueUid] = $('table[data-leagueuid=' + leagueUid + ']').dataTable(newOptions);
+    },
 
-        var leagueCount = 0, newSource, leagueUid;
-        $('table.leaderboard[id^="DataTables_"]').each(function(){
-            leagueUid = $(this).data('leagueuid');
-            newOptions.sAjaxSource = '/leaderboards/get/?league_id=' + leagueUid + '&time_range=' + newTimespan;
-            $(this).dataTable(newOptions);
-        });
+    createAppropriateTable: function() {
+        var currentLeague = window.SE.Leaderboards.getSelectedLeague();
+        window.SE.Leaderboards.createTable(currentLeague, window.SE.Leaderboards.current_timespan);
     },
 
     // Update the information on the sidebar via Ajax to keep consistent with currently selected timespan
-    getContextualUserData: function(timespan) {
+    getContextualUserData: function() {
+        var timespan = window.SE.Leaderboards.current_timespan;
         var url = '/leaderboards/get/user/?time_range=' + timespan;
         var league, position, points, rival_name, rival_points;
         jQuery.ajax({
@@ -112,13 +119,8 @@ window.SE.Leaderboards = {
 $(document).ready(function() {
     $(document).foundationAccordion();
 
-    window.SE.Leaderboards.getContextualUserData(window.SE.Leaderboards.current_timespan);
-
-    $('table.leaderboard').each(function(){
-        var leagueUid = $(this).data('leagueuid');
-        window.SE.Leaderboards.options.sAjaxSource = '/leaderboards/get/?league_id=' + leagueUid + '&time_range=2',
-        window.SE.Leaderboards.leaderboards[leagueUid] = $(this).dataTable(window.SE.Leaderboards.options).fadeIn();
-    });
+    window.SE.Leaderboards.getContextualUserData();
+    window.SE.Leaderboards.createAppropriateTable();
 
     // Scroll to the correct position in the table (to the user's name)
     $('ul.leaderboards li').on('opened', window.SE.Leaderboards.scrollToNameHandler);
@@ -132,20 +134,24 @@ $(document).ready(function() {
     // Fix bug where columns would be messed up when switching
     // 'opened' triggered by jquery.foundation.accordion.custom.js, not in vanilla
     $('ul.leaderboards li').on('opened', function(){
+        if (!window.SE.Leaderboards.leaderboards[window.SE.Leaderboards.getSelectedLeague()]){
+            window.SE.Leaderboards.createAppropriateTable();
+        }
         var leagueUid = $(this).find('table.leaderboard').data('leagueuid');
         window.SE.Leaderboards.leaderboards[leagueUid].fnAdjustColumnSizing();
     });
 
     $('a.time-adjust').on('click', function() {
         var timespan = $(this).data('timeadjust');
+        window.SE.Leaderboards.current_timespan = timespan;
 
         $('a.time-adjust').removeClass('selected');
         $(this).addClass('selected');
 
-
+        window.SE.Leaderboards.leaderboards = [];
         window.SE.Leaderboards.updatePageForTimespan(timespan);
-        window.SE.Leaderboards.switchAllDataSources(timespan);
-        window.SE.Leaderboards.getContextualUserData(timespan);
+        window.SE.Leaderboards.createAppropriateTable();
+        window.SE.Leaderboards.getContextualUserData();
 
     });
 
