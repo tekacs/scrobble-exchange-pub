@@ -293,7 +293,7 @@ def search(request):
         correction = None
 
     if not results and correction is not None:
-        results = [correction]
+        results = _filterInvalidArtists([correction])
 
     if (request.GET.get('lucky', 'false') == 'true' and results):
         #TODO: Pass ID instead of name once artist_single can handle it
