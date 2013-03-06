@@ -562,7 +562,7 @@ class SEHandler(object):
             expiry = int(datetime.utcnow().strftime('%s')) + self._time_offset
             m.update(u.name)
             m.update(a.mbid)
-            m.update(str(expiry)
+            m.update(str(expiry))
             m.update(str(price))
             el = m.hexdigest()
             
@@ -586,7 +586,7 @@ class SEHandler(object):
             expiry = int(datetime.utcnow().strftime('%s')) + self._time_offset
             m.update(u.name)
             m.update(a.mbid)
-            m.update(str(expiry)
+            m.update(str(expiry))
             m.update(str(price))
             el = m.hexdigest()
             
@@ -634,7 +634,7 @@ class SEHandler(object):
             expiry = int(datetime.utcnow().strftime('%s')) + self._time_offset
             m.update(u.name)
             m.update(a.mbid)
-            m.update(str(expiry)
+            m.update(str(expiry))
             m.update(str(price))
             el = m.hexdigest()
             
