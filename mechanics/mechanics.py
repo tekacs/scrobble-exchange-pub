@@ -89,7 +89,7 @@ class Artist(object):
 
     def price(self, owned=False):
         """Get current buy/sell price. Uses half-even rounding."""
-        base = self.artist.price * (D(1) if owned else D('0.98'))
+        base = self.artist.price * (D('0.98') if owned else D(1))
         return int(D.round_even(base))
 
     @property
