@@ -288,6 +288,8 @@ def search(request):
 
     try:
         correction = client.getArtist(ttypes.Artist(mbid='', name=query))
+        if correction.mbid == '':
+            correction = None
     except ttypes.DataError:
         correction = None
 
