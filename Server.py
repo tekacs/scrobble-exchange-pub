@@ -55,6 +55,7 @@ def rethrow(f):
 
 class SEHandler(object):
     _config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args, debug=True)
+    _time_offset = 15
     
     def apikey(self):
         """
@@ -172,7 +173,7 @@ class SEHandler(object):
             else:
                 u = datm.User(datmconfig, user.name)
                 ret.ownedby = u.owns(a)
-                ret.price = a.price * (0.98 if u.owns(a) else 1)
+                ret.price = ma.price(owned=ret.ownedby)
             
             return ret
     
@@ -553,16 +554,15 @@ class SEHandler(object):
             except datm.InvalidAuthorisationException:
                 raise AuthenticationError('User not authenticated')
             
-            if (u.owns(a)):
-                price = int(a.price * 0.98)
-            else:
-                price = a.price
+            ma = mechanics.Artist(a)
+            price = a.price(owned=u.owns(a))
            
             # Calculating the elephant
-            time_utc = time.mktime(datetime.utcnow().timetuple())
-
             m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
-            m.update(str(time_utc))
+            m.update(u.name)
+            m.update(a.mbid)
+            m.update(str(int(datetime.utcnow().strftime('%s')) +
+                self._time_offset))
             m.update(str(price))
             el = m.hexdigest()
             
@@ -582,19 +582,19 @@ class SEHandler(object):
         with datm.DATMSession(self._config) as datmconfig:
             
             # Calculating the elephant
-            time_utc = time.mktime(datetime.utcnow().timetuple())
-
             m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
-            m.update(str(time_utc))
+            m.update(user.user.name)
+            m.update(guarantee.artist.mbid)
+            m.update(str(guarantee.time))
             m.update(str(guarantee.price))
-            el = m.hexdigest() 
+            el = m.hexdigest()
             
             #authenticate the elephant
             if guarantee.elephant != el:
                 raise DataError('Incorrect elephant')
             
             #check for 15s time (with some leeway)
-            if (time_utc - guarantee.time) > 17:
+            if (time_utc - guarantee.time) > 2:
                 raise TransientError('Too late')
             
             u = datm.User(datmconfig, name=user.user.name)
@@ -629,19 +629,19 @@ class SEHandler(object):
         with datm.DATMSession(self._config) as datmconfig:
             
             # Calculating the elephant
-            time_utc = time.mktime(datetime.utcnow().timetuple())
-
             m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
-            m.update(str(time_utc))
+            m.update(user.user.name)
+            m.update(guarantee.artist.mbid)
+            m.update(str(guarantee.time))
             m.update(str(guarantee.price))
-            el = m.hexdigest() 
+            el = m.hexdigest()
             
             #authenticate the elephant
             if guarantee.elephant != el:
-                raise DataError('Incorrect Elephant')
+                raise DataError('Incorrect elephant')
             
             #check for 15s time (with some leeway)
-            if (time_utc - guarantee.time) > 17:
+            if (time_utc - guarantee.time) > 2:
                 raise TransientError('Too late')
             
             u = datm.User(datmconfig, name=user.user.name)
