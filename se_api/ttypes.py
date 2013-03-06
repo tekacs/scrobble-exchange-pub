@@ -1268,18 +1268,18 @@ class UserLeaderboard(object):
 
   Attributes:
    - users
-   - position
+   - positions
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.LIST, 'users', (TType.STRUCT,(User, User.thrift_spec)), None, ), # 1
-    (2, TType.I32, 'position', None, None, ), # 2
+    (2, TType.LIST, 'positions', (TType.I32,None), None, ), # 2
   )
 
-  def __init__(self, users=None, position=None,):
+  def __init__(self, users=None, positions=None,):
     self.users = users
-    self.position = position
+    self.positions = positions
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1302,8 +1302,13 @@ class UserLeaderboard(object):
         else:
           iprot.skip(ftype)
       elif fid == 2:
-        if ftype == TType.I32:
-          self.position = iprot.readI32();
+        if ftype == TType.LIST:
+          self.positions = []
+          (_etype89, _size86) = iprot.readListBegin()
+          for _i90 in xrange(_size86):
+            _elem91 = iprot.readI32();
+            self.positions.append(_elem91)
+          iprot.readListEnd()
         else:
           iprot.skip(ftype)
       else:
@@ -1319,13 +1324,16 @@ class UserLeaderboard(object):
     if self.users is not None:
       oprot.writeFieldBegin('users', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.users))
-      for iter86 in self.users:
-        iter86.write(oprot)
+      for iter92 in self.users:
+        iter92.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
-    if self.position is not None:
-      oprot.writeFieldBegin('position', TType.I32, 2)
-      oprot.writeI32(self.position)
+    if self.positions is not None:
+      oprot.writeFieldBegin('positions', TType.LIST, 2)
+      oprot.writeListBegin(TType.I32, len(self.positions))
+      for iter93 in self.positions:
+        oprot.writeI32(iter93)
+      oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

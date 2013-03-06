@@ -3006,11 +3006,11 @@ class searchArtist_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype90, _size87) = iprot.readListBegin()
-          for _i91 in xrange(_size87):
-            _elem92 = Artist()
-            _elem92.read(iprot)
-            self.success.append(_elem92)
+          (_etype97, _size94) = iprot.readListBegin()
+          for _i98 in xrange(_size94):
+            _elem99 = Artist()
+            _elem99.read(iprot)
+            self.success.append(_elem99)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3057,8 +3057,8 @@ class searchArtist_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter93 in self.success:
-        iter93.write(oprot)
+      for iter100 in self.success:
+        iter100.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.t is not None:
@@ -3230,11 +3230,11 @@ class getSETop_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype97, _size94) = iprot.readListBegin()
-          for _i98 in xrange(_size94):
-            _elem99 = ArtistSE()
-            _elem99.read(iprot)
-            self.success.append(_elem99)
+          (_etype104, _size101) = iprot.readListBegin()
+          for _i105 in xrange(_size101):
+            _elem106 = ArtistSE()
+            _elem106.read(iprot)
+            self.success.append(_elem106)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3281,8 +3281,8 @@ class getSETop_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter100 in self.success:
-        iter100.write(oprot)
+      for iter107 in self.success:
+        iter107.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.t is not None:
@@ -3440,11 +3440,11 @@ class getLFMTop_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype104, _size101) = iprot.readListBegin()
-          for _i105 in xrange(_size101):
-            _elem106 = ArtistSE()
-            _elem106.read(iprot)
-            self.success.append(_elem106)
+          (_etype111, _size108) = iprot.readListBegin()
+          for _i112 in xrange(_size108):
+            _elem113 = ArtistSE()
+            _elem113.read(iprot)
+            self.success.append(_elem113)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3491,8 +3491,8 @@ class getLFMTop_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter107 in self.success:
-        iter107.write(oprot)
+      for iter114 in self.success:
+        iter114.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.t is not None:
@@ -3648,11 +3648,11 @@ class getRecommendedArtists_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype111, _size108) = iprot.readListBegin()
-          for _i112 in xrange(_size108):
-            _elem113 = ArtistSE()
-            _elem113.read(iprot)
-            self.success.append(_elem113)
+          (_etype118, _size115) = iprot.readListBegin()
+          for _i119 in xrange(_size115):
+            _elem120 = ArtistSE()
+            _elem120.read(iprot)
+            self.success.append(_elem120)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3699,8 +3699,8 @@ class getRecommendedArtists_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter114 in self.success:
-        iter114.write(oprot)
+      for iter121 in self.success:
+        iter121.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.t is not None:
@@ -3858,11 +3858,11 @@ class getTradedArtists_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype118, _size115) = iprot.readListBegin()
-          for _i119 in xrange(_size115):
-            _elem120 = ArtistSE()
-            _elem120.read(iprot)
-            self.success.append(_elem120)
+          (_etype125, _size122) = iprot.readListBegin()
+          for _i126 in xrange(_size122):
+            _elem127 = ArtistSE()
+            _elem127.read(iprot)
+            self.success.append(_elem127)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3909,8 +3909,8 @@ class getTradedArtists_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter121 in self.success:
-        iter121.write(oprot)
+      for iter128 in self.success:
+        iter128.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.t is not None:
@@ -4068,11 +4068,11 @@ class getRecentTrades_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype125, _size122) = iprot.readListBegin()
-          for _i126 in xrange(_size122):
-            _elem127 = ArtistSE()
-            _elem127.read(iprot)
-            self.success.append(_elem127)
+          (_etype132, _size129) = iprot.readListBegin()
+          for _i133 in xrange(_size129):
+            _elem134 = ArtistSE()
+            _elem134.read(iprot)
+            self.success.append(_elem134)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4119,8 +4119,8 @@ class getRecentTrades_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter128 in self.success:
-        iter128.write(oprot)
+      for iter135 in self.success:
+        iter135.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.t is not None:
@@ -4515,11 +4515,11 @@ class getLeagues_result(object):
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype132, _size129) = iprot.readListBegin()
-          for _i133 in xrange(_size129):
-            _elem134 = League()
-            _elem134.read(iprot)
-            self.success.append(_elem134)
+          (_etype139, _size136) = iprot.readListBegin()
+          for _i140 in xrange(_size136):
+            _elem141 = League()
+            _elem141.read(iprot)
+            self.success.append(_elem141)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4542,8 +4542,8 @@ class getLeagues_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter135 in self.success:
-        iter135.write(oprot)
+      for iter142 in self.success:
+        iter142.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.d is not None:
