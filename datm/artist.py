@@ -161,15 +161,18 @@ class Artist(DATMObject):
             artist=name,
             limit=limit,
             page=page
-        ))['artistmatches']
+        ))
 
         if type(results) is dict:
-            results = results['artist']
-            if type(results) is list:
-                pass
-            elif type(results) is dict:
-                results = [results]
-        else:
+            results = results['artistmatches']
+            if type(results) is dict:
+                results = results['artist']
+                if type(results) is list: # Already in the right form!
+                    pass
+                elif type(results) is dict: # Single result.
+                    results = [results]
+
+        if not type(results) is list:
             results = []
 
         return (partial_artist(config, a) for a in results)
@@ -269,7 +272,7 @@ class Artist(DATMObject):
     @memoised_property
     @require_lastfm
     def similar(self):
-        if type(self.lastfm_info['similar']) is not list:
+        if type(self.lastfm_info['similar']) is not dict:
             return []
         return (partial_artist(self.config, i)
             for i in self.lastfm_info['similar']['artist'])
