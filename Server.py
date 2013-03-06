@@ -584,10 +584,10 @@ class SEHandler(object):
             # Calculating the elephant
             m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
             expiry = int(datetime.utcnow().strftime('%s')) + self._time_offset
-            m.update(u.name)
-            m.update(a.mbid)
-            m.update(str(expiry))
-            m.update(str(price))
+            m.update(user.user.name)
+            m.update(guarantee.artist.mbid)
+            m.update(str(guarantee.time))
+            m.update(str(guarantee.price))
             el = m.hexdigest()
             
             #authenticate the elephant
@@ -632,10 +632,10 @@ class SEHandler(object):
             # Calculating the elephant
             m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
             expiry = int(datetime.utcnow().strftime('%s')) + self._time_offset
-            m.update(u.name)
-            m.update(a.mbid)
-            m.update(str(expiry))
-            m.update(str(price))
+            m.update(user.user.name)
+            m.update(guarantee.artist.mbid)
+            m.update(str(guarantee.time))
+            m.update(str(guarantee.price))
             el = m.hexdigest()
             
             #authenticate the elephant
