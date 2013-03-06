@@ -583,7 +583,7 @@ class SEHandler(object):
             
             # Calculating the elephant
             m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
-            expiry = int(datetime.utcnow().strftime('%s')) + self._time_offset
+            now = int(datetime.utcnow().strftime('%s'))
             m.update(user.user.name)
             m.update(guarantee.artist.mbid)
             m.update(str(guarantee.time))
@@ -595,7 +595,7 @@ class SEHandler(object):
                 raise DataError('Incorrect elephant')
             
             #check for 15s time (with some leeway)
-            if (expiry - guarantee.time) > 2:
+            if (now - guarantee.time) > 2:
                 raise TransientError('Too late')
             
             u = datm.User(datmconfig, name=user.user.name)
@@ -631,7 +631,7 @@ class SEHandler(object):
             
             # Calculating the elephant
             m = hmac.new(datm.Auth(datmconfig).secret.encode('ascii'))
-            expiry = int(datetime.utcnow().strftime('%s')) + self._time_offset
+            now = int(datetime.utcnow().strftime('%s'))
             m.update(user.user.name)
             m.update(guarantee.artist.mbid)
             m.update(str(guarantee.time))
@@ -643,7 +643,7 @@ class SEHandler(object):
                 raise DataError('Incorrect elephant')
             
             #check for 15s time (with some leeway)
-            if (expiry - guarantee.time) > 2:
+            if (now - guarantee.time) > 2:
                 raise TransientError('Too late')
             
             u = datm.User(datmconfig, name=user.user.name)
