@@ -478,14 +478,25 @@ class SEHandler(object):
                 period = None
                 
             ulist = datm.User.top(datmconfig, limit=n, period=period,
-                                                                league=l)
+                                                                    league=l)
             
-            ret = UserLeaderboard(users=[])
+            ret = UserLeaderboard(users=[], positions=[])
             
             for u in ulist:
-                ret.users.append(User(name=u.name, points=u.points,
-                                                        profileimage=u.images))
-           
+                o = User(name=u.name, profileimage=u.images)
+                
+                if period == 'daily':
+                    o.points = u.daily_points
+                elif period == 'weekly':
+                    o.points = u.weekly_points
+                elif period == 'monthly':
+                    o.points = u.monthly_points
+                else:
+                    o.points = u.points
+                
+                ret.users.append(o)
+                ret.positions.append(u.position)
+            
             return ret
 
     def getNearUsers(self, user, trange):
@@ -512,7 +523,7 @@ class SEHandler(object):
             u = datm.User(datmconfig, name=user)
             ulist = u.near(up=4, down=5, period=period)
             
-            ret = UserLeaderboard(users=[],position=u.rank)
+            ret = UserLeaderboard(users=[],position=[u.position])
             for u in ulist:
                 ret.users.append(User(name=u.name, points=u.points,
                                                         profileimage=u.images))

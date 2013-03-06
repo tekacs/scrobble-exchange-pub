@@ -117,7 +117,7 @@ struct UserData {
     the place of the current user in that leaderboard. */
 struct UserLeaderboard {
     1: required list<User> users
-    2: optional i32 position
+    2: optional list<i32> positions
 }
 
 # Transaction
