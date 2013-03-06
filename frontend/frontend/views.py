@@ -330,7 +330,7 @@ def guaranteed_price(request):
     artist_price_guarantee = client.getGuarantee(artist=artist, user=_authuser(request))
     guarantee = vars(artist_price_guarantee)
     guarantee['artist'] = vars(guarantee['artist'])
-    return artist_price_guarantee
+    return guarantee
 
 
 @json_response(auth_needed=True)
