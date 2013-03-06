@@ -177,6 +177,10 @@ body {
         }
     }
 
+    .below_main {
+        @extend .main;
+    }
+
     .sidebar {
         h2 {
 
