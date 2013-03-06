@@ -478,7 +478,7 @@ class SEHandler(object):
                 period = None
                 
             ulist = datm.User.top(datmconfig, limit=n, period=period,
-                                                                league=l)
+                                                                    league=l)
             
             ret = UserLeaderboard(users=[])
             

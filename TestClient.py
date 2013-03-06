@@ -104,7 +104,7 @@ try:
     
     ##Testing the searchArtist function
     #print '\nTesting searchArtist(text:string, n: int, page: int)'
-    #tlist = ['coldplay','coldp','brose','&','rin toshite',' ']
+    #tlist = ['yoko kanno']
     #for t in tlist:
         #try:
             #print client.searchArtist(t,5,1)
@@ -166,12 +166,12 @@ try:
     #except:
         #pass
     
-    #Testing the getTopUsers function
-    print '\nTesting getTopUsers(n: int, league: League, trange: int)'
-    try:
-        print client.getTopUsers(100, League(uid='op'), 2)
-    except:
-        pass
+    ##Testing the getTopUsers function
+    #print '\nTesting getTopUsers(n: int, league: League, trange: int)'
+    #try:
+        #print client.getTopUsers(100, League(uid='op'), 2)
+    #except:
+        #pass
         
     ##Testing the getNearUsers function
     #print '\nTesting getNearUsers(user: string, trange: int)'
