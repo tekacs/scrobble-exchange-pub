@@ -150,6 +150,14 @@ class User(DATMObject):
 
     last_reset = db.dbo_property('last_reset')
 
+    def points_by_period(self, period):
+        options = (None, 'daily', 'weekly', 'monthly')
+        if not period in options:
+            raise ValueError('Period must be in %s' % (options,))
+        period = (period or '') + ('' if period is None else '_')
+        period += 'points'
+        return getattr(self, period)
+
     @memoised_property
     def session_key(self):
         """This object's session_key."""
@@ -211,19 +219,30 @@ class User(DATMObject):
             raise NoDatabaseObjectException()
         return League(self.config, dbo=o)
 
-    @property
     @require_db
-    def rank(self):
+    def rank(self, period):
         q = db.query(self.config, models.User)
-        q = q.filter(models.User.points > self.points)
+        q = q.filter(models.User.league == self.league.dbo)
+        q = q.filter(
+            models.User.points_by_period(period) > self.points_by_period(period)
+        )
         return q.count()
+
+    @require_db
+    def position(self, period):
+        q = db.query(self.config, models.User)
+        q = q.filter(models.User.league == self.league.dbo)
+        q = q.filter(
+            models.User.points_by_period(period) > self.points_by_period(period)
+        )
+        return q.group_by(models.User.points).count() + 1
 
     @require_db
     def near(self, up, down, period=None):
         q = db.query(self.config, models.User)
         q = q.filter(models.User.league == self.league.dbo)
 
-        pos = self.rank
+        pos = self.rank(period)
         q = q.order_by(models.User.points_by_period(period).desc())
         return (User(self.config, dbo=u) for u in q.slice(pos - up, pos + down))
 
