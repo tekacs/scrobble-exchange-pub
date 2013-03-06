@@ -327,7 +327,9 @@ def price(request, artist_id=None):
 def guaranteed_price(request):
     artist_id = request.GET.get('artist_id')
     artist = ttypes.Artist(mbid=artist_id)
-    artist_price_guarantee = vars(client.getGuarantee(artist=artist, user=_authuser(request)))
+    artist_price_guarantee = client.getGuarantee(artist=artist, user=_authuser(request))
+    guarantee = vars(artist_price_guarantee)
+    guarantee['artist'] = vars(guarantee['artist'])
     return artist_price_guarantee
 
 
