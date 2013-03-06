@@ -4,7 +4,7 @@ import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 
 # Import thrift stuff
-from se_api import ScrobbleExchange
+from se_api import ScrobbleExchange, ttypes
 from thrift import Thrift
 from thrift.transport import TSocket, TTransport
 from thrift.protocol import TBinaryProtocol
@@ -110,7 +110,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
@@ -186,17 +186,44 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
 
 #TODO: Add database table name prefix to avoid collisions with rest of data
 
-try:
-    # Connect to the API server
-    transport = TSocket.TSocket(API_SERVER, API_PORT)
-    transport = TTransport.TBufferedTransport(transport)
-    protocol = TBinaryProtocol.TBinaryProtocol(transport)
-    CLIENT = ScrobbleExchange.Client(protocol)
-    transport.open()
-    # End
+import os
+from functools import wraps as _wraps
 
-except Thrift.TException, tx:
-    print '%s' % (tx.message)
+def new_pipe():
+    try:
+        transport = TSocket.TSocket(API_SERVER, API_PORT)
+        transport = TTransport.TBufferedTransport(transport)
+        protocol = TBinaryProtocol.TBinaryProtocol(transport)
+        client = ScrobbleExchange.Client(protocol)
+        transport.open()
+        return client
+    except Thrift.TException, tx:
+        print '%s' % (tx.message)
+CLIENT_BUILDER = new_pipe
+
+class ClientProxy(object):
+    def __init__(self, client_builder, exceptions):
+        self._client = client_builder()
+        self._client_builder = client_builder
+        self._exceptions = exceptions
+
+    def __getattr__(self, name):
+        if self._client is None:
+            self._client = self._client_builder()
+        attr = getattr(self._client, name)
+        if not callable(attr):
+            return attr
+        @_wraps(attr)
+        def rebuilder(*args, **kwargs):
+            try:
+                return attr(*args, **kwargs)
+            except self._exceptions as e:
+                print "Repaired broken pipe due to %s" % e
+                self._client = self._client_builder()
+                return getattr(self._client, name)(*args, **kwargs)
+        return rebuilder
+
+CLIENT = ClientProxy(new_pipe, (ttypes.TException, os.error))
 
 LASTFM_API_KEY = CLIENT.apikey()
 LASTFM_WS_BASE_URL = "http://ws.audioscrobbler.com/2.0/"
