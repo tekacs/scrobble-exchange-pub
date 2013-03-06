@@ -88,28 +88,38 @@ body {
         .portfolio-wrapper {
             float: left;
             margin-bottom: 40px;
-            p {
-                &:first-child {
-                    clear: left;
-                }
-                margin-top: 0;
-                text-align: center;
-                float: left;
-                background-color: #eee;
-                width: 95px;
-                margin: 0;
 
-                min-height: 90px;
+            .info-below-artist {
+                p {
+                    text-align: center;
+                    display: inline-block;
+                    width: 92px;
+                    border: 1px solid #ddd;
+                    font-size: 12px;
 
-                span {
-                    padding: 5px;
-                    display: block;
-                    font-size: ms(1);
-                    font-weight: bold;
-                    background-color: desaturate($mainColor, 10%);
-                    color: #fff;
+                    &.artist-dividends {
+                        clear: left;
+                        background-color: #eee;
+                        color: #222;
+                        //padding: 5px;
+                    }
+
+                    &.artist-points {
+                        background-color: #71b7e6;
+                        color: #fff;
+                        //padding: 5px;
+                    }
+                    margin-top: 0;
+                    margin: 0;
+
+                    span {
+                        display: block;
+                        font-size: ms(0);
+                        font-weight: bold;
+                    }
                 }
             }
+
         }
 
         .leaderboards {
@@ -149,7 +159,7 @@ body {
                     &.secondary{
                         bottom: 0;
                         left: 0;
-                        background-color: #71b7e6;
+                        background-color: #0187c5;
                     }
 
                 }
