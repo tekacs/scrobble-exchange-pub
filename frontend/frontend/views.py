@@ -240,7 +240,7 @@ def auto_complete(request):
 
     if not results:
         try:
-            results = [client.getArtist(ttypes.Artist(mbid='', name=partial_text))]
+            results = _filterInvalidArtists([client.getArtist(ttypes.Artist(mbid='', name=partial_text))])
         except ttypes.DataError:
             results = []
 
