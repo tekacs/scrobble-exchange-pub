@@ -55,7 +55,7 @@ def rethrow(f):
 
 class SEHandler(object):
     _config = datm.DATMConfig(lastfm=lastfm_config, db_args=db_args, debug=True)
-    _time_offset = 15s
+    _time_offset = 15
     
     def apikey(self):
         """
