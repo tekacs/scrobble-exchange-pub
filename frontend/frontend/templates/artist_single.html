@@ -50,15 +50,24 @@
         <p><span>${{ artist.dividend }}</span> per day (dividends)</p>
     </div>
 
-    {% if artist.ownedby %}
-        <a class="button large enabled" id="sell-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Sell</a>
+    {% if user.is_authenticated %}
+
+        {% if artist.ownedby %}
+            <a class="button large enabled" id="sell-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Sell</a>
+        {% else %}
+
+            {% if artist.numremaining == 0 %}
+                <a class="button large disabled has-tip" title="This artist is currently out of stock - please try again later." id="buy-button" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Buy</a>
+            {% else %}
+                <a class="button large enabled" id="buy-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Buy</a>
+            {% endif %}
+
+        {% endif %}
+
     {% else %}
 
-        {% if artist.numremaining == 0 %}
-            <a class="button large" id="buy-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Buy</a>
-        {% else %}
-            <a class="button large enabled" id="buy-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Buy</a>
-        {% endif %}
+        <a href="{% url lastfmauth_login %}?next={{current_path}}" class="button large has-tip" title="You must be logged in to buy artists." id="buy-button" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}">Buy</a>
+
     {% endif %}
 
 {% endblock sidebar %}

@@ -60,6 +60,7 @@ window.SE.Search = {
 jQuery(document).ready(function($) {
 
     $(document).foundationAlerts();
+    $(document).foundationTooltips();
 
     /* SEARCH BAR */
 
