@@ -164,7 +164,7 @@ def artists(request):
         'recommended_artists': recommended_artists,
         'popular_LFM_artists': popular_LFM_artists,
         'recently_traded_artists': recently_traded_artists
-    })
+    }, context_instance=RequestContext(request))
 
 
 def artist_single(request, artistname):
