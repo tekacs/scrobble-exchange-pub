@@ -306,6 +306,18 @@ body {
 
         }
 
+        .button.has-tip {
+            border-bottom: none;
+            opacity: 0.3;
+            color: #fff;
+            &:hover {
+                &.disabled {
+                    cursor: help;
+                }
+                cursor: pointer;
+            }
+        }
+
         #buy-button, #sell-button {
             width: 100%;
         }
