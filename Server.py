@@ -480,11 +480,12 @@ class SEHandler(object):
             ulist = datm.User.top(datmconfig, limit=n, period=period,
                                                                 league=l)
             
-            ret = UserLeaderboard(users=[])
+            ret = UserLeaderboard(users=[], positions=[])
             
             for u in ulist:
                 ret.users.append(User(name=u.name, points=u.points,
                                                         profileimage=u.images))
+                ret.positions.append(u.position)
            
             return ret
 
@@ -512,7 +513,7 @@ class SEHandler(object):
             u = datm.User(datmconfig, name=user)
             ulist = u.near(up=4, down=5, period=period)
             
-            ret = UserLeaderboard(users=[],position=u.rank)
+            ret = UserLeaderboard(users=[],position=[u.position])
             for u in ulist:
                 ret.users.append(User(name=u.name, points=u.points,
                                                         profileimage=u.images))
