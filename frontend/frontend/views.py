@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, redirect
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 
 from utils import json_response
 from se_api import ttypes
@@ -29,25 +30,6 @@ def home(request):
         return render_to_response('index.html', {'recommended_artists': recommended_artists}, context_instance=RequestContext(request))
     else:
         return render_to_response('welcome.html', {}, context_instance=RequestContext(request))
-
-
-# @contextmanager
-# def handler():
-#     try:
-#         yield
-#     except TTransportException:
-#         def inner(*args, **kwargs):
-#             return {}
-#         return inner
-
-
-# def _wrap(method):
-#     def fn(*args, **kwargs):
-#         try:
-#             return method(*args, **kwargs)
-#         except TTransportException:
-#             return {}
-#     return fn
 
 
 def user_profile(request, username):
@@ -157,7 +139,7 @@ def artists(request):
     top_traded_artists = _flattenArtistSEList(client.getTradedArtists(NUM_CHARTS, user))
     popular_LFM_artists = _flattenArtistSEList(client.getLFMTop(NUM_CHARTS, user))
     recently_traded_artists = _flattenArtistSEList(client.getRecentTrades(NUM_CHARTS, user))
-    
+
     return render_to_response('artists.html', {
         'top_SE_artists': top_SE_artists,
         'top_traded_artists': top_traded_artists,
@@ -176,20 +158,27 @@ def artist_single(request, artistname):
 
     artist_basic = client.getArtist(ttypes.Artist(mbid='', name=artistname))
 
-    # Check name and redirect if needed
+    #Redirect to search page if artist doesn't exist/has no mbid
+    if not artist_basic.mbid:
+        searchurl = reverse('search')
+        searchurl += '?q=' + artistname
+        return HttpResponseRedirect(searchurl)
+
+    # Redirect to autocorrected artist name if needed
     if artist_basic.name != artistname:
         return redirect('artist_single', artist_basic.name, permanent=True)
 
     artist_se = client.getArtistSE(artist_basic, user)
     artist_lfm = client.getArtistLFM(artist_basic)
-
     returndata = {}
     returndata.update(vars(artist_basic))
     returndata.update(vars(artist_se))
     returndata.update(vars(artist_lfm))
 
-    return render_to_response('artist_single.html', {
-        'artist': returndata}, context_instance=RequestContext(request))
+    return render_to_response('artist_single.html', {'artist': returndata}, context_instance=RequestContext(request))
+    # Should never get a data error in the code above, but just in case it does happen, let it be thrown so its logged
+    # except ttypes.DataError:
+    #     return render_to_response('artist_single.html', {'artist': {}}, context_instance=RequestContext(request))
 
 
 @json_response()
