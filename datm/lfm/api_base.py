@@ -13,6 +13,7 @@ __author__ = 'Amar Sood (tekacs)'
 import pprint
 from hashlib import md5 as _md5
 from functools import wraps as _wraps, partial as _partial
+from contextlib import contextmanager as _contextmanager
 
 import requests
 try:
@@ -32,14 +33,25 @@ mc = memcache.Client(
 )
 pool = memcache.ThreadMappedPool(mc)
 
-def cache_get(key, request):
-    with pool.reserve() as loc:
-        try:
-            resp = loc[key]
-        except KeyError:
+@_contextmanager
+def with_null():
+    yield
+
+def cache_get(key, request, cache_read, cache_write):
+    """Perform request, fetching through memcached by URL if possible."""
+    resp = None
+    with (pool.reserve() if cache_read or cache_write else with_null()) as loc:
+        if cache_read:
+            try:
+                resp = loc[key]
+            except KeyError:
+                pass
+        if resp is None:
             s = requests.Session()
-            loc[key] = resp = s.send(request).json()
-        return resp
+            resp = s.send(request).json()
+        if cache_write:
+            loc[key] = resp
+    return resp
 
 class APIClient(object):
     """Provides ``classmethod`` network services to ``APIObject``s.
@@ -66,6 +78,11 @@ class APIClient(object):
         if params.pop('_debug', False):
             pprint.pprint(locals())
         print_json = params.pop('_print_json', False)
+        # _debug, _print_json are fine.
+        # _cache_(...) should probably be done more nicely.
+        # For the moment, since RequestBuilder is the only external object...
+        cache_read = params.pop('_cache_read', False)
+        cache_write = params.pop('_cache_write', False)
 
         if sign:
             cls._sign(params)
@@ -76,7 +93,7 @@ class APIClient(object):
             params=params
         )
         request = request.prepare()
-        r = cache_get(request.url, request)
+        r = cache_get(request.url, request, cache_read, cache_write)
 
         if print_json:
             pprint.pprint(r)

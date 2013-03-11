@@ -16,6 +16,8 @@ class DATMConfig(object):
                  db_args=None,
                  inner_config=None,
                  session=None,
+                 cache_read=True,
+                 cache_write=True,
                  debug=False):
 
         _db_args = {'pool_size': 20, 'max_overflow': 0}
@@ -31,7 +33,9 @@ class DATMConfig(object):
                 request_builder = lfm.RequestBuilder(
                     api_key=lastfm['api_key'],
                     api_secret=lastfm['api_secret'],
-                    debug=debug
+                    debug=debug,
+                    cache_read=cache_read,
+                    cache_write=cache_write
                 )
             except KeyError:
                 raise TypeError(

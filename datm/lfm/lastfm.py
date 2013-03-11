@@ -144,6 +144,8 @@ class RequestBuilder(object):
             api_secret=None,
             user=None,
             session_key=None,
+            cache_read=True,
+            cache_write=True,
             debug=False):
 
         self._base_params = {
@@ -162,8 +164,9 @@ class RequestBuilder(object):
             if locals()[v] is not None:
                 self._auth_params[k] = locals()[v]
 
-        if debug:
-            self._base_params['_debug'] = True
+        for a in ('debug', 'cache_read', 'cache_write'):
+            if locals()[a]:
+                self._base_params['_' + a] = True
 
     @property
     def api_key(self):
