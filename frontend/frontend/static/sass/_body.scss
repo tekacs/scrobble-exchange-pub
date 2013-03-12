@@ -139,6 +139,10 @@ body {
             height: $portfolio-img-height;
             overflow: hidden;
 
+            &.similar-artist {
+                float: left;
+            }
+
             margin: 0 24px 15px 0px;
 
             div.text-over-image {
