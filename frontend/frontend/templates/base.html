@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
 
     <!-- Set the viewport width to device width for mobile -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>{% block title %}{% endblock %} - Scrobble Exchange</title>
 
@@ -25,54 +25,79 @@
 
     <header>
         <div class="row">
-          <div class="twentyfour columns">
-            <nav class="top-bar">
-              <ul class="left">
-                <li class="name">
-                  <h1>
-                    <a href="{% url frontend.views.home %}">
-                      <img src="{% static "img/logo.png" %}">
-                    </a>
-                  </h1>
-                </li>
-                <li><a href="{% url frontend.views.home %}">Portfolio</a></li>
-                <li><a href="{% url frontend.views.artists %}">Artists</a></li>
-                <li><a href="{% url frontend.views.leaderboards %}">Leaderboards</a></li>
-                <li class="toggle-topbar"><a href="#"></a></li>
-              </ul>
-              <ul class="right">
-                    {% if user.is_authenticated %}
-                    <li class="money">${{ user.money }}</li>
-                    <li class="points">{{ user.points }} points</li>
-                    <li class="has-dropdown">
-                        <div class="user-profile-link">
+            <div class="twentyfour columns">
+                <nav class="top-bar">
+                    <ul>
+                        <!-- Title Area -->
+                        <li class="name">
                             <a href="{% url frontend.views.home %}">
-                                <img src="{{ user.profileimage.small }}">
+                                <img src="{% static "img/logo.png" %}" style="height: 30px; width: 186px;">
                             </a>
-                            <a href="{% url frontend.views.home %}" class="username">{{ user.username }}</a>
-                        </div>
-                        <ul class="dropdown">
-                          <li><a href="{% url frontend.views.reset_portfolio %}">Reset</a></li>
-                          <li class="divider"></li>
-                          <li><a href="{% url lastfmauth_logout %}">Logout</a></li>
+                        </li>
+                        <li class="toggle-topbar">
+                            <a href="#"></a>
+                        </li>
+                    </ul>
+
+                    <section>
+                        <!-- Left Nav Section -->
+                        <ul class="left">
+                            <li>
+                                <a href="{% url frontend.views.home %}">Portfolio</a>
+                            </li>
+                            <li>
+                                <a href="{% url frontend.views.artists %}">Artists</a>
+                            </li>
+                            <li>
+                                <a href="{% url frontend.views.leaderboards %}">Leaderboards</a>
+                            </li>
                         </ul>
-                    </li>
-                    {% else %}
-                    <li>
-                        <a href="{% url lastfmauth_login %}?next={{current_path}}">Login using your Last.fm account</a>
-                    </li>
-                    {% endif %}
-              </ul>
-              <div class="header-promo"><p>Welcome to Scrobble Exchange!</p></div>
-              <div class="header-search">
+
+                        <!-- Right Nav Section -->
+                        <ul class="right">
+                            {% if user.is_authenticated %}
+                            <li class="divider"></li>
+                            <li class="money"><a href="#">${{ user.money }}</a></li>
+                            <li class="points"><a href="#">{{ user.points }} points</a></li>
+                            <li class="has-dropdown">
+                                <a href="{% url frontend.views.home %}">
+                                    <div class="user-profile-link">
+                                        <img src="{{ user.profileimage.small }}">
+                                        {{ user.username }}
+                                    </div>
+                                </a>
+                                <ul class="dropdown">
+                                    <li>
+                                        <a href="{% url frontend.views.reset_portfolio %}">Reset</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="{% url lastfmauth_logout %}">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            {% else %}
+                            <li>
+                                <a href="{% url lastfmauth_login %}?next={{current_path}}">Login using your Last.fm account</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </section>
+                </nav>
+            </div>
+
+            <div class="header-promo">
+                <p>Welcome to Scrobble Exchange!</p>
+            </div>
+            <div class="header-search">
                 <form class="search-form" action="/search" method="GET">
                     <input name="q" type="text" class="typeahead-search" placeholder="Search for an artist">
                     <input class="lucky-hidden" type="hidden" name="lucky" value="true">
                 </form>
-              </div>
-            </nav>
-          </div>
+            </div>
+
         </div>
+
     </header>
 
     {% block content %}
@@ -108,6 +133,7 @@
     <script type="text/javascript" src="{% static "js/libs/hogan.js" %}"></script>
     <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.alerts.js" %}"></script>
     <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.tooltips.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.topbar.js" %}"></script>
     <script type="text/javascript" src="{% static "js/general.js" %}"></script>
 
     {% block body_additional_js %}{% endblock %}

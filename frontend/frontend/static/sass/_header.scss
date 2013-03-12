@@ -10,22 +10,26 @@ header {
     .top-bar {
         background-image: $headerSpriteUrl;
 
+        ul > li.divider {
+            background-color: darken($mainBarRed, 5%);
+        }
+
+        ul > li.name {
+            a {
+                padding-left: 0;
+
+                img {
+                    margin-top: -1px;
+                }
+            }
+        }
+
         ul.left > li {
             color: #FFF;
             text-shadow: rgb(135, 8, 2) 0px 1px 0px;
+            background-image: none;
 
-            &.name {
-                a {
-                    padding-left: 0;
-                }
-
-                img {
-                    height: 30px;
-                    width: 186px;
-                }
-            }
-
-            &:not(.name){
+            &:not(.name) {
                 height: 42px;
                 margin-top: 1px;
 
@@ -42,17 +46,29 @@ header {
                     }
                 }
             }
+
+            &.toggle-topbar {
+                background-image: none;
+                &:hover, &:active, &:focus {
+                    background-image: none;
+                }
+            }
         }
 
-        ul.right > li {
+        ul.right > li:not(.divider) {
             text-shadow: rgb(135, 8, 2) 0px 1px 0px;
-            padding: 0 15px;
-            border-right: 1px solid darken($mainBarRed, 5%);
 
             &:last-child {
                 border-right: none;
                 &:not(.has-dropdown){
                     padding-right: 0;
+                }
+            }
+
+            &.money,
+            &.points {
+                a {
+                    font-size: 14px;
                 }
             }
 
@@ -77,9 +93,9 @@ header {
                 img {
                     height: 16px;
                     width: 16px;
-                    margin-top: 14px;
                     margin-left: 0;
-                    margin-right: 5px;
+                    margin-right: 2px;
+                    vertical-align: middle;
                 }
             }
 
@@ -89,50 +105,87 @@ header {
                     color: #fff;
                 }
             }
-
         }
 
-        div.header-promo,
-        div.header-search {
-            p {
-                font-size: 11px;
-                line-height: 23px;
+
+
+    }
+
+    div.header-promo,
+    div.header-search {
+        p {
+            font-size: 11px;
+            line-height: 23px;
+        }
+    }
+
+    div.header-promo {
+        float: left;
+        width: 50%;
+        p {
+            color: #ddd;
+            font-weight: bold;
+        }
+    }
+
+    div.header-search {
+        width: 300px;
+        float: right;
+        margin-top: 2px;
+
+        form.search-form {
+
+            input[type="text"] {
+                height: 23px;
             }
         }
 
-        div.header-promo {
-            float: left;
-            width: 50%;
-            p {
-                color: #ddd;
-                font-weight: bold;
-            }
+        p {
+            color: #222;
         }
 
-        div.header-search {
+        .tt-is-under-cursor p,
+        .tt-suggestion:first-child:not(.visited) p {
+            color: #fff;
+        }
+
+        .tt-dropdown-menu {
             width: 300px;
-            float: right;
-            form.search-form {
+        }
+    }
 
-                input[type="text"] {
-                    height: 23px;
-                }
-            }
+}
 
-            p {
-                color: #222;
-            }
+@media only screen and (max-width: $topBarBreakPoint){
 
-            .tt-is-under-cursor p,
-            .tt-suggestion:first-child:not(.visited) p {
-                color: #fff;
-            }
+    .top-bar {
 
-            .tt-dropdown-menu {
-                width: 300px;
-            }
+        ul.left > li.name {
+            background-color: $mainBarRed;
+            background-image: $headerSpriteUrl;
         }
 
+        &.expanded {
+            background-image: none;
+            background-color: $subBarRed;
+            z-index: 9999;
+            margin-bottom: 10px;
+        }
+
+    }
+
+    .top-bar ul > li.active, .top-bar ul > li:hover {
+
+        background-color: $mainBarRed;
+
+    }
+
+    div.header-promo {
+        display: none;
+    }
+
+    div.header-search {
+        width: 100% !important;
     }
 
 }

@@ -102,8 +102,8 @@ $bodyFontFamily: "Lucida Grande", Arial, Helvetica, Verdana, sans-serif;
 // Top Bar Settings
 
 $topBarBgColor: $mainBarRed;
-$topBarHeight: 45px;
-// $topBarHeightMobile: 45px;
+$topBarHeight: 43px;
+$topBarHeightMobile: 43px;
 $topBarBtmMargin: 0px;
 // $topBarTitleWeight: bold;
 // $topBarTitleSize: 17px;
@@ -116,7 +116,7 @@ $topBarDropToggleSize: 5px;
 // $topBarDropToggleColor: #fff;
 $topBarDropToggleAlpha: 0.2;
 // $topBarSearchWidth: 200px;
-// $topBarBreakPoint: 940px; // Change to 9999px for always mobile layout
+$topBarBreakPoint: 875px; // Change to 9999px for always mobile layout
 // $topBarNavToggleSize: 8px;
 // $topBarNavToggleColor: #fff;
 

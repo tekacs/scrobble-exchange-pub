@@ -79,6 +79,9 @@ jQuery(document).ready(function($) {
             ],
             engine: window.Hogan
         });
+        // Perform initial sizing on dropdown search bar
+        var width = $('.header-search').width();
+        $('.header-search').find('.tt-dropdown-menu').css('width', width + 'px');
     });
 
     // Add more link below all suggestions
@@ -125,6 +128,12 @@ jQuery(document).ready(function($) {
     });
     $(document).on('mouseover', 'ol.tt-suggestions li.tt-suggestion', function(){
         $($(this).parents().first()).find('li.tt-suggestion:first-child').addClass('visited');
+    });
+
+
+    $(window).resize(function() {
+        var width = $('.header-search').width();
+        $('.header-search').find('.tt-dropdown-menu').css('width', width + 'px');
     });
 
 
