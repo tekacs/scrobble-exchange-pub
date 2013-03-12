@@ -67,7 +67,7 @@
         {% else %}
 
             {% if artist.numremaining == 0 %}
-                <a class="button large disabled has-tip" title="This artist is currently out of stock - please try again later." id="buy-button" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}"><i class="icon-shopping-cart"></i> Buy</a>
+                <a class="button large disabled has-tip" title="Sorry, only a limited number of users can own an artist at the same time. {{artist.name}} is currently at their limit - please try again later." id="buy-button" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}"><i class="icon-shopping-cart"></i> Buy</a>
             {% else %}
                 <a class="button large enabled" id="buy-button" href="#" data-price="{{ artist.price }}" data-artistname="{{ artist.name }}"><i class="icon-shopping-cart"></i> Buy</a>
             {% endif %}
