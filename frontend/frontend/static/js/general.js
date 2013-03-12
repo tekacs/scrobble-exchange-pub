@@ -146,4 +146,13 @@ jQuery(document).ready(function($) {
 
 
 
+    /* TUTORIAL LINK */
+
+    $('.tutorial-link').on('click', function(e){
+        $("#joyride").joyride();
+        e.preventDefault();
+    });
+
+
+
 });

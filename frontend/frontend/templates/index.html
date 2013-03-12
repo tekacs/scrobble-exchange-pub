@@ -9,6 +9,7 @@
 {% endblock above_main %}
 
     {% block main %}
+    <div id="user-artists">
         {% for artist_SE in user.stocks %}
             <div class="portfolio-wrapper">
                 <a href="{% url frontend.views.artist_single artist_SE.name|urlencode %}">
@@ -29,27 +30,33 @@
         {% empty %}
 
             <p class="lead">You currently have no artists in your portfolio.</p>
-                <p>Head to the <a href="{% url frontend.views.artists %}">Artists</a> page and buy some artists! Once you own some artists, you can view their prices, most recent dividends awarded, and the number of points per day that you will receive.</p>
+                <p>Head to the <a href="{% url frontend.views.artists %}">Artists</a> page and buy some artists! Once you own some artists, you can view their prices, most recent dividends awarded, and the number of points per day that you will receive here.</p>
 
                 {% if recommended_artists %}
                     <p>Or browse the recommended artists listed in the sidebar, which are based on your Last.fm scrobbles.</p>
                 {% endif %}
 
+                <p>
+                    <a href="#" class="tutorial-link">View tutorial</a>
+                </p>
+
         {% endfor %}
+    </div>
     {% endblock main %}
+
 
     {% block sidebar %}
         <!--<h2 class="sidebar-red">Current wealth</h2>-->
-        <div class="sidebar-price joined">
+        <div id="user-cash" class="sidebar-price joined">
             <p class="money">${{user.money}}</p>
             <p>in cash</p>
         </div>
-        <div class="bonus-wealth">
+        <div id="user-invested-money" class="bonus-wealth">
             <p class="money">${{user.portfolio_worth}}</p>
             <p>in your portfolio</p>
         </div>
 
-        <div class="bonus-wealth points">
+        <div id="user-points" class="bonus-wealth points">
             <p class="money">{{user.points}}</p>
             <p>points</p>
         </div>
@@ -84,49 +91,70 @@
 
         <hr>
 
-        <h2 class="sidebar-red">Recommended artists</h2>
-        <p class="lead">Based on your Last.fm data</p>
+        <div>
+            <h2 class="sidebar-red" id="user-recommended">Recommended artists</h2>
+            <p class="lead">Based on your Last.fm data</p>
 
-        <div class="rank-list">
+            <div class="rank-list">
 
-            <ol class="top-list primary recommended sidebar-list">
-
-                {% for recommended_artist_SE in recommended_artists %}
-
+                <ol class="top-list primary recommended sidebar-list">
+                    {% for recommended_artist_SE in recommended_artists %}
                     <li class="rankItem sidebar-item">
                         <div class="rankItem-wrap">
                             <div class="rankItem-wrap2">
                                 <a href="{% url frontend.views.artist_single recommended_artist_SE.name|urlencode %}" class="rankItem-blockLink">
                                     <h4>
-                                        <span class="rankItem-position">{{forloop.counter}}<span class="rm">.</span></span>
+                                        <span class="rankItem-position">
+                                            {{forloop.counter}}
+                                            <span class="rm">.</span>
+                                        </span>
                                         <span class="rankItem-title">{{recommended_artist_SE.name|truncatechars:30}}</span>
                                     </h4>
                                     <div class="rankItem-imageCrop rankItem-imageCrop-hidden" style="background-image: url('{{recommended_artist_SE.imgurls|get_image:'mega'}}');">
                                         <div class="rankItem-imageCrop-wrap">
-                                            <img src="{{recommended_artist_SE.imgurls|get_image:'mega'}}">
-                                        </div>
+                                            <img src="{{recommended_artist_SE.imgurls|get_image:'mega'}}"></div>
                                     </div>
                                 </a>
                             </div>
                             <p class="rankItem-bar">
                                 <span class="rankItem-bar-percentage" style="width: 100%">
-                                    <span>
-                                        <strong>${{ recommended_artist_SE.price }}</strong>
+                                    <span> <strong>${{ recommended_artist_SE.price }}</strong>
                                     </span>
                                 </span>
                             </p>
                         </div>
                     </li>
-
-                {% empty %}
-
+                    {% empty %}
                     <div class="">
                         <p>You currently have no recommended artists.</p>
                     </div>
+                    {% endfor %}
+                </ol>
 
-                {% endfor %}
-
-            </ol>
-
+            </div>
         </div>
     {% endblock sidebar %}
+
+    {% block body_additional_html %}
+        <ol id="joyride">
+
+            <!--This tip will be display as a modal -->
+            <li><p>Welcome to Scrobble Exchange! Let us show you a few of the basics!</p></li>
+
+            <li data-id="user-cash"><p>We've given you $20,000 to start off with. Here, you can keep track of your cash - that is, money you have available to spend immediately.</p></li>
+
+            <li data-id="user-invested-money"><p>Here, you can see the amount of money that you have invested in artists - this is the amount of money you'd make if you sold all artists in your portfolio at current market prices.</p></li>
+
+            <li data-id="user-points"><p>Money isn't the only thing you'll want to earn - artists in your porfolio will award you daily points. You can see your total here!</p></li>
+
+            <li data-id="user-artists"><p>Buying artists will add them to your portfolio - you'll be able to see a list of all artists you currently own, with their market values, dividends per day, and points per day here.</p></li>
+
+
+            {% if recommended_artists %}
+
+                <li data-id="user-recommended"><p>Why not get started by taking a look at your recommended artists?</p></li>
+
+            {% endif %}
+
+        </ol>
+    {% endblock body_additional_html %}

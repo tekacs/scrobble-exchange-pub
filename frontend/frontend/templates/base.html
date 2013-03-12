@@ -31,7 +31,7 @@
                         <!-- Title Area -->
                         <li class="name">
                             <a href="{% url frontend.views.home %}">
-                                <img src="{% static "img/logo.png" %}" style="height: 30px; width: 186px;">
+                                <img id="logo" src="{% static "img/logo.png" %}" style="height: 30px; width: 186px;">
                             </a>
                         </li>
                         <li class="toggle-topbar">
@@ -67,6 +67,9 @@
                                     </div>
                                 </a>
                                 <ul class="dropdown">
+                                    <li>
+                                        <a href="#" class="tutorial-link">Tutorial</a>
+                                    </li>
                                     <li>
                                         <a href="{% url frontend.views.reset_portfolio %}">Reset</a>
                                     </li>
@@ -134,6 +137,7 @@
     <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.alerts.js" %}"></script>
     <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.tooltips.js" %}"></script>
     <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.topbar.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.joyride.js" %}"></script>
     <script type="text/javascript" src="{% static "js/general.js" %}"></script>
 
     {% block body_additional_js %}{% endblock %}
