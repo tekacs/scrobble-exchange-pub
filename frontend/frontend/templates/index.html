@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load extras %}
+{% load humanize %}
 
 {% block title %}Portfolio{% endblock %}
 
@@ -17,13 +18,13 @@
                         <div class="text-over-image bottom">
                             <span class="primary">{{ artist_SE.name|truncatechars:20 }}</span>
                             <br>
-                            <span class="secondary">${{ artist_SE.price }}</span>
+                            <span class="secondary">${{ artist_SE.price|intcomma }}</span>
                         </div>
                     </div>
                 </a>
                 <div class="info-below-artist">
-                    <p class="artist-dividends"><span>${{artist_SE.dividend}}</span> dividends</p>
-                    <p class="artist-points"><span>{{artist_SE.points}}</span> points</p>
+                    <p class="artist-dividends"><span>${{artist_SE.dividend|intcomma}}</span> dividends</p>
+                    <p class="artist-points"><span>{{artist_SE.points|intcomma}}</span> points</p>
                 </div>
             </div>
 
@@ -48,16 +49,16 @@
     {% block sidebar %}
         <!--<h2 class="sidebar-red">Current wealth</h2>-->
         <div id="user-cash" class="sidebar-price joined">
-            <p class="money">${{user.money}}</p>
+            <p class="money">${{user.money|intcomma}}</p>
             <p>in cash</p>
         </div>
         <div id="user-invested-money" class="bonus-wealth">
-            <p class="money">${{user.portfolio_worth}}</p>
+            <p class="money">${{user.portfolio_worth|intcomma}}</p>
             <p>in your portfolio</p>
         </div>
 
         <div id="user-points" class="bonus-wealth points">
-            <p class="money">{{user.points}}</p>
+            <p class="money">{{user.points|intcomma}}</p>
             <p>points</p>
         </div>
 
@@ -118,7 +119,7 @@
                             </div>
                             <p class="rankItem-bar">
                                 <span class="rankItem-bar-percentage" style="width: 100%">
-                                    <span> <strong>${{ recommended_artist_SE.price }}</strong>
+                                    <span> <strong>${{ recommended_artist_SE.price|intcomma }}</strong>
                                     </span>
                                 </span>
                             </p>
