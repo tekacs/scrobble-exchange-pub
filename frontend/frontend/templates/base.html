@@ -133,13 +133,18 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="{% static "js/vendor/jquery-1.9.0.min.js" %}"><\/script>')</script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
+
+    <!--
+    Files concatenated and minified into general-min.js:
     <script type="text/javascript" src="{% static "js/libs/typeahead.js" %}"></script>
     <script type="text/javascript" src="{% static "js/libs/hogan.js" %}"></script>
     <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.alerts.js" %}"></script>
     <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.tooltips.js" %}"></script>
     <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.topbar.js" %}"></script>
     <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.joyride.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/general.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/general.js" %}"></script> -->
+
+    <script type="text/javascript" src="{% static "js/general-min.js" %}"></script>
 
     {% block body_additional_js %}{% endblock %}
 </body>

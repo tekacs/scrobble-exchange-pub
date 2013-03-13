@@ -88,16 +88,17 @@
 {% endblock body_additional_html %}
 
 {% block body_additional_js %}
+    <!-- The following files are concatenated and minified into artist-min.js
     <script type="text/javascript" src="{% static "js/libs/jquery.knob.js" %}"></script>
     <script type="text/javascript" src="{% static "js/libs/d3.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/libs/d3.layout.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/libs/rickshaw.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.reveal.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.reveal.js" %}"></script> -->
 	<script type="text/javascript">
         // Pass in artist name and mbid here for JS access
         window.SE.Artist = {};
 		window.SE.Artist.name = '{{artist.name}}';
         window.SE.Artist.mbid = '{{artist.mbid}}';
 	</script>
-    <script type="text/javascript" src="{% static "js/artist.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/artist-min.js" %}"></script>
 {% endblock body_additional_js %}

@@ -60,9 +60,11 @@
 {% endblock sidebar %}
 
 {% block body_additional_js %}
+  <!-- The following files are concatenated and minified into leaderboards-min.js
   <script type="text/javascript" src="{% static "js/foundation/jquery.foundation.accordion.custom.js" %}"></script>
   <script type="text/javascript" src="{% static "js/libs/jquery.dataTables.js" %}"></script>
-  <script type="text/javascript" src="{% static "js/libs/dataTables.scroller.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/libs/dataTables.scroller.min.js" %}"></script> -->
+
     <script type="text/javascript">
       window.SE.User = {
         {% if user.is_authenticated %}
@@ -72,5 +74,5 @@
         {% endif %}
       }
     </script>
-  <script type="text/javascript" src="{% static "js/leaderboards.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/leaderboards-min.js" %}"></script>
 {% endblock body_additional_js %}
