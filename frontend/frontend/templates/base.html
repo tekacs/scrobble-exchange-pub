@@ -59,7 +59,9 @@
                             {% if user.is_authenticated %}
                             <li class="divider"></li>
                             <li class="money"><a href="#">${{ user.money|intcomma }}</a></li>
+                            <li class="divider show-for-medium-and-up"></li>
                             <li class="points"><a href="#">{{ user.points|intcomma }} points</a></li>
+                            <li class="divider"></li>
                             <li class="has-dropdown">
                                 <a href="{% url frontend.views.home %}">
                                     <div class="user-profile-link">
