@@ -1,5 +1,4 @@
 {% load staticfiles %}
-{% load humanize %}
 
 <!DOCTYPE html>
 
@@ -58,9 +57,9 @@
                         <ul class="right">
                             {% if user.is_authenticated %}
                             <li class="divider"></li>
-                            <li class="money"><a href="#">${{ user.money|intcomma }}</a></li>
+                            <li class="money"><a href="#">${{ user.money }}</a></li>
                             <li class="divider show-for-medium-and-up"></li>
-                            <li class="points"><a href="#">{{ user.points|intcomma }} points</a></li>
+                            <li class="points"><a href="#">{{ user.points }} points</a></li>
                             <li class="divider"></li>
                             <li class="has-dropdown">
                                 <a href="{% url frontend.views.home %}">

@@ -2,7 +2,6 @@
 
 {% load static %}
 {% load extras %}
-{% load humanize %}
 
 {% block title %}{{artist.name}}{% endblock title %}
 
@@ -46,17 +45,17 @@
 
 {% block sidebar %}
     <div class="sidebar-price joined">
-        <p class="money">${{ artist.price|intcomma }}</p>
+        <p class="money">${{ artist.price }}</p>
         <p>current market price</p>
     </div>
 
     <div class="bonus-wealth">
-        <p class="money">${{ artist.dividend|intcomma }}</p>
+        <p class="money">${{ artist.dividend }}</p>
         <p>dividends per day</p>
     </div>
 
     <div class="bonus-wealth points">
-        <p class="money">{{ artist.points|intcomma }}</p>
+        <p class="money">{{ artist.points }}</p>
         <p>points per day</p>
     </div>
 

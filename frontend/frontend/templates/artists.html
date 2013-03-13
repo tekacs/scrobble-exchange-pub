@@ -2,7 +2,6 @@
 
 {% load static %}
 {% load extras %}
-{% load humanize %}
 
 {% block title %}Artists{% endblock title %}
 
@@ -55,7 +54,7 @@
                             <p class="rankItem-bar">
                                 <span class="rankItem-bar-percentage" style="width: 100%">
                                     <span>
-                                        <strong>${{ valuable_artist_SE.price|intcomma }}</strong>
+                                        <strong>${{ valuable_artist_SE.price }}</strong>
                                     </span>
                                 </span>
                             </p>
@@ -100,7 +99,7 @@
                             <p class="rankItem-bar">
                                 <span class="rankItem-bar-percentage" style="width: 100%">
                                     <span>
-                                        <strong>${{ traded_artist_SE.price|intcomma }}</strong>
+                                        <strong>${{ traded_artist_SE.price }}</strong>
                                     </span>
                                 </span>
                             </p>
@@ -149,7 +148,7 @@
                             <p class="rankItem-bar">
                                 <span class="rankItem-bar-percentage" style="width: 100%">
                                     <span>
-                                        <strong>${{ popular_artist_SE.price|intcomma }}</strong>
+                                        <strong>${{ popular_artist_SE.price }}</strong>
                                     </span>
                                 </span>
                             </p>
@@ -194,7 +193,7 @@
                             <p class="rankItem-bar">
                                 <span class="rankItem-bar-percentage" style="width: 100%">
                                     <span>
-                                        <strong>${{ recommended_artist_SE.price|intcomma }}</strong>
+                                        <strong>${{ recommended_artist_SE.price }}</strong>
                                     </span>
                                 </span>
                             </p>
@@ -236,7 +235,7 @@
                         <p class="rankItem-bar">
                             <span class="rankItem-bar-percentage" style="width: 100%">
                                 <span>
-                                    <strong>${{ traded_artist_SE.price|intcomma }}</strong>
+                                    <strong>${{ traded_artist_SE.price }}</strong>
                                 </span>
                             </span>
                         </p>

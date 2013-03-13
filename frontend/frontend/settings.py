@@ -136,7 +136,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',
     'frontend',
     'lastfmauth',
     'raven.contrib.django.raven_compat',
