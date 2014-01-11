@@ -1,4 +1,4 @@
-# Scrobble Exchange: A massively multiplayer game
+## Scrobble Exchange: A massively multiplayer game
 
 Branches:
 * [master](https://github.com/tekacs/scrobble-exchange-pub)
