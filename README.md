@@ -6,6 +6,14 @@ There is currently supposed to be nothing in this branch but for the README and 
 
 Please don't commit files in here!
 
+Branches:
+* [master](https://github.com/tekacs/scrobble-exchange-pub)
+* [doc](https://github.com/tekacs/scrobble-exchange-pub/tree/doc)
+* [web](https://github.com/tekacs/scrobble-exchange-pub/tree/web) [chiefly Joe, Neil]
+* [api](https://github.com/tekacs/scrobble-exchange-pub/tree/api) [chiefly Victor]
+* [analytics](https://github.com/tekacs/scrobble-exchange-pub/tree/analytics) [chiefly Amar]
+* [datm](https://github.com/tekacs/scrobble-exchange-pub/tree/datm) [chiefly Amar]
+
 Please also be very wary of `git pull origin <branch>` - it *will* merge all changes pulled into the current branch.
 If you accidentally do this, please nuke your local repo and re-`clone`, unpick the merge carefully, or _ask_ if unsure.
 
@@ -13,14 +21,6 @@ The simplest solution is to just use branches.sh and work with the branches in d
 
 Files:
 * branches.sh :: This checks out all of the branches for you and sets them up such that you can push and pull changes to the right place with just a 'git push/pull' (i.e. without 'origin <...>')
-
-Branches:
-* [master](https://github.com/tekacs/scrobble-exchange-pub)
-* [doc](https://github.com/tekacs/scrobble-exchange-pub/tree/doc)
-* [web](https://github.com/tekacs/scrobble-exchange-pub/tree/web)
-* [api](https://github.com/tekacs/scrobble-exchange-pub/tree/api)
-* [analytics](https://github.com/tekacs/scrobble-exchange-pub/tree/analytics)
-* [datm](https://github.com/tekacs/scrobble-exchange-pub/tree/datm)
 
 Useful Links:
 * Might I heartily recommend [Github for Mac](http://mac.github.com) and [GitHub for Windows](http://windows.github.com) to those unfamiliar with Git?
