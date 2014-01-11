@@ -1,11 +1,5 @@
 # Scrobble Exchange: A massively multiplayer game
 
-## Group Project Charlie
-
-There is currently supposed to be nothing in this branch but for the README and branches.sh.
-
-Please don't commit files in here!
-
 Branches:
 * [master](https://github.com/tekacs/scrobble-exchange-pub)
 * [doc](https://github.com/tekacs/scrobble-exchange-pub/tree/doc)
@@ -13,6 +7,10 @@ Branches:
 * [api](https://github.com/tekacs/scrobble-exchange-pub/tree/api) [chiefly Victor]
 * [analytics](https://github.com/tekacs/scrobble-exchange-pub/tree/analytics) [chiefly Amar]
 * [datm](https://github.com/tekacs/scrobble-exchange-pub/tree/datm) [chiefly Amar]
+
+There is currently supposed to be nothing in this branch but for the README and branches.sh.
+
+Please don't commit files in here!
 
 Please also be very wary of `git pull origin <branch>` - it *will* merge all changes pulled into the current branch.
 If you accidentally do this, please nuke your local repo and re-`clone`, unpick the merge carefully, or _ask_ if unsure.
