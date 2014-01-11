@@ -15,18 +15,12 @@ Files:
 * branches.sh :: This checks out all of the branches for you and sets them up such that you can push and pull changes to the right place with just a 'git push/pull' (i.e. without 'origin <...>')
 
 Branches:
-* [master](https://github.com/tekacs/scrobble-exchange)
-* [doc](https://github.com/tekacs/scrobble-exchange/tree/doc)
-* [web](https://github.com/tekacs/scrobble-exchange/tree/web)
-* [api](https://github.com/tekacs/scrobble-exchange/tree/api)
-* [analytics](https://github.com/tekacs/scrobble-exchange/tree/analytics)
-* [datm](https://github.com/tekacs/scrobble-exchange/tree/datm)
-
-Resources:
-* [Google Docs](https://docs.google.com/folder/d/0Bzc0w3Y7EvMeblByNnZ1Y1RieHc/edit) (for notes, documentation, etc.)
-* [Facebook](https://www.facebook.com/groups/scrobble-exchange) (for conversation)
-* [GitHub](http://github.com/tekacs/scrobble-exchange) (in case you're looking at the checked out repository)
-* [IRC](irc://last.fm:6667/last.gp)
+* [master](https://github.com/tekacs/scrobble-exchange-pub)
+* [doc](https://github.com/tekacs/scrobble-exchange-pub/tree/doc)
+* [web](https://github.com/tekacs/scrobble-exchange-pub/tree/web)
+* [api](https://github.com/tekacs/scrobble-exchange-pub/tree/api)
+* [analytics](https://github.com/tekacs/scrobble-exchange-pub/tree/analytics)
+* [datm](https://github.com/tekacs/scrobble-exchange-pub/tree/datm)
 
 Useful Links:
 * Might I heartily recommend [Github for Mac](http://mac.github.com) and [GitHub for Windows](http://windows.github.com) to those unfamiliar with Git?
